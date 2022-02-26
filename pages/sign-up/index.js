@@ -8,12 +8,15 @@ import { serverTimestamp, doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase.config";
 
 import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../components/store/user-slice";
 
 function SignUp() {
   const [formData, setFormData] = useState({});
   const router = useRouter();
 
   const auth = getAuth();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,12 +35,12 @@ function SignUp() {
       const formDataCopy = { ...formData };
       delete formDataCopy.password;
       formDataCopy.timestamp = serverTimestamp();
-      // formDataCopy.cartId = "";
+
       console.log(formDataCopy);
 
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       console.log("registration success");
-      // dispatch(userActions.loginSuccess());
+      dispatch(userActions.success());
       router.push("/profile");
     } catch (error) {
       console.log(error);

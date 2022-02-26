@@ -2,6 +2,11 @@ import Head from "next/head";
 import Link from "next/link";
 import PlaceCard from "../components/PlaceCard";
 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { userActions } from "../components/store/user-slice";
+
 const DUMMY = [
   {
     id: "234jikjdf8",
