@@ -5,20 +5,14 @@ import { useSelector } from "react-redux";
 import { useAuthContext } from "../../components/context/auth-context";
 import nookies from "nookies";
 import { firebaseAdmin } from "../../firebaseAdmin";
+// import * as firebaseAdmin from "firebase-admin";
+// import { getAuth } from "firebase-admin";
 
 function Profile(props) {
-  const checkingStatus = useSelector((state) => state.user.checkingStatus);
-  const auth = getAuth();
-  // const user = useAuthContext();
-  // console.log("wtf", user);
-  // console.log("profile username is", auth.currentUser);
-  // console.log(props.message);
-
-  // console.log(checkingStatus);
-
   return (
     <>
       <div>Profile:hello {props.username}</div>
+      <h2>your email is: {props.email}</h2>
       {/* {checkingStatus && <h2>Loading...</h2>}
       {!checkingStatus && <div>Profile: {auth.currentUser.displayName}</div>} */}
     </>
@@ -40,6 +34,7 @@ export async function getServerSideProps(context) {
     return {
       props: {
         username: name,
+        email,
       },
     };
   } catch (error) {

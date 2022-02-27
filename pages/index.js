@@ -7,6 +7,9 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../components/store/user-slice";
 
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase.config";
+
 const DUMMY = [
   {
     id: "234jikjdf8",
@@ -26,7 +29,8 @@ const DUMMY = [
   },
 ];
 
-export default function Home() {
+export default function Home({ posts }) {
+  console.log(posts);
   return (
     <>
       <Head>
@@ -41,11 +45,38 @@ export default function Home() {
 
       <div className="flex flex-wrap">
         {/* SINGLE CARD MAP HERE */}
-        {DUMMY.map((item) => (
+        {posts.map((item) => (
           <PlaceCard key={item.id} {...item} />
         ))}
         {/* END SINGLE CARD */}
       </div>
     </>
   );
+}
+
+export async function getStaticProps(context) {
+  const colRef = collection(db, "posts");
+  try {
+    const snapshot = await getDocs(colRef);
+
+    const posts = [];
+    snapshot.docs.forEach((doc) => {
+      posts.push({ ...doc.data(), id: doc.id });
+    });
+    return {
+      props: {
+        posts,
+      },
+    };
+  } catch (error) {
+    // console.log(error);
+    return {
+      props: {
+        posts: [],
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 }

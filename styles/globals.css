@@ -18,4 +18,9 @@
   .nav-active {
     @apply text-blue-600;
   }
+
+  input,
+  textarea {
+    @apply text-black;
+  }
 }
