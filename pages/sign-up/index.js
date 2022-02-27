@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 
+import nookies from "nookies";
+
 function SignUp() {
   const [formData, setFormData] = useState({});
   const router = useRouter();
@@ -102,3 +104,15 @@ function SignUp() {
 }
 
 export default SignUp;
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  if (!cookies.token) {
+    return { props: {} };
+  } else {
+    context.res.writeHead(302, { Location: "/profile  " });
+    context.res.end();
+
+    return { props: {} };
+  }
+}

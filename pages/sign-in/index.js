@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 
+import nookies from "nookies";
+
 function SignIn() {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
@@ -57,3 +59,15 @@ function SignIn() {
 }
 
 export default SignIn;
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context);
+  if (!cookies.token) {
+    return { props: {} };
+  } else {
+    context.res.writeHead(302, { Location: "/profile  " });
+    context.res.end();
+
+    return { props: {} };
+  }
+}

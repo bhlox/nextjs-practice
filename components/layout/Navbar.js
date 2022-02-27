@@ -34,15 +34,17 @@ function Navbar() {
               Add-place
             </a>
           </Link>
-          <Link passHref href="/profile">
-            <a
-              className={
-                router.pathname == "/profile" ? "nav-active" : "nav-link"
-              }
-            >
-              Profile
-            </a>
-          </Link>
+          {isLoggedIn && (
+            <Link passHref href="/profile">
+              <a
+                className={
+                  router.pathname == "/profile" ? "nav-active" : "nav-link"
+                }
+              >
+                Profile
+              </a>
+            </Link>
+          )}
           {!isLoggedIn && (
             <Link passHref href="/sign-in">
               <a
@@ -79,3 +81,5 @@ function Navbar() {
 }
 
 export default Navbar;
+
+// NAVLINK ACTIVE COMPONENT LIKE IN REACT-ROUTER : https://dev.to/yuridevat/how-to-add-styling-to-an-active-link-in-nextjs-593e
