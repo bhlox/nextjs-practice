@@ -1,12 +1,29 @@
 import React from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { navActions } from "../store/nav-slice";
 import Navbar from "./Navbar";
 
 function Layout({ children }) {
   return (
     <>
       <Navbar />
+      <BackDrop />
       <section className="max-w-7xl mx-auto my-8">{children}</section>
     </>
+  );
+}
+
+function BackDrop() {
+  const { showSide } = useSelector((state) => state.nav);
+  const dispatch = useDispatch();
+  return (
+    <div
+      onClick={() => dispatch(navActions.close())}
+      className={`${
+        showSide ? "block" : "hidden"
+      } fixed top-0 left-0 bg-black opacity-50 w-screen h-screen z-[5]`}
+    ></div>
   );
 }
 

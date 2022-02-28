@@ -36,6 +36,7 @@ function SignUp() {
 
       const formDataCopy = { ...formData };
       delete formDataCopy.password;
+      formDataCopy.posts = [];
       formDataCopy.timestamp = serverTimestamp();
 
       console.log(formDataCopy);

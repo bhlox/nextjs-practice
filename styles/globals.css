@@ -4,7 +4,7 @@
 
 @layer components {
   body {
-    @apply bg-slate-900 text-gray-300;
+    @apply bg-slate-900 text-gray-300 overflow-x-hidden;
   }
 
   .css-console {
@@ -12,11 +12,11 @@
   }
 
   .nav-link {
-    @apply hover:text-blue-300 transition-all;
+    @apply hover:text-slate-500 transition-all text-xl;
   }
 
   .nav-active {
-    @apply text-blue-600;
+    @apply text-slate-900 text-2xl;
   }
 
   input,

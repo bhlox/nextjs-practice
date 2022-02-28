@@ -1,9 +1,21 @@
 import React, { useRef } from "react";
 
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  doc,
+  getDoc,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../../firebase.config";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../components/store/user-slice";
 
 function AddPlace() {
   const titleInput = useRef();
@@ -13,26 +25,42 @@ function AddPlace() {
 
   const auth = getAuth();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const colRef = collection(db, "posts");
+
+  const checkingStatus = useSelector((state) => state.user.checkingStatus);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await addDoc(colRef, {
-      title: titleInput.current.value,
-      image: imageInput.current.value,
-      place: placeInput.current.value,
-      desc: descInput.current.value,
-      username: auth.currentUser.displayName,
-      useruid: auth.currentUser.uid,
-    });
-    console.log("document added");
-    router.push("/");
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    dispatch(userActions.verify());
+    try {
+      const post = await addDoc(colRef, {
+        title: titleInput.current.value,
+        image: imageInput.current.value,
+        place: placeInput.current.value,
+        desc: descInput.current.value,
+        username: auth.currentUser.displayName,
+        useruid: auth.currentUser.uid,
+        timestamp: serverTimestamp(),
+      });
+
+      await updateDoc(userRef, { posts: arrayUnion(post.id) });
+
+      dispatch(userActions.verifyComplete());
+      console.log("document added");
+      router.push("/");
+    } catch (error) {
+      dispatch(userActions.verifyComplete());
+
+      console.log(error);
+    }
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex flex-col items-center justify-center">
       <form className="space-y-8" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">name of title</label>
@@ -55,10 +83,15 @@ function AddPlace() {
             ref={descInput}
           />
         </div>
-        <button>submit</button>
       </form>
+      <button disabled={checkingStatus} onClick={handleSubmit}>
+        {checkingStatus ? "sending" : "submit"}
+      </button>
     </div>
   );
 }
 
 export default AddPlace;
+
+// TO UPDATE AN ARRAY IN DATABASE USE ARRAYUNION. TO REMOVE USE arrayRemove
+// REFERENCE : https://firebase.google.com/docs/firestore/manage-data/add-data#web-version-9_11

@@ -1,36 +1,11 @@
 import Head from "next/head";
-import Link from "next/link";
+
 import PlaceCard from "../components/PlaceCard";
 
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { userActions } from "../components/store/user-slice";
-
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
 
-const DUMMY = [
-  {
-    id: "234jikjdf8",
-    title: "fantastic",
-    photo:
-      "https://cdn.pixabay.com/photo/2021/10/04/06/28/cactus-6679665__340.jpg",
-    user: "cock",
-    description: "sweden",
-  },
-  {
-    id: "e0f90934",
-    title: "yep",
-    photo:
-      "https://cdn.pixabay.com/photo/2022/02/17/07/51/church-7018154__340.jpg",
-    user: "cock",
-    description: "sweden",
-  },
-];
-
 export default function Home({ posts }) {
-  console.log(posts);
   return (
     <>
       <Head>
@@ -57,26 +32,29 @@ export default function Home({ posts }) {
 export async function getStaticProps(context) {
   const colRef = collection(db, "posts");
   try {
-    const snapshot = await getDocs(colRef);
+    const q = query(colRef, orderBy("timestamp", "desc"), limit(12));
+
+    const snapshot = await getDocs(q);
 
     const posts = [];
     snapshot.docs.forEach((doc) => {
-      posts.push({ ...doc.data(), id: doc.id });
+      posts.push({
+        ...doc.data(),
+        id: doc.id,
+        timestamp: doc.data().timestamp.toDate().toDateString(),
+      });
     });
+
     return {
       props: {
         posts,
       },
     };
   } catch (error) {
-    // console.log(error);
     return {
       props: {
         posts: [],
       },
     };
   }
-  return {
-    props: {},
-  };
 }

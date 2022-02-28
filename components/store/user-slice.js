@@ -7,6 +7,9 @@ export const userSlice = createSlice({
     verify(state) {
       state.checkingStatus = true;
     },
+    verifyComplete(state) {
+      state.checkingStatus = false;
+    },
     success(state) {
       state.isLoggedIn = true;
       state.checkingStatus = false;
