@@ -2,14 +2,20 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { navActions } from "../store/nav-slice";
+import Footer from "./Footer";
 import Navbar from "./Navbar";
 
 function Layout({ children }) {
   return (
     <>
-      <Navbar />
-      <BackDrop />
-      <section className="max-w-7xl mx-auto my-8">{children}</section>
+      <div className="pancake">
+        <Navbar />
+        <BackDrop />
+        <section className="max-w-7xl mx-auto my-8 space-y-16 px-4">
+          {children}
+        </section>
+        <Footer />
+      </div>
     </>
   );
 }

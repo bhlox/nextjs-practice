@@ -1,4 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { VscOctoface } from "react-icons/vsc";
+import { GiDialPadlock } from "react-icons/gi";
+import { GoEye, GoPerson } from "react-icons/go";
+import { MdEmail } from "react-icons/md";
+
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -12,13 +17,20 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 
 import nookies from "nookies";
+import { useSelector } from "react-redux";
+import GoogleAuth from "../../components/GoogleAuth";
 
 function SignUp() {
+  const showPassword = useSelector((state) => state.user.showPassword);
   const [formData, setFormData] = useState({});
   const router = useRouter();
 
   const auth = getAuth();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(userActions.hide());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,7 +46,7 @@ function SignUp() {
         displayName: formData.userName,
       });
 
-      const formDataCopy = { ...formData };
+      const formDataCopy = { ...user };
       delete formDataCopy.password;
       formDataCopy.posts = [];
       formDataCopy.timestamp = serverTimestamp();
@@ -56,49 +68,67 @@ function SignUp() {
     });
   };
 
+  const handleShow = () => {
+    dispatch(userActions.show());
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <h2>Registration form</h2>
-      <form className="space-y-4 mt-8" onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="name">Full name</label>
+      <h2 className="text-4xl">Registration form</h2>
+      <form
+        className="mt-8 flex flex-col space-y-16 items-center"
+        onSubmit={handleSubmit}
+      >
+        <div className="relative max-w-max">
           <input
-            className="text-black"
+            className="styled-input"
             type="text"
             id="name"
             onChange={handleData}
+            placeholder="enter full name"
           />
+          <GoPerson className="input-icon" />
         </div>
-        <div>
-          <label htmlFor="username">enter username</label>
+        <div className="relative max-w-max">
           <input
-            className="text-black"
+            className="styled-input"
             type="text"
             id="userName"
             onChange={handleData}
+            placeholder="enter username"
           />
+          <VscOctoface className="input-icon" />
         </div>
-        <div>
-          <label htmlFor="email">enter email</label>
+        <div className="relative max-w-max">
           <input
-            className="text-black"
+            className="styled-input"
             type="email"
             id="email"
             onChange={handleData}
+            placeholder="enter email"
           />
+          <MdEmail className="input-icon" />
         </div>
-        <div>
-          <label htmlFor="password">enter password</label>
+        <div className="relative max-w-max">
           <input
-            className="text-black"
-            type="password"
+            className="styled-input"
+            type={showPassword ? "text" : "password"}
             id="password"
             onChange={handleData}
+            placeholder="enter password"
+          />
+          <GiDialPadlock className="input-icon" />
+          <GoEye
+            onClick={handleShow}
+            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+              showPassword ? "text-red-500" : "text-purple-600"
+            }  cursor-pointer hover:text-purple-400`}
           />
         </div>
-        <div className="flex justify-center">
-          <button>register</button>
-        </div>
+        <GoogleAuth sign="up" />
+        <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+          register
+        </button>
       </form>
     </div>
   );

@@ -19,8 +19,26 @@
     @apply text-slate-900 text-2xl;
   }
 
+  .styled-input {
+    @apply text-gray-200 text-2xl md:text-4xl bg-transparent focus:outline-none px-10 md:px-14 md:pb-2 border-b-[1px];
+  }
+
+  .input-icon {
+    @apply absolute left-0 top-0 text-3xl md:text-4xl md:top-1 text-purple-600;
+  }
+
   input,
   textarea {
     @apply text-black;
   }
 }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+/* .pancake {
+  display: grid;
+  grid-template-rows: 1fr auto 1fr;
+} */
