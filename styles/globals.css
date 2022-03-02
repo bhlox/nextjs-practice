@@ -38,6 +38,16 @@ input[type="password"]::-ms-clear {
   display: none;
 }
 
+.rec.rec-arrow {
+  background-color: rgb(212, 6, 212);
+  color: white;
+}
+
+.rec.rec-dot {
+  border-color: white;
+  background-color: white;
+}
+
 /* .pancake {
   display: grid;
   grid-template-rows: 1fr auto 1fr;

@@ -6,6 +6,7 @@ import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
 import Image from "next/image";
 import Link from "next/link";
+import CarouselSlider from "../components/Carousel";
 
 export default function Home({ posts }) {
   console.log(posts);
@@ -44,7 +45,10 @@ export default function Home({ posts }) {
           </Link>
         </div>
 
-        <div className="flex flex-col justify-between text-gray-200">
+        <div
+          className="flex flex-col justify-between
+         text-gray-200"
+        >
           <div className="space-y-2">
             <span className="px-2 py-1 font-medium bg-blue-200 rounded-lg text-xl text-blue-500">
               Latest
@@ -90,6 +94,8 @@ export default function Home({ posts }) {
         })}
         {/* END SINGLE CARD */}
       </div>
+
+      <CarouselSlider posts={posts} />
     </>
   );
 }
