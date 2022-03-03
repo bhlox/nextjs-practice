@@ -27,6 +27,10 @@
     @apply absolute left-0 top-0 text-3xl md:text-4xl md:top-1 text-purple-600;
   }
 
+  .arrow-btns {
+    @apply text-3xl md:text-4xl text-white;
+  }
+
   input,
   textarea {
     @apply text-black;

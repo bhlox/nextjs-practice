@@ -5,7 +5,7 @@ import Link from "next/link";
 function PlaceCard({ id, title, image, desc, username, timestamp }) {
   // LINK IS LINKING TO THE POST ID
   return (
-    <div className="p-4 block w-full sm:w-1/2 lg:w-1/3 md:max-w-max">
+    <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
       <div className="relative rounded">
         <div className="overflow-hidden mb-3">
           <Link passHref href={`/post/${id}`}>
