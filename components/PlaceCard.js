@@ -1,8 +1,10 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+// import parser from "html-react-parser";
 
-function PlaceCard({ id, title, image, desc, username, timestamp }) {
+function PlaceCard({ id, title, image, desc, username, timestamp, summary }) {
+  // console.log(desc);
   // LINK IS LINKING TO THE POST ID
   return (
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
@@ -30,7 +32,7 @@ function PlaceCard({ id, title, image, desc, username, timestamp }) {
             </h2>
           </Link>
           <p className="hidden sm:block leading-tight capitalize font-light text-md">
-            {desc.substring(0, 43)}...{" "}
+            {summary.substring(0, 43)}...
             <Link passHref href={`/post/${id}`}>
               <span className="cursor-pointer text-blue-400 text-sm hover:underline">
                 read more

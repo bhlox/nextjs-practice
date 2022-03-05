@@ -10,9 +10,16 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.7.2",
+    "@tiptap/extension-heading": "^2.0.0-beta.26",
+    "@tiptap/extension-image": "^2.0.0-beta.27",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.48",
+    "@tiptap/html": "^2.0.0-beta.173",
+    "@tiptap/react": "^2.0.0-beta.108",
+    "@tiptap/starter-kit": "^2.0.0-beta.183",
     "firebase": "^9.6.7",
     "firebase-admin": "^10.0.2",
     "framer-motion": "^6.2.8",
+    "html-react-parser": "^1.4.8",
     "next": "12.1.0",
     "next-firebase-auth": "^1.0.0-canary.7",
     "nookies": "^2.5.2",
@@ -23,6 +30,7 @@
     "react-redux": "^7.2.6"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.2",
     "autoprefixer": "^10.4.2",
     "eslint": "8.9.0",
     "eslint-config-next": "12.1.0",

@@ -21,6 +21,7 @@ function Navbar() {
     signOut(auth);
     dispatch(userActions.noUser());
     dispatch(navActions.toggle());
+    dispatch(navActions.close());
     router.push("/");
     console.log("ok signed out");
   };

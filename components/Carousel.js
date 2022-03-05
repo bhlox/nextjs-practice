@@ -45,13 +45,13 @@ function CarouselSlider({ posts }) {
 
     setMaxCount(() => {
       if (windowWidth < 641) {
-        return 8;
+        return 11;
       }
       if (windowWidth < 1025) {
-        return 4;
+        return 5;
       }
       if (windowWidth > 1024) {
-        return 2;
+        return 3;
       }
     });
 
@@ -80,7 +80,7 @@ function CarouselSlider({ posts }) {
               key={Math.random() * 232}
               className="relative shrink-0 w-full sm:w-1/2 lg:w-1/3 overflow-hidden"
             >
-              <Link passHref href={`post/${post.id}`}>
+              <Link passHref href={`/post/${post.id}`}>
                 {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -93,14 +93,14 @@ function CarouselSlider({ posts }) {
               </Link>
               <div className="md:absolute md:bottom-0 md:bg-gradient-to-t md:from-slate-900 md:pl-2 md:pt-10 w-full ">
                 <h2 className="uppercase font-semibold">category</h2>
-                <Link passHref href={`post/${post.id}`}>
+                {/* <Link passHref href={`post/${post.id}`}>
                   <h2 className="font-bold cursor-pointer hover:underline">
                     {post.title}
                   </h2>
-                </Link>
+                </Link> */}
 
                 <div className="flex space-x-6 text-gray-300 opacity-90 font-extralight">
-                  <Link passHref href={`user/${post.username}`}>
+                  <Link passHref href={`/user/${post.username}`}>
                     <p className="hover:underline cursor-pointer font-medium">
                       {post.username}
                     </p>

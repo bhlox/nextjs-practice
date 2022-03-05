@@ -4,12 +4,14 @@ import PlaceCard from "../components/PlaceCard";
 
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
-import Image from "next/image";
+
+// import Image from "next/image";
 import Link from "next/link";
 import CarouselSlider from "../components/Carousel";
 
 export default function Home({ posts }) {
-  console.log(posts);
+  // console.log(posts);
+
   return (
     <>
       <Head>
@@ -59,7 +61,7 @@ export default function Home({ posts }) {
               </h2>
             </Link>
             <p className="hidden sm:block leading-tight capitalize font-light text-3xl">
-              {posts[0].desc.substring(0, 43)}...{" "}
+              {posts[0].summary.substring(0, 43)}...
               <Link passHref href={`/post/${posts[0].id}`}>
                 <span
                   className="cursor-pointer text-blue-400 text-2xl hover:underline"

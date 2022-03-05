@@ -17,7 +17,7 @@ function Profile(props) {
       const docRef = doc(db, "posts", id);
 
       const docData = await getDoc(docRef);
-      console.log({ ...docData.data() });
+      // console.log({ ...docData.data() });
       setPosts((prev) => [...prev, { ...docData.data(), id: docData.id }]);
     });
   }, []);

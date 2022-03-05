@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import nookies from "nookies";
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -12,6 +12,14 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadString,
+} from "firebase/storage";
+
 import { db } from "../../firebase.config";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -19,6 +27,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 import { textActions } from "../../components/store/text-slice";
+import Tiptap from "../../components/Tiptap";
+import { imageActions } from "../../components/store/image-slice";
 
 const limit = 300;
 
@@ -26,42 +36,66 @@ function AddPlace() {
   const titleInput = useRef();
   const imageInput = useRef();
   const categoryInput = useRef();
-  const descInput = useRef();
+  // const descInput = useRef();
+  const summaryInput = useRef();
 
   const auth = getAuth();
   const router = useRouter();
   const dispatch = useDispatch();
-  const count = useSelector((state) => state.text.textLength);
 
   const colRef = collection(db, "posts");
 
+  const storage = getStorage();
+  const storageRef = ref(storage);
+
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
+  const previewImg = useSelector((state) => state.image.previewImg);
+  const postDesc = useSelector((state) => state.text.postDesc);
 
   const handleCount = (e) => {
-    dispatch(textActions.count(e.target.value.length));
-    titleInput.current.style.height =
-      Math.min(titleInput.current.scrollHeight, limit) + "px";
+    if (e.target.id === "title") {
+      dispatch(textActions.titleCount(e.target.value.length));
+      titleInput.current.style.height =
+        Math.min(titleInput.current.scrollHeight, limit) + "px";
+    }
+
+    if (e.target.id === "summary") {
+      dispatch(textActions.summaryCount(e.target.value.length));
+      summaryInput.current.style.height =
+        Math.min(summaryInput.current.scrollHeight, limit) + "px";
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const userRef = doc(db, "users", auth.currentUser.uid);
+    const uploadImgRef = ref(storage, `images/${previewImg.name}`);
     dispatch(userActions.verify());
+
     try {
+      const uploadTask = await uploadString(
+        uploadImgRef,
+        previewImg.data_url,
+        "data_url"
+      );
+      const data = getDownloadURL(uploadTask.ref);
+      const downloadUrl = await data;
+      // console.log(downloadUrl);
       const post = await addDoc(colRef, {
         title: titleInput.current.value,
-        image: imageInput.current.value,
+        image: downloadUrl,
         category: categoryInput.current.value,
-        desc: descInput.current.value,
+        desc: postDesc,
+        summary: summaryInput.current.value,
         username: auth.currentUser.displayName,
         useruid: auth.currentUser.uid,
         timestamp: serverTimestamp(),
       });
-
       await updateDoc(userRef, { posts: arrayUnion(post.id) });
-
       dispatch(userActions.verifyComplete());
+      dispatch(textActions.reset());
+      dispatch(imageActions.reset());
       console.log("document added");
       router.push("/");
     } catch (error) {
@@ -74,11 +108,8 @@ function AddPlace() {
   return (
     <div className="flex flex-col items-center justify-center">
       <h2 className="text-4xl">Share your thoughts </h2>
-      <form
-        className="space-y-8 mt-12 p-12 border-4 border-purple-600 rounded-xl"
-        onSubmit={handleSubmit}
-      >
-        <div className="relative">
+      <div className="space-y-8 mt-12 p-4 border-4 border-purple-600 rounded-xl">
+        {/* <div className="relative">
           <textarea
             id="title"
             rows="1"
@@ -90,11 +121,11 @@ function AddPlace() {
           />
           <FaPencilAlt className="input-icon" />
           <span className="absolute top-2 -right-5">{count}/ 100</span>
-        </div>
+        </div> */}
         {/* <div>
           <input type="text" id="image" ref={imageInput} />
         </div> */}
-        <div>
+        {/* <div>
           <select
             name="category"
             id="category"
@@ -109,19 +140,20 @@ function AddPlace() {
             <option value="travel">travel</option>
             <option value="love">love</option>
           </select>
-        </div>
+        </div> */}
         <div>
-          <textarea
-            name="description"
-            id="description"
-            rows="5"
-            ref={descInput}
+          <Tiptap
+            titleInput={titleInput}
+            summaryInput={summaryInput}
+            handleCount={handleCount}
+            categoryInput={categoryInput}
+            imageInput={imageInput}
           />
         </div>
         <button disabled={checkingStatus} onClick={handleSubmit}>
           {checkingStatus ? "sending" : "submit"}
         </button>
-      </form>
+      </div>
     </div>
   );
 }
@@ -144,3 +176,5 @@ export async function getServerSideProps(context) {
 // REFERENCE : https://firebase.google.com/docs/firestore/manage-data/add-data#web-version-9_11
 
 // AUTOGROW HEIGHT TEXTAREA REF: https://stackoverflow.com/questions/46777446/textarea-auto-height-increase
+
+// get downloadUrl after uploadString in firebase v9: https://stackoverflow.com/questions/69622592/how-to-get-downloadurl-after-uploadstring-in-firebase-v9
