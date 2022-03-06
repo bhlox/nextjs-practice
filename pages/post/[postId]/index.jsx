@@ -102,12 +102,14 @@ function PostId({ data, recentPosts }) {
         <div className="space-y-10">
           {/* POST TITLE */}
           <div className="space-y-7">
-            <h2 className="font-extrabold text-6xl max-w-3xl">{title}</h2>
+            <h2 className="font-extrabold text-4xl md:text-6xl max-w-3xl">
+              {title}
+            </h2>
             <div className="max-w-[53rem]">
               {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  className="rounded-xl h-[30rem] w-full object-cover"
+                  className="rounded-xl h-[30rem] md:h-[35rem] w-full object-cover"
                   src={image}
                   alt={title}
                 />
@@ -117,7 +119,7 @@ function PostId({ data, recentPosts }) {
           {/* END POST TITLE */}
 
           {/* POST DESC */}
-          <div className="prose prose-invert prose-base sm:prose-lg md:prose-2xl bg-red-400">
+          <div className="prose prose-invert prose-xl md:prose-2xl bg-red-400 p-4">
             {parser(desc)}
           </div>
           {/* END POST DESC */}

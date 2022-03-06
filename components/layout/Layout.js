@@ -2,8 +2,8 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import { navActions } from "../store/nav-slice";
-import Footer from "./Footer";
-import Navbar from "./Navbar";
+import Footer from "./Footer.jsx";
+import Navbar from "./Navbar.jsx";
 
 function Layout({ children }) {
   return (

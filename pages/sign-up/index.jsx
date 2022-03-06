@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { VscOctoface } from "react-icons/vsc";
 import { GiDialPadlock } from "react-icons/gi";
 import { GoEye, GoPerson } from "react-icons/go";
@@ -24,6 +24,8 @@ function SignUp() {
   const showPassword = useSelector((state) => state.user.showPassword);
   const [formData, setFormData] = useState({});
   const router = useRouter();
+
+  const passwordInputRef = useRef();
 
   const auth = getAuth();
   const dispatch = useDispatch();
@@ -70,6 +72,7 @@ function SignUp() {
 
   const handleShow = () => {
     dispatch(userActions.show());
+    passwordInputRef.current.focus();
   };
 
   return (
@@ -113,6 +116,7 @@ function SignUp() {
           <input
             className="styled-input"
             type={showPassword ? "text" : "password"}
+            ref={passwordInputRef}
             id="password"
             onChange={handleData}
             placeholder="enter password"

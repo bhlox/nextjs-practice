@@ -1,6 +1,6 @@
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 import { GiDialPadlock } from "react-icons/gi";
@@ -15,6 +15,8 @@ function SignIn() {
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = getAuth();
+
+  const passwordInputRef = useRef();
 
   const showPassword = useSelector((state) => state.user.showPassword);
 
@@ -46,6 +48,7 @@ function SignIn() {
 
   const handleShow = () => {
     dispatch(userActions.show());
+    passwordInputRef.current.focus();
   };
 
   return (
@@ -69,6 +72,7 @@ function SignIn() {
           <input
             className="styled-input"
             type={showPassword ? "text" : "password"}
+            ref={passwordInputRef}
             id="password"
             placeholder="enter password"
             onChange={handleData}

@@ -90,6 +90,7 @@ function AddPlace() {
         summary: summaryInput.current.value,
         username: auth.currentUser.displayName,
         useruid: auth.currentUser.uid,
+        type: "post",
       };
 
       const response = await fetch("/api/add-place", {

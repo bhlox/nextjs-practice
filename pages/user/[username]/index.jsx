@@ -9,25 +9,29 @@ import {
   where,
 } from "firebase/firestore";
 import { db } from "../../../firebase.config";
+import { getAuth } from "firebase/auth";
 
 function OtherUserProfile({ data }) {
+  // console.log(data);
+  // DATA IS THE OTHERS USERS DATA
   const { id, name, postsId } = data;
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    postsId.forEach(async (id) => {
+    const allPosts = [];
+    postsId.forEach(async (id, i) => {
       const docRef = doc(db, "posts", id);
 
       const docData = await getDoc(docRef);
-      // console.log({ ...docData.data() });
 
-      setPosts((prev) => {
-        const sorted = [...prev, { ...docData.data(), id: docData.id }].sort(
-          (a, b) => b.timestamp - a.timestamp
-        );
+      allPosts.push({ ...docData.data(), id: docData.id });
 
-        return sorted;
-      });
+      if (i >= postsId.length - 1) {
+        setPosts(() => {
+          const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
+          return sorted;
+        });
+      }
     });
   }, []);
 
@@ -36,7 +40,7 @@ function OtherUserProfile({ data }) {
       This is the profile of {name} with a id of : {id}
       <h2>their posts below</h2>
       {posts.map((post) => (
-        <div key={post.id}>
+        <div key={Math.random() * 23232}>
           <img src={post.image} alt="" />
         </div>
       ))}

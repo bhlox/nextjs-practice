@@ -1,13 +1,13 @@
 import Head from "next/head";
 
-import PlaceCard from "../components/PlaceCard";
+import PlaceCard from "../components/PlaceCard.jsx";
 
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
 
 // import Image from "next/image";
 import Link from "next/link";
-import CarouselSlider from "../components/Carousel";
+import CarouselSlider from "../components/Carousel.jsx";
 import { useEffect } from "react";
 
 export default function Home({ posts }) {
@@ -42,7 +42,7 @@ export default function Home({ posts }) {
               <img
                 src={posts[0].image}
                 alt={posts[0].title}
-                className=" h-96 w-full object-cover rounded-2xl cursor-pointer hover:scale-110 transition-all"
+                className=" h-[28rem] w-full object-cover rounded-2xl cursor-pointer hover:scale-110 transition-all"
               />
             }
           </Link>
