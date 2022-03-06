@@ -295,11 +295,16 @@ const Tiptap = ({
           >
             <option value="business">business</option>
             <option value="lifestyle">lifestyle</option>
-            <option value="mental">mental health</option>
+            <option value="health">health/fitness</option>
             <option value="freelance">freelance</option>
             <option value="casual">casual</option>
             <option value="travel">travel</option>
             <option value="love">love</option>
+            <option value="fashion">fashion</option>
+            <option value="photography">photography</option>
+            <option value="personal">personal</option>
+            <option value="DIY">DIY</option>
+            <option value="news">news</option>
           </select>
         </div>
         <div className="relative">

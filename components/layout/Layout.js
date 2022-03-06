@@ -11,7 +11,7 @@ function Layout({ children }) {
       <div className="pancake">
         <Navbar />
         <BackDrop />
-        <section className="max-w-7xl mx-auto my-8 space-y-16 px-4">
+        <section className="max-w-7xl mx-auto my-8 space-y-16 py-8 px-4">
           {children}
         </section>
         <Footer />

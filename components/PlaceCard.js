@@ -39,7 +39,7 @@ function PlaceCard({ id, title, image, desc, username, timestamp, summary }) {
               </span>
             </Link>
           </p>
-          <div className="text-gray-300 opacity-90 font-extralight">
+          <div className="post-details">
             <h4 className="">
               Posted by:
               <Link passHref href={`/user/${username}`}>

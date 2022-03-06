@@ -44,6 +44,18 @@
     text-lg rounded p-1 capitalize;
   }
 
+  .post-details {
+    @apply text-gray-300 opacity-90 font-extralight;
+  }
+
+  .post-user {
+    @apply font-light text-xl text-blue-400 hover:underline hover:text-blue-500 cursor-pointer;
+  }
+
+  .share-icon {
+    @apply hover:scale-125 transition-all text-4xl cursor-pointer;
+  }
+
   input,
   textarea {
     @apply text-black;

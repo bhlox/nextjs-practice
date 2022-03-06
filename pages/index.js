@@ -8,6 +8,7 @@ import { db } from "../firebase.config";
 // import Image from "next/image";
 import Link from "next/link";
 import CarouselSlider from "../components/Carousel";
+import { useEffect } from "react";
 
 export default function Home({ posts }) {
   // console.log(posts);
