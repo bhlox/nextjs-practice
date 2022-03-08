@@ -29,7 +29,10 @@ function GoogleAuth({ sign }) {
           email: user.email,
           timestamp: serverTimestamp(),
           posts: [],
-          userName: user.displayName,
+          username: user.displayName,
+          profilePic: user.photoURL,
+          coverPic:
+            "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg",
         });
       }
       router.push("/");

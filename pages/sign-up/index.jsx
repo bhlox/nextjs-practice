@@ -51,6 +51,10 @@ function SignUp() {
       const formDataCopy = { ...user };
       delete formDataCopy.password;
       formDataCopy.posts = [];
+      formDataCopy.profilePic =
+        "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png";
+      formDataCopy.coverPic =
+        "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg";
       formDataCopy.timestamp = serverTimestamp();
 
       console.log(formDataCopy);
