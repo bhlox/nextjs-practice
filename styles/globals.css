@@ -60,6 +60,10 @@
   textarea {
     @apply text-black;
   }
+
+  /* input[type="file"]::file-selector-button {
+    @apply rounded-3xl absolute;
+  } */
 }
 
 input[type="password"]::-ms-reveal,

@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  getAuth,
+  onAuthStateChanged,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+} from "firebase/auth";
 import { db } from "../../firebase.config";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuthContext } from "../../components/context/auth-context";
 import nookies from "nookies";
 import { firebaseAdmin } from "../../firebaseAdmin";
@@ -15,28 +20,48 @@ import {
   uploadString,
 } from "firebase/storage";
 
+import { FaCamera } from "react-icons/fa";
+import { RiMailSendLine } from "react-icons/ri";
+import { uiActions } from "../../components/store/ui-slice";
+import { textActions } from "../../components/store/text-slice";
+import ProfileCard from "../../components/ProfileCard";
+
 function Profile({ userData }) {
   console.log(userData);
+
+  const [currentUserData, setCurrentUser] = useState(userData);
 
   const {
     posts: postsId,
     username,
+    name,
     email,
     uid,
     profilePic,
     coverPic,
-  } = userData;
+    aboutMe,
+  } = currentUserData;
+
+  const [previewProf, setPreviewProf] = useState(profilePic);
+  const [previewCover, setPreviewCover] = useState(coverPic);
+  const [currentAbout, setCurrentAbout] = useState(aboutMe);
+  const [currentUsername, setCurrentUsername] = useState(username);
 
   const auth = getAuth();
-  console.log(auth.currentUser);
 
   const userRef = doc(db, "users", uid);
 
   const [userPosts, setPosts] = useState([]);
-  const [previewProf, setPreviewProf] = useState(profilePic);
-  const [previewCover, setPreviewCover] = useState(coverPic);
 
   const storage = getStorage();
+
+  const dispatch = useDispatch();
+  const showEdit = useSelector((state) => state.ui.showEdit);
+  const textLength = useSelector((state) => state.text.textLength);
+  const isUpdating = useSelector((state) => state.ui.isUpdating);
+  const isEditingUserName = useSelector((state) => state.ui.isEditingUserName);
+  const aboutInputRef = useRef();
+  const usernameInputRef = useRef();
 
   const handleProfPic = (e) => {
     const file = e.target.files[0];
@@ -100,6 +125,92 @@ function Profile({ userData }) {
     }
   };
 
+  const handleCount = (e) => {
+    dispatch(textActions.textCount(e.target.value.length));
+    aboutInputRef.current.style.height =
+      Math.min(aboutInputRef.current.scrollHeight, 500) + "px";
+    setCurrentAbout(e.target.value);
+  };
+
+  const handleUsernameCount = (e) => {
+    dispatch(textActions.textCount(e.target.value.length));
+    setCurrentUsername(e.target.value);
+  };
+
+  const handleAboutMe = async () => {
+    try {
+      await updateDoc(userRef, { aboutMe: aboutInputRef.current.value });
+      setCurrentAbout(aboutInputRef.current.value);
+      dispatch(uiActions.edited());
+      dispatch(textActions.reset());
+      // dispatch(uiActions.updating());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancel = (action) => {
+    dispatch(uiActions.edited());
+    dispatch(textActions.reset());
+    if (action === "about") setCurrentAbout(aboutMe);
+    if (action === "username") {
+      dispatch(uiActions.editedUserName());
+      setCurrentUsername(username);
+    }
+  };
+
+  const handleEdit = () => {
+    dispatch(uiActions.editing());
+  };
+
+  const handleUserName = () => {
+    dispatch(uiActions.editingUserName());
+  };
+
+  const handleSaveUserName = async () => {
+    const userProvidedPassword = prompt("pls enter password");
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      userProvidedPassword
+    );
+
+    try {
+      const result = await reauthenticateWithCredential(
+        auth.currentUser,
+        credential
+      );
+
+      await updateDoc(userRef, { username: usernameInputRef.current.value });
+      postsId.forEach(async (id, i) => {
+        const colRef = doc(db, "posts", id);
+        await updateDoc(colRef, { username: usernameInputRef.current.value });
+        console.log("posts username updated");
+      });
+      dispatch(textActions.reset());
+      dispatch(uiActions.editedUserName());
+    } catch (error) {
+      console.log(error);
+      alert("wrong password. pls retry your credentials");
+    }
+  };
+
+  // const fetchUpdate = async () => {
+  //   console.log("fetching update");
+  //   // dispatch(uiActions.updating());
+  //   try {
+  //     const userData = await getDoc(userRef);
+  //     const updatedData = { ...userData.data() };
+  //     setCurrentUser(updatedData);
+  //     dispatch(uiActions.updated());
+  //   } catch (error) {}
+  // };
+
+  // useEffect(() => {
+  //   if (!isUpdating) return;
+
+  //   fetchUpdate();
+  // }, [isUpdating]);
+
   useEffect(() => {
     const allPosts = [];
     postsId.forEach(async (id, i) => {
@@ -119,37 +230,30 @@ function Profile({ userData }) {
 
   return (
     <>
-      <div>Profile:hello {username}</div>
-      <h2>your email is: {email}</h2>
+      {/* PROFILE CARD */}
+      <ProfileCard
+        handleProfPic={handleProfPic}
+        previewCover={previewCover}
+        previewProf={previewProf}
+        username={username}
+        name={name}
+        handleCancel={handleCancel}
+        showEdit={showEdit}
+        currentAbout={currentAbout}
+        aboutInputRef={aboutInputRef}
+        handleCount={handleCount}
+        textLength={textLength}
+        handleAboutMe={handleAboutMe}
+        handleEdit={handleEdit}
+        handleUserName={handleUserName}
+        isEditingUserName={isEditingUserName}
+        handleSaveUserName={handleSaveUserName}
+        usernameInputRef={usernameInputRef}
+        currentUsername={currentUsername}
+        setCurrentUsername={setCurrentUsername}
+        handleUsernameCount={handleUsernameCount}
+      />
 
-      <div>
-        <h2>this is profile pic</h2>
-        <input
-          type="file"
-          name="profPic"
-          id="profPic"
-          accept=".jpg, .jpeg, .png"
-          onChange={handleProfPic}
-        />
-        <img
-          className="h-48 w-48 rounded-full object-cover object-center"
-          src={previewProf}
-          alt=""
-        />
-        <h2>this is cover pic</h2>
-        <input
-          type="file"
-          name="coverPic"
-          id="coverPic"
-          accept=".jpg, .jpeg, .png"
-          onChange={handleProfPic}
-        />
-        <img
-          className=" w-[640px] h-[360px] md:w-[820px] md:h-[312px] object-cover object-center rounded-t-xl"
-          src={previewCover}
-          alt=""
-        />
-      </div>
       {userPosts.map((post) => (
         <div key={Math.random()}>
           <h2>{post.title}</h2>
@@ -173,7 +277,7 @@ export async function getServerSideProps(context) {
     const userRef = doc(db, "users", uid);
     const userData = await getDoc(userRef);
 
-    const name = userData.data().userName;
+    const name = userData.data().username;
 
     // DO FETCHING HERE
 
@@ -208,3 +312,5 @@ export async function getServerSideProps(context) {
 }
 
 // REFERENCE TO HOW I SOLVE SERVER AUTH https://colinhacks.com/essays/nextjs-firebase-authentication
+
+// RE-AUTHENTICATION FIREBASE V9: https://stackoverflow.com/questions/37811684/how-to-create-credential-object-needed-by-firebase-web-user-reauthenticatewith

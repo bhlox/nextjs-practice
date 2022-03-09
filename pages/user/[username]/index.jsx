@@ -14,6 +14,7 @@ import { getAuth } from "firebase/auth";
 function OtherUserProfile({ data }) {
   // console.log(data);
   // DATA IS THE OTHERS USERS DATA
+  console.log(data);
   const { id, name, postsId } = data;
   const [posts, setPosts] = useState([]);
 
@@ -53,14 +54,14 @@ export default OtherUserProfile;
 export async function getServerSideProps(context) {
   const username = context.params.username;
   const colRef = collection(db, "users");
-  const q = query(colRef, where("userName", "==", username));
+  const q = query(colRef, where("username", "==", username));
 
   try {
     const querySnapshot = await getDocs(q);
     const data = {};
     querySnapshot.forEach((doc) => {
       data.id = doc.id;
-      data.name = doc.data().userName;
+      data.name = doc.data().username;
       data.postsId = doc.data().posts;
     });
 
