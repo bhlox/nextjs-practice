@@ -20,14 +20,13 @@ import {
   uploadString,
 } from "firebase/storage";
 
-import { FaCamera } from "react-icons/fa";
-import { RiMailSendLine } from "react-icons/ri";
 import { uiActions } from "../../components/store/ui-slice";
 import { textActions } from "../../components/store/text-slice";
 import ProfileCard from "../../components/ProfileCard";
+import ProfilePosts from "../../components/ProfilePosts";
 
 function Profile({ userData }) {
-  console.log(userData);
+  // console.log(userData);
 
   const [currentUserData, setCurrentUser] = useState(userData);
 
@@ -40,12 +39,25 @@ function Profile({ userData }) {
     profilePic,
     coverPic,
     aboutMe,
+    socials,
+    timestamp,
   } = currentUserData;
+
+  console.log(postsId);
 
   const [previewProf, setPreviewProf] = useState(profilePic);
   const [previewCover, setPreviewCover] = useState(coverPic);
   const [currentAbout, setCurrentAbout] = useState(aboutMe);
+  const [currentName, setCurrentName] = useState(name);
   const [currentUsername, setCurrentUsername] = useState(username);
+  const [editingName, setEditingName] = useState(false);
+  const [addSocials, setAddSocials] = useState(false);
+  const [previewSocials, setPreviewSocials] = useState({
+    facebook: socials?.facebook ?? "",
+    twitter: socials?.twitter ?? "",
+    instagram: socials?.instagram ?? "",
+  });
+  const [didDelete, setDidDelete] = useState(true);
 
   const auth = getAuth();
 
@@ -56,12 +68,18 @@ function Profile({ userData }) {
   const storage = getStorage();
 
   const dispatch = useDispatch();
+
   const showEdit = useSelector((state) => state.ui.showEdit);
   const textLength = useSelector((state) => state.text.textLength);
-  const isUpdating = useSelector((state) => state.ui.isUpdating);
+  // const isUpdating = useSelector((state) => state.ui.isUpdating);
   const isEditingUserName = useSelector((state) => state.ui.isEditingUserName);
+
   const aboutInputRef = useRef();
   const usernameInputRef = useRef();
+  const passwordInputRef = useRef();
+  const facebookInputRef = useRef();
+  const twitterInputRef = useRef();
+  const instagramInputRef = useRef();
 
   const handleProfPic = (e) => {
     const file = e.target.files[0];
@@ -98,6 +116,7 @@ function Profile({ userData }) {
         reader.readAsDataURL(file);
       }
     }
+
     if (e.target.id === "coverPic") {
       if (file.size > 10227138) {
         alert("file is too big, pls upload 10mb or less only");
@@ -157,6 +176,14 @@ function Profile({ userData }) {
       dispatch(uiActions.editedUserName());
       setCurrentUsername(username);
     }
+    if (action === "socials") {
+      setAddSocials(false);
+      setPreviewSocials({ ...socials });
+    }
+    if (action === "name") {
+      setEditingName(false);
+      setCurrentName(name);
+    }
   };
 
   const handleEdit = () => {
@@ -168,7 +195,7 @@ function Profile({ userData }) {
   };
 
   const handleSaveUserName = async () => {
-    const userProvidedPassword = prompt("pls enter password");
+    const userProvidedPassword = passwordInputRef.current.value;
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
       userProvidedPassword
@@ -190,53 +217,76 @@ function Profile({ userData }) {
       dispatch(uiActions.editedUserName());
     } catch (error) {
       console.log(error);
-      alert("wrong password. pls retry your credentials");
+      alert(error);
     }
   };
 
-  // const fetchUpdate = async () => {
-  //   console.log("fetching update");
-  //   // dispatch(uiActions.updating());
-  //   try {
-  //     const userData = await getDoc(userRef);
-  //     const updatedData = { ...userData.data() };
-  //     setCurrentUser(updatedData);
-  //     dispatch(uiActions.updated());
-  //   } catch (error) {}
-  // };
+  const handleChangeSocials = (e) => {
+    setPreviewSocials((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
-  // useEffect(() => {
-  //   if (!isUpdating) return;
+  const handleSaveSocials = async () => {
+    try {
+      await updateDoc(userRef, {
+        socials: {
+          facebook: facebookInputRef.current.value,
+          twitter: twitterInputRef.current.value,
+          instagram: instagramInputRef.current.value,
+        },
+      });
+      setPreviewSocials((prev) => ({
+        facebook: facebookInputRef.current.value,
+        twitter: twitterInputRef.current.value,
+        instagram: instagramInputRef.current.value,
+      }));
+      setAddSocials(false);
+      console.log("socials updated");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  //   fetchUpdate();
-  // }, [isUpdating]);
+  const handleSaveName = async () => {
+    try {
+      await updateDoc(userRef, { name: currentName });
+      setEditingName(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const allPosts = [];
-    postsId.forEach(async (id, i) => {
-      const docRef = doc(db, "posts", id);
+    if (didDelete) {
+      const allPosts = [];
+      postsId.forEach(async (id, i) => {
+        const docRef = doc(db, "posts", id);
 
-      const docData = await getDoc(docRef);
-      allPosts.push({ ...docData.data(), id: docData.id });
+        const docData = await getDoc(docRef);
+        allPosts.push({ ...docData.data(), id: docData.id });
 
-      if (i === postsId.length - 1) {
-        setPosts(() => {
-          const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
-          return sorted;
-        });
-      }
-    });
-  }, []);
+        if (i === postsId.length - 1) {
+          setPosts(() => {
+            const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
+            return sorted;
+          });
+        }
+      });
+      setDidDelete(false);
+      console.log("fetching posts");
+    }
+  }, [didDelete]);
 
   return (
     <>
       {/* PROFILE CARD */}
       <ProfileCard
+        handleChangeSocials={handleChangeSocials}
+        self={true}
         handleProfPic={handleProfPic}
         previewCover={previewCover}
         previewProf={previewProf}
         username={username}
-        name={name}
+        currentName={currentName}
         handleCancel={handleCancel}
         showEdit={showEdit}
         currentAbout={currentAbout}
@@ -252,14 +302,29 @@ function Profile({ userData }) {
         currentUsername={currentUsername}
         setCurrentUsername={setCurrentUsername}
         handleUsernameCount={handleUsernameCount}
+        passwordInputRef={passwordInputRef}
+        addSocials={addSocials}
+        setAddSocials={setAddSocials}
+        facebookInputRef={facebookInputRef}
+        twitterInputRef={twitterInputRef}
+        instagramInputRef={instagramInputRef}
+        handleSaveSocials={handleSaveSocials}
+        previewSocials={previewSocials}
+        timestamp={timestamp}
+        email={email}
+        setEditingName={setEditingName}
+        editingName={editingName}
+        setCurrentName={setCurrentName}
+        handleSaveName={handleSaveName}
       />
 
-      {userPosts.map((post) => (
-        <div key={Math.random()}>
-          <h2>{post.title}</h2>
-          <img src={post.image} alt="" />
-        </div>
-      ))}
+      <ProfilePosts
+        self={true}
+        currentUsername={currentUsername}
+        userPosts={userPosts}
+        postsId={postsId}
+        setDidDelete={setDidDelete}
+      />
     </>
   );
 }

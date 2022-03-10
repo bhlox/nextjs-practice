@@ -1,14 +1,26 @@
 import { RiMailSendLine } from "react-icons/ri";
-import { FaCamera, FaEdit } from "react-icons/fa";
+import {
+  FaCamera,
+  FaEdit,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+} from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import { uiActions } from "./store/ui-slice";
+import Link from "next/link";
 
 export default function ProfileCard({
+  handleSaveName,
+  setCurrentName,
+  setEditingName,
+  editingName,
+  handleChangeSocials,
   handleProfPic,
   previewCover,
   previewProf,
-  username,
-  name,
+  handleSaveSocials,
+  currentName,
   handleCancel,
   showEdit,
   currentAbout,
@@ -24,26 +36,42 @@ export default function ProfileCard({
   setCurrentUsername,
   currentUsername,
   handleUsernameCount,
+  passwordInputRef,
+  self,
+  addSocials,
+  setAddSocials,
+  facebookInputRef,
+  twitterInputRef,
+  instagramInputRef,
+  previewSocials,
+  timestamp,
+  email,
 }) {
   const dispatch = useDispatch();
+
+  const handleEmail = () => {
+    window.open(`mailto:${email}?subject=Title&body=Enter%message%20here`);
+  };
 
   return (
     <div className="border-2 border-blue-500 relative">
       <div className="relative border-b-2">
-        <label
-          htmlFor="coverPic"
-          className="absolute top-5 right-5 overflow-hidden text-3xl "
-        >
-          <FaCamera />
-          <input
-            type="file"
-            name="coverPic"
-            id="coverPic"
-            accept=".jpg, .jpeg, .png"
-            className="absolute top-0 right-0 cursor-pointer"
-            onChange={handleProfPic}
-          />
-        </label>
+        {self && (
+          <label
+            htmlFor="coverPic"
+            className="absolute top-5 right-5 overflow-hidden text-3xl hover:opacity-80"
+          >
+            <FaCamera />
+            <input
+              type="file"
+              name="coverPic"
+              id="coverPic"
+              accept=".jpg, .jpeg, .png"
+              className="absolute top-0 right-0 cursor-pointer"
+              onChange={handleProfPic}
+            />
+          </label>
+        )}
         <img
           className=" h-[360px] w-full md:h-[312px] object-cover object-center rounded-t-xl"
           src={previewCover}
@@ -58,20 +86,22 @@ export default function ProfileCard({
               alt=""
             />
 
-            <label
-              className="absolute bottom-2 right-2 md:bottom-4 md:right-4 overflow-hidden text-3xl"
-              htmlFor="profPic"
-            >
-              <FaCamera />
-              <input
-                type="file"
-                name="profPic"
-                id="profPic"
-                accept=".jpg, .jpeg, .png"
-                className="absolute bottom-0 right-0 cursor-pointer"
-                onChange={handleProfPic}
-              />
-            </label>
+            {self && (
+              <label
+                className="absolute bottom-2 right-2 md:bottom-4 md:right-4 overflow-hidden text-3xl hover:opacity-80"
+                htmlFor="profPic"
+              >
+                <FaCamera />
+                <input
+                  type="file"
+                  name="profPic"
+                  id="profPic"
+                  accept=".jpg, .jpeg, .png"
+                  className="absolute bottom-0 right-0 cursor-pointer"
+                  onChange={handleProfPic}
+                />
+              </label>
+            )}
           </div>
         </div>
         {/* END PROF PIC */}
@@ -80,21 +110,24 @@ export default function ProfileCard({
       {/* INFO */}
       <div className="flex flex-row justify-between md:items-start mt-20 md:mt-4 p-4 pt-0">
         <div className="md:ml-52 space-y-4">
-          <div>
+          <div className="">
             {!isEditingUserName && (
               <div className="flex space-x-2">
                 <h2 className="text-4xl font-bold">{currentUsername}</h2>
-                <span
-                  onClick={handleUserName}
-                  className="text-lg cursor-pointer"
-                >
-                  <FaEdit />
-                </span>
+                {self && (
+                  <span
+                    onClick={handleUserName}
+                    className="text-lg cursor-pointer hover:opacity-80"
+                  >
+                    <FaEdit />
+                  </span>
+                )}
               </div>
             )}
             {isEditingUserName && (
               <div>
-                <div>
+                <div className="space-x-4">
+                  <span>enter new username</span>
                   <span
                     onClick={() => handleCancel("username")}
                     className="cursor-pointer text-2xl"
@@ -104,19 +137,73 @@ export default function ProfileCard({
                 </div>
                 <div>
                   <input
+                    className="styled-input p-0 text-lg md:text-xl"
                     ref={usernameInputRef}
                     type="text"
                     onChange={handleUsernameCount}
                     value={currentUsername}
                     maxLength={15}
+                    required
+                    min={3}
                   />
                   <span> {textLength} / 15</span>
+                </div>
+                <div>
+                  <h2>confirm password</h2>
+                  <input
+                    className="styled-input p-0 text-lg md:text-xl"
+                    ref={passwordInputRef}
+                    type="password"
+                    name="password"
+                    id="password"
+                  />
                 </div>
                 <button onClick={handleSaveUserName}>save</button>
               </div>
             )}
-            <h2 className="text-xl">{name}</h2>
-            <h2 className="text-xl">joined since: </h2>
+            <div>
+              <div className="">
+                {!editingName && (
+                  <div className="flex space-x-2">
+                    {!currentName && (
+                      <h2 className="text-xl font-light">add full name</h2>
+                    )}
+                    <h2 className="text-xl font-light">{currentName}</h2>
+                    {self && (
+                      <span
+                        className="cursor-pointer text-lg hover:opacity-80"
+                        onClick={() => setEditingName(true)}
+                      >
+                        <FaEdit />
+                      </span>
+                    )}
+                  </div>
+                )}
+                {editingName && (
+                  <>
+                    <div className="flex space-x-4">
+                      <p className="text-xl">Enter full name</p>
+                      <span
+                        className="cursor-pointer text-xl font-bold"
+                        onClick={() => handleCancel("name")}
+                      >
+                        X
+                      </span>
+                    </div>
+                    <input
+                      value={currentName}
+                      className="styled-input p-0 text-lg block"
+                      type="text"
+                      onChange={(e) => setCurrentName(e.target.value)}
+                    />
+                    <button onClick={handleSaveName}>save</button>
+                  </>
+                )}
+              </div>
+              <h2 className="text-base font-light">
+                Joined since: <span>{timestamp}</span>
+              </h2>
+            </div>
           </div>
           {/* SET UP ABOUT ME IF NO ABOUT ME YET */}
           <div>
@@ -124,9 +211,14 @@ export default function ProfileCard({
               {!showEdit && (
                 <div className="flex space-x-2">
                   <h2 className="text-2xl ">About me</h2>
-                  <span className="cursor-pointer text-lg" onClick={handleEdit}>
-                    <FaEdit />
-                  </span>
+                  {self && (
+                    <span
+                      className="cursor-pointer text-lg hover:opacity-80"
+                      onClick={handleEdit}
+                    >
+                      <FaEdit />
+                    </span>
+                  )}
                 </div>
               )}
               {showEdit && (
@@ -164,14 +256,143 @@ export default function ProfileCard({
             )}
           </div>
         </div>
-        <div className="inline-block -mt-[4.5rem] md:block md:mt-0">
-          <button>edit/add contacts</button>
-          {/* <h3 className="text-xl md:text-2xl">Contact me</h3> */}
+        <div className="inline-block -mt-[4.5rem] md:block md:mt-0 space-y-4">
           {/* MAP HERE LIST OF CONTACT ON USER PROFILE */}
           <div>
-            <button>
-              <RiMailSendLine />
-            </button>
+            <h3 className="text-xl md:text-2xl">Contact me</h3>
+            <div className="flex items-center space-x-2">
+              <a
+                className="cursor-pointer hover:opacity-80 text-2xl"
+                target="_blank"
+                onClick={handleEmail}
+              >
+                <RiMailSendLine />
+              </a>
+              <h4 className="text-lg">{email}</h4>
+            </div>
+          </div>
+
+          <div>
+            <div className="flex space-x-2">
+              <h2 className="text-2xl ">Socials</h2>
+
+              {self && !addSocials && (
+                <span
+                  className="cursor-pointer text-lg hover:opacity-80"
+                  onClick={() => setAddSocials((prev) => !prev)}
+                >
+                  <FaEdit />
+                </span>
+              )}
+
+              {addSocials && (
+                <span
+                  className="cursor-pointer text-lg font-bold"
+                  onClick={() => handleCancel("socials")}
+                >
+                  X
+                </span>
+              )}
+            </div>
+            <div className="flex space-x-4 mt-1">
+              {!addSocials && previewSocials.facebook && (
+                <Link
+                  passHref
+                  href={`https://www.facebook.com/${previewSocials.facebook}`}
+                >
+                  <a
+                    target="_blank"
+                    className="cursor-pointer text-3xl text-blue-500 hover:opacity-80"
+                  >
+                    <FaFacebook />
+                  </a>
+                </Link>
+              )}
+
+              {!addSocials && previewSocials.twitter && (
+                <Link
+                  passHref
+                  href={`https://www.twitter.com/${previewSocials.twitter}`}
+                >
+                  <a
+                    target="_blank"
+                    className="cursor-pointer text-3xl hover:opacity-80 text-blue-400"
+                  >
+                    <FaTwitter />
+                  </a>
+                </Link>
+              )}
+
+              {!addSocials && previewSocials.instagram && (
+                <Link
+                  passHref
+                  href={`https://www.instagram.com/${previewSocials.instagram}`}
+                >
+                  <a
+                    target="_blank"
+                    className="cursor-pointer text-3xl hover:opacity-80 text-orange-300"
+                  >
+                    <FaInstagram />
+                  </a>
+                </Link>
+              )}
+            </div>
+            {addSocials && (
+              <>
+                <div className="space-y-4">
+                  <div className="flex">
+                    <span className="text-xl">
+                      <FaFacebook />
+                    </span>
+                    <input
+                      className="styled-input p-0 text-2xl"
+                      ref={facebookInputRef}
+                      name="facebook"
+                      type="text"
+                      placeholder="enter username"
+                      value={previewSocials.facebook}
+                      onChange={handleChangeSocials}
+                    />
+                  </div>
+                  <div className="flex">
+                    <span className="text-xl">
+                      <FaTwitter />
+                    </span>
+                    <input
+                      className="styled-input p-0 text-2xl"
+                      name="twitter"
+                      ref={twitterInputRef}
+                      type="text"
+                      placeholder="enter username"
+                      value={previewSocials.twitter}
+                      onChange={handleChangeSocials}
+                    />
+                  </div>
+                  <div className="flex">
+                    <span className="text-xl">
+                      <FaInstagram />
+                    </span>
+                    <input
+                      className="styled-input p-0 text-2xl"
+                      name="instagram"
+                      ref={instagramInputRef}
+                      type="text"
+                      placeholder="enter username"
+                      value={previewSocials.instagram}
+                      onChange={handleChangeSocials}
+                    />
+                  </div>
+                </div>
+                <div className="flex md:justify-end mt-2">
+                  <button
+                    onClick={handleSaveSocials}
+                    className="px-2 border-2 rounded-2xl hover:opacity-80"
+                  >
+                    Save
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

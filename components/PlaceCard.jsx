@@ -1,14 +1,52 @@
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-// import parser from "html-react-parser";
+import { HiDotsHorizontal } from "react-icons/hi";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase.config";
+import { getAuth } from "firebase/auth";
 
-function PlaceCard({ id, title, image, desc, username, timestamp, summary }) {
-  // console.log(desc);
-  // LINK IS LINKING TO THE POST ID
+function PlaceCard({
+  id,
+  title,
+  image,
+  desc,
+  username,
+  timestamp,
+  summary,
+  self,
+  postsId,
+  setDidDelete,
+}) {
+  const [showPostOptions, setShowPostOptions] = useState(false);
+  const [showDeleteMsg, setShowDeleteMsg] = useState(false);
+
+  const auth = getAuth();
+  const userRef = doc(db, "users", auth.currentUser.uid);
+  const docRef = doc(db, "posts", id);
+
+  const handleDeletePost = async () => {
+    try {
+      // const userData = await getDoc(userRef);
+      // const posts = userData.data().posts;
+      const newPosts = postsId.filter((post) => post !== id);
+      // console.log(postsId);
+
+      await deleteDoc(docRef);
+      await updateDoc(userRef, { posts: newPosts });
+      setDidDelete(true);
+      console.log("post deleted");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
-      <div className="relative rounded">
+      <div
+        onMouseLeave={() => setShowPostOptions(false)}
+        className="relative rounded css-console"
+      >
         <div className="overflow-hidden mb-3">
           <Link passHref href={`/post/${id}`}>
             {
@@ -48,11 +86,56 @@ function PlaceCard({ id, title, image, desc, username, timestamp, summary }) {
                 </span>
               </Link>
             </h4>
-            <span>Published {timestamp}</span>
+            <div className="flex justify-between relative">
+              <span>Published {timestamp}</span>
+              {self && (
+                <button
+                  onClick={() => setShowPostOptions((prev) => !prev)}
+                  className="text-4xl absolute bottom-2 right-2 hover:opacity-80"
+                >
+                  <HiDotsHorizontal />
+                </button>
+              )}
+              {showPostOptions && (
+                <div className="flex flex-col space-y-2 absolute bottom-9 right-9 p-2 bg-slate-500 divide-y-2 rounded-xl z-10">
+                  <button>Edit post</button>
+                  <button onClick={() => setShowDeleteMsg((prev) => !prev)}>
+                    Delete post
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
         {/* END OF INFO */}
       </div>
+      {showDeleteMsg && (
+        <div
+          className="fixed top-0 left-0 h-screen w-screen z-10 flex justify-center items-center bg-slate-800 bg-opacity-40 backdrop-blur-[1px]"
+          onClick={() => setShowDeleteMsg(false)}
+        >
+          <div className="bg-slate-700 p-6 flex flex-col justify-center items-center space-y-8 max-w-sm rounded-xl">
+            <h2>
+              You are about this delete this post &lsquo;
+              <span className="font-bold text-lg">{title}</span>&lsquo;{" "}
+            </h2>
+            <div className="flex space-x-4 items-center">
+              <button
+                onClick={handleDeletePost}
+                className="rounded-xl p-2 border-2 hover:opacity-80"
+              >
+                Confirm
+              </button>
+              <button
+                className="rounded-xl p-2 border-2 hover:opacity-80"
+                onClick={() => setShowDeleteMsg(false)}
+              >
+                Hold on for now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

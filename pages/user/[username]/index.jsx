@@ -10,41 +10,52 @@ import {
 } from "firebase/firestore";
 import { db } from "../../../firebase.config";
 import { getAuth } from "firebase/auth";
+import ProfileCard from "../../../components/ProfileCard";
 
-function OtherUserProfile({ data }) {
-  // console.log(data);
+function OtherUserProfile({ user }) {
   // DATA IS THE OTHERS USERS DATA
-  console.log(data);
-  const { id, name, postsId } = data;
+  console.log(user);
+
+  // const { id, name, postsId } = data;
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    const allPosts = [];
-    postsId.forEach(async (id, i) => {
-      const docRef = doc(db, "posts", id);
+  // useEffect(() => {
+  //   const allPosts = [];
+  //   postsId.forEach(async (id, i) => {
+  //     const docRef = doc(db, "posts", id);
 
-      const docData = await getDoc(docRef);
+  //     const docData = await getDoc(docRef);
 
-      allPosts.push({ ...docData.data(), id: docData.id });
+  //     allPosts.push({ ...docData.data(), id: docData.id });
 
-      if (i >= postsId.length - 1) {
-        setPosts(() => {
-          const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
-          return sorted;
-        });
-      }
-    });
-  }, []);
+  //     if (i >= postsId.length - 1) {
+  //       setPosts(() => {
+  //         const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
+  //         return sorted;
+  //       });
+  //     }
+  //   });
+  // }, []);
 
   return (
     <div>
-      This is the profile of {name} with a id of : {id}
-      <h2>their posts below</h2>
-      {posts.map((post) => (
+      {/* This is the profile of {name} with a id of : {id} */}
+      <ProfileCard
+        self={false}
+        previewSocials={user.data.socials}
+        currentUsername={user.data.username}
+        currentName={user.data.name}
+        currentAbout={user.data.aboutMe}
+        previewCover={user.data.coverPic}
+        previewProf={user.data.profilePic}
+        timestamp={user.data.timestamp}
+        email={user.data.email}
+      />
+      {/* {posts.map((post) => (
         <div key={Math.random() * 23232}>
           <img src={post.image} alt="" />
         </div>
-      ))}
+      ))} */}
     </div>
   );
 }
@@ -58,22 +69,26 @@ export async function getServerSideProps(context) {
 
   try {
     const querySnapshot = await getDocs(q);
-    const data = {};
+
+    const user = {};
     querySnapshot.forEach((doc) => {
-      data.id = doc.id;
-      data.name = doc.data().username;
-      data.postsId = doc.data().posts;
+      user.id = doc.id;
+      user.data = {
+        ...doc.data(),
+        timestamp: doc.data().timestamp.toDate().toDateString(),
+      };
     });
 
     return {
       props: {
-        data,
+        user,
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       props: {
-        username: "q",
+        username: "wat",
       },
     };
   }

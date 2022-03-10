@@ -91,10 +91,10 @@ export default function Home({ posts }) {
 
       <div className="flex flex-wrap">
         {/* SINGLE CARD MAP HERE */}
-        {posts.map((item, i) => {
+        {/* {posts.map((item, i) => {
           if (!i) return;
           return <PlaceCard key={item.id} {...item} />;
-        })}
+        })} */}
         {/* END SINGLE CARD */}
       </div>
 
