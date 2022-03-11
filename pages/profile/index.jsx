@@ -31,7 +31,7 @@ function Profile({ userData }) {
   const [currentUserData, setCurrentUser] = useState(userData);
 
   const {
-    posts: postsId,
+    posts,
     username,
     name,
     email,
@@ -42,6 +42,8 @@ function Profile({ userData }) {
     socials,
     timestamp,
   } = currentUserData;
+
+  const [postsId, setPostsId] = useState(posts);
 
   console.log(postsId);
 
@@ -256,25 +258,33 @@ function Profile({ userData }) {
   };
 
   useEffect(() => {
-    if (didDelete) {
-      const allPosts = [];
-      postsId.forEach(async (id, i) => {
-        const docRef = doc(db, "posts", id);
+    // if (didDelete) {
+    const allPosts = [];
+    postsId.forEach(async (id, i) => {
+      const docRef = doc(db, "posts", id);
 
-        const docData = await getDoc(docRef);
-        allPosts.push({ ...docData.data(), id: docData.id });
+      const docData = await getDoc(docRef);
+      allPosts.push({ ...docData.data(), id: docData.id });
 
-        if (i === postsId.length - 1) {
-          setPosts(() => {
-            const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
-            return sorted;
-          });
-        }
-      });
-      setDidDelete(false);
-      console.log("fetching posts");
-    }
-  }, [didDelete]);
+      if (i === postsId.length - 1) {
+        setPosts((prev) => {
+          //   return [...prev, { ...docData.data(), id: docData.id }].sort(
+          //     (a, b) => b.timestamp - a.timestamp
+          //   );
+          const sorted = allPosts
+            .map((post) => ({
+              ...post,
+              timestamp: post.timestamp.toDate().toDateString(),
+            }))
+            .sort((a, b) => b.timestamp - a.timestamp);
+          return sorted;
+        });
+      }
+    });
+    // setDidDelete(false);
+    console.log("fetching posts");
+    // }
+  }, [postsId]);
 
   return (
     <>
@@ -324,6 +334,7 @@ function Profile({ userData }) {
         userPosts={userPosts}
         postsId={postsId}
         setDidDelete={setDidDelete}
+        setPostsId={setPostsId}
       />
     </>
   );

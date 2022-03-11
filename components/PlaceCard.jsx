@@ -17,15 +17,15 @@ function PlaceCard({
   self,
   postsId,
   setDidDelete,
+  setPostsId,
 }) {
   const [showPostOptions, setShowPostOptions] = useState(false);
   const [showDeleteMsg, setShowDeleteMsg] = useState(false);
 
-  const auth = getAuth();
-  const userRef = doc(db, "users", auth.currentUser.uid);
-  const docRef = doc(db, "posts", id);
-
   const handleDeletePost = async () => {
+    const auth = getAuth();
+    const userRef = doc(db, "users", auth.currentUser.uid);
+    const docRef = doc(db, "posts", id);
     try {
       // const userData = await getDoc(userRef);
       // const posts = userData.data().posts;
@@ -34,7 +34,8 @@ function PlaceCard({
 
       await deleteDoc(docRef);
       await updateDoc(userRef, { posts: newPosts });
-      setDidDelete(true);
+      setPostsId(newPosts);
+      // setDidDelete(true);
       console.log("post deleted");
     } catch (error) {
       console.log(error);
@@ -45,7 +46,7 @@ function PlaceCard({
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
       <div
         onMouseLeave={() => setShowPostOptions(false)}
-        className="relative rounded css-console"
+        className="relative rounded"
       >
         <div className="overflow-hidden mb-3">
           <Link passHref href={`/post/${id}`}>
@@ -54,7 +55,7 @@ function PlaceCard({
               <img
                 src={image}
                 alt={title}
-                className="w-full h-60 object-center object-cover cursor-pointer hover:scale-110 transition-all rounded-2xl"
+                className="w-full h-60 object-center object-cover cursor-pointer hover:scale-110 transition-all rounded-t-2xl"
               />
             }
           </Link>

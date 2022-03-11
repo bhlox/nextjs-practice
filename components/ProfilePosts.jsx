@@ -6,25 +6,28 @@ export default function ProfilePosts({
   userPosts,
   postsId,
   setDidDelete,
+  setPostsId,
 }) {
+  console.log(userPosts);
   const fixedPosts = userPosts.map((post) => ({
     ...post,
-    timestamp: post.timestamp.toDate().toDateString(),
+    timestamp: post.timestamp,
   }));
 
   return (
     <div>
       <h2 className="text-3xl font-semibold">
-        {self ? "Your" : currentUsername} Posts{" "}
+        {self ? "Your" : currentUsername} Posts
       </h2>
       <div className="flex flex-wrap">
         {fixedPosts.map((post) => (
           <PlaceCard
             key={post.id}
             {...post}
-            self={true}
+            self={self}
             setDidDelete={setDidDelete}
             postsId={postsId}
+            setPostsId={setPostsId}
           />
         ))}
       </div>

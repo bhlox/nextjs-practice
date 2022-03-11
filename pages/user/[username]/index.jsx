@@ -11,34 +11,46 @@ import {
 import { db } from "../../../firebase.config";
 import { getAuth } from "firebase/auth";
 import ProfileCard from "../../../components/ProfileCard";
+import PlaceCard from "../../../components/PlaceCard";
+import ProfilePosts from "../../../components/ProfilePosts";
 
 function OtherUserProfile({ user }) {
   // DATA IS THE OTHERS USERS DATA
   console.log(user);
 
+  // const fixedPosts = user.data.posts.map((post) => ({
+  //   ...post,
+  //   timestamp: post.timestamp.toDate().toDateString(),
+  // }));
+
   // const { id, name, postsId } = data;
-  const [posts, setPosts] = useState([]);
+  const [postsId, setPostsId] = useState(user.data.posts);
+  const [userPosts, setUserPosts] = useState([]);
 
-  // useEffect(() => {
-  //   const allPosts = [];
-  //   postsId.forEach(async (id, i) => {
-  //     const docRef = doc(db, "posts", id);
+  useEffect(() => {
+    const allPosts = [];
+    postsId.forEach(async (id, i) => {
+      const docRef = doc(db, "posts", id);
+      const docData = await getDoc(docRef);
+      allPosts.push({ ...docData.data(), id: docData.id });
+      if (i >= postsId.length - 1) {
+        setUserPosts(() => {
+          const sorted = allPosts
+            .map((post) => ({
+              ...post,
+              timestamp: post.timestamp.toDate().toDateString(),
+            }))
+            .sort((a, b) => b.timestamp - a.timestamp);
+          return sorted;
+        });
+      }
+    });
+  }, []);
 
-  //     const docData = await getDoc(docRef);
-
-  //     allPosts.push({ ...docData.data(), id: docData.id });
-
-  //     if (i >= postsId.length - 1) {
-  //       setPosts(() => {
-  //         const sorted = allPosts.sort((a, b) => b.timestamp - a.timestamp);
-  //         return sorted;
-  //       });
-  //     }
-  //   });
-  // }, []);
+  console.log(userPosts);
 
   return (
-    <div>
+    <>
       {/* This is the profile of {name} with a id of : {id} */}
       <ProfileCard
         self={false}
@@ -51,12 +63,17 @@ function OtherUserProfile({ user }) {
         timestamp={user.data.timestamp}
         email={user.data.email}
       />
-      {/* {posts.map((post) => (
-        <div key={Math.random() * 23232}>
-          <img src={post.image} alt="" />
-        </div>
-      ))} */}
-    </div>
+      <ProfilePosts
+        self={false}
+        currentUsername={user.data.username}
+        userPosts={userPosts}
+      />
+      {/* <div className="flex flex-wrap">
+        {userPosts.map((post) => (
+          <PlaceCard key={post.id} self={false} {...post} />
+        ))}
+      </div> */}
+    </>
   );
 }
 
