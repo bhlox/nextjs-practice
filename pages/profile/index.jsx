@@ -4,6 +4,7 @@ import {
   onAuthStateChanged,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  updateProfile,
 } from "firebase/auth";
 import { db } from "../../firebase.config";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,7 +46,7 @@ function Profile({ userData }) {
 
   const [postsId, setPostsId] = useState(posts);
 
-  console.log(postsId);
+  // console.log(postsId);
 
   const [previewProf, setPreviewProf] = useState(profilePic);
   const [previewCover, setPreviewCover] = useState(coverPic);
@@ -114,6 +115,14 @@ function Profile({ userData }) {
           // console.log(reader.result);
 
           await updateDoc(userRef, { profilePic: downloadUrl });
+          updateProfile(auth.currentUser, { photoURL: downloadUrl });
+          console.log("profile pic updated");
+
+          postsId.forEach(async (id, i) => {
+            const colRef = doc(db, "posts", id);
+            await updateDoc(colRef, { author: { userpic: downloadUrl } });
+          });
+          console.log("posts userpic updated");
         };
         reader.readAsDataURL(file);
       }
@@ -140,6 +149,7 @@ function Profile({ userData }) {
           setPreviewCover(reader.result);
 
           await updateDoc(userRef, { coverPic: downloadUrl });
+          console.log("cover pic updated");
         };
         reader.readAsDataURL(file);
       }
@@ -210,9 +220,16 @@ function Profile({ userData }) {
       );
 
       await updateDoc(userRef, { username: usernameInputRef.current.value });
+      updateProfile(auth.currentUser, {
+        displayName: usernameInputRef.current.value,
+      });
+      console.log("username updated");
+
       postsId.forEach(async (id, i) => {
         const colRef = doc(db, "posts", id);
-        await updateDoc(colRef, { username: usernameInputRef.current.value });
+        await updateDoc(colRef, {
+          "author.username": usernameInputRef.current.value,
+        });
         console.log("posts username updated");
       });
       dispatch(textActions.reset());
@@ -272,11 +289,12 @@ function Profile({ userData }) {
           //     (a, b) => b.timestamp - a.timestamp
           //   );
           const sorted = allPosts
+
+            .sort((a, b) => b.timestamp - a.timestamp)
             .map((post) => ({
               ...post,
               timestamp: post.timestamp.toDate().toDateString(),
-            }))
-            .sort((a, b) => b.timestamp - a.timestamp);
+            }));
           return sorted;
         });
       }

@@ -315,9 +315,9 @@ const Tiptap = ({
             placeholder="Enter title..."
             className="resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-b-2 focus:outline-none p-2 text-gray-200"
             onChange={handleCount}
-            maxLength="100"
+            maxLength="60"
           />
-          <span>{titleCount} / 100</span>
+          <span>{titleCount} / 60</span>
         </div>
 
         <div className="space-y-2">

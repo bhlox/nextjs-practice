@@ -18,6 +18,7 @@ function PlaceCard({
   postsId,
   setDidDelete,
   setPostsId,
+  category,
 }) {
   const [showPostOptions, setShowPostOptions] = useState(false);
   const [showDeleteMsg, setShowDeleteMsg] = useState(false);
@@ -46,7 +47,7 @@ function PlaceCard({
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
       <div
         onMouseLeave={() => setShowPostOptions(false)}
-        className="relative rounded"
+        className="relative rounded bg-slate-700"
       >
         <div className="overflow-hidden mb-3">
           <Link passHref href={`/post/${id}`}>
@@ -61,9 +62,9 @@ function PlaceCard({
           </Link>
         </div>
         {/* INFO */}
-        <div className="space-y-1">
-          <span className="px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500">
-            Latest
+        <div className="space-y-1 p-4">
+          <span className="px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize">
+            {category}
           </span>
           <Link passHref href={`/post/${id}`}>
             <h2 className="font-bold text-2xl capitalize cursor-pointer hover:underline">
@@ -79,20 +80,12 @@ function PlaceCard({
             </Link>
           </p>
           <div className="post-details">
-            <h4 className="">
-              Posted by:
-              <Link passHref href={`/user/${username}`}>
-                <span className="hover:underline cursor-pointer px-2">
-                  {username}
-                </span>
-              </Link>
-            </h4>
             <div className="flex justify-between relative">
               <span>Published {timestamp}</span>
               {self && (
                 <button
                   onClick={() => setShowPostOptions((prev) => !prev)}
-                  className="text-4xl absolute bottom-2 right-2 hover:opacity-80"
+                  className="text-4xl absolute bottom-0 right-0 hover:opacity-80"
                 >
                   <HiDotsHorizontal />
                 </button>
@@ -118,7 +111,7 @@ function PlaceCard({
           <div className="bg-slate-700 p-6 flex flex-col justify-center items-center space-y-8 max-w-sm rounded-xl">
             <h2>
               You are about this delete this post &lsquo;
-              <span className="font-bold text-lg">{title}</span>&lsquo;{" "}
+              <span className="font-bold text-lg">{title}</span>&lsquo;
             </h2>
             <div className="flex space-x-4 items-center">
               <button

@@ -9,6 +9,8 @@ function CarouselSlider({ posts }) {
   const carouselWidth = useRef();
   const imageRef = useRef(0);
 
+  // console.log(posts);
+
   const [animateValue, setAnimateValue] = useState(0);
   const [show, setShow] = useState(1);
   const [windowWidth, setWindowWidth] = useState(Number);
@@ -55,6 +57,16 @@ function CarouselSlider({ posts }) {
       }
     });
 
+    setAnimateValue(() => {
+      if (windowWidth < 641 || windowWidth < 1025 || windowWidth > 1024)
+        return 0;
+    });
+
+    setCount(() => {
+      if (windowWidth < 641 || windowWidth < 1025 || windowWidth > 1024)
+        return 0;
+    });
+
     return () => {
       window.removeEventListener("resize", reportWindowSize);
     };
@@ -73,8 +85,8 @@ function CarouselSlider({ posts }) {
   return (
     <>
       <div ref={carouselWidth} className="relative p-4 overflow-hidden">
-        <h2 className="text-3xl my-4 font-semibold">Read more blogs</h2>
-        <motion.div animate={{ x: animateValue }} className="flex gap-x-2">
+        <h2 className="text-4xl my-4 font-bold">Discover</h2>
+        <motion.div animate={{ x: animateValue }} className="flex gap-x-4">
           {posts.map((post, i) => (
             <div
               key={Math.random() * 232}
@@ -87,22 +99,24 @@ function CarouselSlider({ posts }) {
                     ref={imageRef}
                     src={post.image}
                     alt=""
-                    className="w-full object-cover h-40 md:h-80 rounded-2xl cursor-pointer hover:scale-110 transition-all"
+                    className="w-full object-cover h-[18rem] md:h-80 rounded-2xl cursor-pointer hover:scale-110 transition-all"
                   />
                 }
               </Link>
-              <div className="md:absolute md:bottom-0 md:bg-gradient-to-t md:from-slate-900 md:pl-2 md:pt-10 w-full ">
-                <h2 className="uppercase font-semibold">category</h2>
-                {/* <Link passHref href={`post/${post.id}`}>
+              <div className="absolute bottom-0 bg-gradient-to-t from-slate-900 pl-2 pt-10 w-full space-y-1">
+                <span className="uppercase font-semibold px-2 py-1 bg-slate-500 rounded">
+                  {post.category}
+                </span>
+                <Link passHref href={`/post/${post.id}`}>
                   <h2 className="font-bold cursor-pointer hover:underline">
                     {post.title}
                   </h2>
-                </Link> */}
+                </Link>
 
                 <div className="flex space-x-6 text-gray-300 opacity-90 font-extralight">
-                  <Link passHref href={`/user/${post.username}`}>
+                  <Link passHref href={`/user/${post.author.username}`}>
                     <p className="hover:underline cursor-pointer font-medium">
-                      {post.username}
+                      {post.author.username}
                     </p>
                   </Link>
 

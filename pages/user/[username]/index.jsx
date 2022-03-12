@@ -36,11 +36,11 @@ function OtherUserProfile({ user }) {
       if (i >= postsId.length - 1) {
         setUserPosts(() => {
           const sorted = allPosts
+            .sort((a, b) => b.timestamp - a.timestamp)
             .map((post) => ({
               ...post,
               timestamp: post.timestamp.toDate().toDateString(),
-            }))
-            .sort((a, b) => b.timestamp - a.timestamp);
+            }));
           return sorted;
         });
       }

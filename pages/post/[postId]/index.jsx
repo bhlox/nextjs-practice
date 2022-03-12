@@ -35,7 +35,7 @@ import SidePosts from "../../../components/SidePosts";
 import PostInfo from "../../../components/PostInfo";
 
 function PostId({ data, recentPosts }) {
-  // console.log(data);
+  console.log(data);
   const { id, image, title, username, timestamp, summary, desc, category } =
     data;
 
@@ -72,7 +72,7 @@ function PostId({ data, recentPosts }) {
   };
 
   const getOthersPosts = async () => {
-    console.log("others async running");
+    // console.log("others async running");
     try {
       const posts = await getDocs(othersQuery);
       const postsData = [];
@@ -119,7 +119,7 @@ function PostId({ data, recentPosts }) {
           {/* END POST TITLE */}
 
           {/* POST DESC */}
-          <div className="prose prose-invert prose-xl md:prose-2xl bg-red-400 p-4">
+          <div className="prose prose-invert prose-xl md:prose-2xl bg-slate-700 p-4">
             {parser(desc)}
           </div>
           {/* END POST DESC */}
@@ -129,7 +129,11 @@ function PostId({ data, recentPosts }) {
         {/* SECOND COLUMN */}
 
         <div className="space-y-6 p-2 md:w-1/4  ">
-          <PostInfo username={username} timestamp={timestamp} />
+          <PostInfo
+            username={data.author.username}
+            timestamp={timestamp}
+            userpic={data.author.userpic}
+          />
 
           {/* RECENT POSTS */}
           <div>

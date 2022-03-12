@@ -8,12 +8,8 @@ export default function ProfilePosts({
   setDidDelete,
   setPostsId,
 }) {
-  console.log(userPosts);
-  const fixedPosts = userPosts.map((post) => ({
-    ...post,
-    timestamp: post.timestamp,
-  }));
-
+  // console.log(userPosts);
+  const fixedPosts = userPosts;
   return (
     <div>
       <h2 className="text-3xl font-semibold">

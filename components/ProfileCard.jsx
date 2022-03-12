@@ -6,9 +6,11 @@ import {
   FaTwitter,
   FaInstagram,
 } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { GoEye } from "react-icons/go";
+import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "./store/ui-slice";
 import Link from "next/link";
+import { userActions } from "./store/user-slice";
 
 export default function ProfileCard({
   handleSaveName,
@@ -49,8 +51,15 @@ export default function ProfileCard({
 }) {
   const dispatch = useDispatch();
 
+  const showPassword = useSelector((state) => state.user.showPassword);
+
   const handleEmail = () => {
     window.open(`mailto:${email}?subject=Title&body=Enter%message%20here`);
+  };
+
+  const handleShow = () => {
+    dispatch(userActions.show());
+    passwordInputRef.current.focus();
   };
 
   return (
@@ -125,7 +134,7 @@ export default function ProfileCard({
               </div>
             )}
             {isEditingUserName && (
-              <div>
+              <div className="space-y-3">
                 <div className="space-x-4">
                   <span>enter new username</span>
                   <span
@@ -148,14 +157,20 @@ export default function ProfileCard({
                   />
                   <span> {textLength} / 15</span>
                 </div>
-                <div>
-                  <h2>confirm password</h2>
+                <div className="relative">
                   <input
                     className="styled-input p-0 text-lg md:text-xl"
                     ref={passwordInputRef}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     id="password"
+                    placeholder="confirm password"
+                  />
+                  <GoEye
+                    onClick={handleShow}
+                    className={`absolute right-0 top-0 text-3xl ${
+                      showPassword ? "text-red-500" : "text-purple-600"
+                    }  cursor-pointer hover:text-purple-400`}
                   />
                 </div>
                 <button onClick={handleSaveUserName}>save</button>

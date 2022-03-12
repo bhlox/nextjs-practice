@@ -9,9 +9,17 @@ import { db } from "../firebase.config";
 import Link from "next/link";
 import CarouselSlider from "../components/Carousel.jsx";
 import { useEffect } from "react";
+import LatestPostsPart from "../components/LatestPostsPart.jsx";
+import RecentPostsPart from "../components/RecentPostsPart.jsx";
 
 export default function Home({ posts }) {
   // console.log(posts);
+
+  const latestPosts = posts.filter((post, i) => i <= 1);
+
+  const randomPosts = [];
+
+  const recentPosts = posts.filter((post, i) => i > 1);
 
   return (
     <>
@@ -34,7 +42,9 @@ export default function Home({ posts }) {
 
       {/* LATEST BLOG HERE */}
 
-      <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-1 sm:space-x-6">
+      <LatestPostsPart latestPosts={latestPosts} />
+
+      {/* <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-1 sm:space-x-6">
         <div className="sm:w-full overflow-hidden">
           <Link passHref href={`/post/${posts[0].id}`}>
             {
@@ -85,20 +95,22 @@ export default function Home({ posts }) {
             <span>Published {posts[0].timestamp}</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* END LATEST BLOG HERE */}
 
-      <div className="flex flex-wrap">
-        {/* SINGLE CARD MAP HERE */}
-        {posts.map((item, i) => {
+      <CarouselSlider posts={posts} />
+
+      <RecentPostsPart recentPosts={recentPosts} />
+
+      {/* <div className="flex flex-wrap"> */}
+      {/* SINGLE CARD MAP HERE */}
+      {/* {posts.map((item, i) => {
           if (!i) return;
           return <PlaceCard key={item.id} {...item} />;
-        })}
-        {/* END SINGLE CARD */}
-      </div>
-
-      <CarouselSlider posts={posts} />
+        })} */}
+      {/* END SINGLE CARD */}
+      {/* </div> */}
     </>
   );
 }

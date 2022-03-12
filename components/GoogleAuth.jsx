@@ -33,6 +33,11 @@ function GoogleAuth({ sign }) {
           profilePic: user.photoURL,
           coverPic:
             "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg",
+          socials: {
+            facebook: "",
+            insagram: "",
+            twitter: "",
+          },
         });
       }
       router.push("/");

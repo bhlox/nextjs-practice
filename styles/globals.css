@@ -28,7 +28,7 @@
   }
 
   .arrow-btns {
-    @apply text-3xl md:text-4xl text-white;
+    @apply text-3xl md:text-4xl text-white hover:opacity-80;
   }
 
   .font-btn {
@@ -69,6 +69,10 @@
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
   display: none;
+}
+
+input[type="file"] {
+  color: rgba(0, 0, 0, 0);
 }
 
 .rec.rec-arrow {

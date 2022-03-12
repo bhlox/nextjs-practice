@@ -88,9 +88,14 @@ function AddPlace() {
         category: categoryInput.current.value,
         desc: postDesc,
         summary: summaryInput.current.value,
-        username: auth.currentUser.displayName,
-        useruid: auth.currentUser.uid,
+        // username: auth.currentUser.displayName,
+        // useruid: auth.currentUser.uid,
         type: "post",
+        author: {
+          username: auth.currentUser.displayName,
+          useruid: auth.currentUser.uid,
+          userpic: auth.currentUser.photoURL,
+        },
       };
 
       const response = await fetch("/api/add-place", {
