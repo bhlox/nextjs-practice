@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 export default function RecentPostsPart({ recentPosts }) {
-  console.log(recentPosts);
   return (
     <div>
       <h2 className="text-4xl my-4 font-bold">Recent Posts</h2>

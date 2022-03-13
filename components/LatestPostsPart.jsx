@@ -15,12 +15,15 @@ export default function LatestPostsPart({ latestPosts }) {
             />
           </Link>
         </div>
-        <div className="absolute top-0 left-0 p-4 space-y-16">
+        <div className="absolute top-0 left-0 p-4 space-y-8 overflow-hidden">
           <Link passHref href={`/post/${latestPosts[0].id}`}>
             <h2 className="text-2xl md:text-3xl max-w-md font-bold cursor-pointer hover:underline hover:opacity-80">
               {latestPosts[0].title}
             </h2>
           </Link>
+          <p className="max-w-sm opacity-0 group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light -translate-y-24 group-hover:translate-y-0">
+            {latestPosts[0].summary}
+          </p>
         </div>
         <div className="absolute bottom-0 sm:bottom-20 left-1/2 sm:left-0 -translate-x-1/2 sm:translate-x-0 flex flex-col md:flex-row justify-center items-center sm:items-start space-y-2 md:space-y-0 md:space-x-3 py-2 px-4">
           <div>
@@ -58,12 +61,15 @@ export default function LatestPostsPart({ latestPosts }) {
             />
           </Link>
         </div>
-        <div className="absolute top-0 left-0 p-4">
+        <div className="absolute top-0 left-0 p-4 space-y-8">
           <Link passHref href={`/post/${latestPosts[1].id}`}>
             <h2 className="text-2xl md:text-3xl max-w-md font-bold hover:underline hover:opacity-80 cursor-pointer">
               {latestPosts[1].title}
             </h2>
           </Link>
+          <p className="max-w-sm opacity-0 group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light -translate-y-24 group-hover:translate-y-0">
+            {latestPosts[1].summary}
+          </p>
         </div>
         <div className="absolute bottom-0 sm:bottom-20 md:bottom-10 left-1/2 sm:left-0 -translate-x-1/2 sm:translate-x-0 flex flex-col sm:flex-col-reverse justify-center items-center sm:items-start space-y-2 sm:gap-2 py-2 px-4">
           <div>

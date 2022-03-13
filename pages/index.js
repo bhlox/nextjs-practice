@@ -8,18 +8,46 @@ import { db } from "../firebase.config";
 // import Image from "next/image";
 import Link from "next/link";
 import CarouselSlider from "../components/Carousel.jsx";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import LatestPostsPart from "../components/LatestPostsPart.jsx";
 import RecentPostsPart from "../components/RecentPostsPart.jsx";
 
 export default function Home({ posts }) {
   // console.log(posts);
+  const colRef = collection(db, "posts");
 
   const latestPosts = posts.filter((post, i) => i <= 1);
 
-  const randomPosts = [];
+  const [randomPosts, setRandomPosts] = useState([]);
 
   const recentPosts = posts.filter((post, i) => i > 1);
+
+  const fetchRandomPosts = async () => {
+    const posts = [];
+    try {
+      const snapshot = await getDocs(colRef);
+
+      snapshot.docs
+        .map((doc) => ({
+          ...doc.data(),
+          timestamp: doc.data().timestamp.toDate().toDateString(),
+        }))
+        .sort(() => Math.random() - 0.5)
+        .every((doc, i) => {
+          if (i > 11) return false;
+          posts.push({ ...doc, id: doc.id });
+          return true;
+        });
+      console.log(posts);
+      setRandomPosts(posts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchRandomPosts();
+  }, []);
 
   return (
     <>
@@ -99,18 +127,9 @@ export default function Home({ posts }) {
 
       {/* END LATEST BLOG HERE */}
 
-      <CarouselSlider posts={posts} />
+      <CarouselSlider posts={randomPosts} />
 
       <RecentPostsPart recentPosts={recentPosts} />
-
-      {/* <div className="flex flex-wrap"> */}
-      {/* SINGLE CARD MAP HERE */}
-      {/* {posts.map((item, i) => {
-          if (!i) return;
-          return <PlaceCard key={item.id} {...item} />;
-        })} */}
-      {/* END SINGLE CARD */}
-      {/* </div> */}
     </>
   );
 }
@@ -118,7 +137,7 @@ export default function Home({ posts }) {
 export async function getStaticProps(context) {
   const colRef = collection(db, "posts");
   try {
-    const q = query(colRef, orderBy("timestamp", "desc"), limit(12));
+    const q = query(colRef, orderBy("timestamp", "desc"), limit(14));
 
     const snapshot = await getDocs(q);
 

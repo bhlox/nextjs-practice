@@ -38,9 +38,10 @@ function GoogleAuth({ sign }) {
             insagram: "",
             twitter: "",
           },
+          setPassword: true,
         });
       }
-      router.push("/");
+      router.push(`/google-set-password/${user.uid}`);
     } catch (error) {
       console.log(error);
     }

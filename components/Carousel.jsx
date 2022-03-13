@@ -86,7 +86,7 @@ function CarouselSlider({ posts }) {
     <>
       <div ref={carouselWidth} className="relative p-4 overflow-hidden">
         <h2 className="text-4xl my-4 font-bold">Discover</h2>
-        <motion.div animate={{ x: animateValue }} className="flex gap-x-4">
+        <motion.div animate={{ x: animateValue }} className="flex gap-x-2 ">
           {posts.map((post, i) => (
             <div
               key={Math.random() * 232}
@@ -126,22 +126,25 @@ function CarouselSlider({ posts }) {
             </div>
           ))}
         </motion.div>
-        <div className="absolute w-full top-[50%] left-0 flex justify-between">
-          <button
-            className={`arrow-btns ${!count && "  opacity-0"}`}
-            disabled={!count}
-            onClick={() => handleSlide("left")}
-          >
-            <FaArrowLeft />
-          </button>
-          <button
-            className={`arrow-btns ${maxCount === count && "  opacity-0"}`}
-            disabled={maxCount === count}
-            onClick={() => handleSlide("right")}
-          >
-            <FaArrowRight />
-          </button>
-        </div>
+
+        <button
+          className={`arrow-btns ${
+            !count && "hidden"
+          } absolute top-[24%] sm:top-[20%] left-1`}
+          disabled={!count}
+          onClick={() => handleSlide("left")}
+        >
+          <FaArrowLeft />
+        </button>
+        <button
+          className={`arrow-btns ${
+            maxCount === count && "hidden"
+          } absolute top-[24%] sm:top-[20%] right-1`}
+          disabled={maxCount === count}
+          onClick={() => handleSlide("right")}
+        >
+          <FaArrowRight />
+        </button>
       </div>
     </>
   );

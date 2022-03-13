@@ -9,6 +9,7 @@ import { MdEmail } from "react-icons/md";
 import nookies from "nookies";
 import GoogleAuth from "../../components/GoogleAuth";
 import { useSelector } from "react-redux";
+import Link from "next/link";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
@@ -84,7 +85,13 @@ function SignIn() {
               showPassword ? "text-red-500" : "text-purple-600"
             }  cursor-pointer hover:text-purple-400`}
           />
+          <Link passHref href="/forget-password">
+            <h2 className="cursor-pointer text-xl hover:underline hover:text-blue-400 mt-2">
+              Forget password?
+            </h2>
+          </Link>
         </div>
+
         <GoogleAuth sign="in" />
         <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
           Sign-in

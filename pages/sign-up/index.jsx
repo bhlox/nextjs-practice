@@ -44,24 +44,42 @@ function SignUp() {
         formData.password
       );
       const user = userCredential.user;
-      updateProfile(auth.currentUser, {
-        displayName: formData.userName,
+      console.log(formData);
+      await updateProfile(auth.currentUser, {
+        displayName: formData.username,
+        photoURL:
+          "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
       });
 
-      const formDataCopy = { ...user };
-      delete formDataCopy.password;
-      formDataCopy.posts = [];
-      formDataCopy.profilePic =
-        "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png";
-      formDataCopy.coverPic =
-        "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg";
-      formDataCopy.socials = {
-        facebook: "",
-        twitter: "",
-        instagram: "",
+      const formDataCopy = {
+        username: formData.username,
+        name: formData.name,
+        email: formData.email,
+        posts: [],
+        profilePic:
+          "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
+        coverPic:
+          "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg",
+        socials: {
+          facebook: "",
+          twitter: "",
+          instagram: "",
+        },
+        aboutMe: "",
+        timestamp: serverTimestamp(),
       };
-      formDataCopy.aboutMe = "";
-      formDataCopy.timestamp = serverTimestamp();
+      // formDataCopy.posts = [];
+      // formDataCopy.profilePic =
+      //   "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png";
+      // formDataCopy.coverPic =
+      //   "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg";
+      // formDataCopy.socials = {
+      //   facebook: "",
+      //   twitter: "",
+      //   instagram: "",
+      // };
+      // formDataCopy.aboutMe = "";
+      // formDataCopy.timestamp = serverTimestamp();
 
       console.log(formDataCopy);
 
@@ -71,6 +89,7 @@ function SignUp() {
       router.push("/profile");
     } catch (error) {
       console.log(error);
+      alert(error);
     }
   };
 
@@ -106,7 +125,7 @@ function SignUp() {
           <input
             className="styled-input"
             type="text"
-            id="userName"
+            id="username"
             onChange={handleData}
             placeholder="enter username"
           />

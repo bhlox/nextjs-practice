@@ -13,7 +13,7 @@ export default function ProfilePosts({
   return (
     <div>
       <h2 className="text-3xl font-semibold">
-        {self ? "Your" : currentUsername} Posts
+        {self ? "Your" : currentUsername}&apos;s Posts
       </h2>
       <div className="flex flex-wrap">
         {fixedPosts.map((post) => (

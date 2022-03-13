@@ -63,7 +63,7 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="border-2 border-blue-500 relative">
+    <div className="relative bg-slate-700 rounded-xl">
       <div className="relative border-b-2">
         {self && (
           <label
