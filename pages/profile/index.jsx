@@ -25,6 +25,7 @@ import { uiActions } from "../../components/store/ui-slice";
 import { textActions } from "../../components/store/text-slice";
 import ProfileCard from "../../components/ProfileCard";
 import ProfilePosts from "../../components/ProfilePosts";
+import Head from "next/head";
 
 function Profile({ userData }) {
   // console.log(userData);
@@ -284,10 +285,7 @@ function Profile({ userData }) {
       allPosts.push({ ...docData.data(), id: docData.id });
 
       if (i === postsId.length - 1) {
-        setPosts((prev) => {
-          //   return [...prev, { ...docData.data(), id: docData.id }].sort(
-          //     (a, b) => b.timestamp - a.timestamp
-          //   );
+        setPosts(() => {
           const sorted = allPosts
 
             .sort((a, b) => b.timestamp - a.timestamp)
@@ -295,6 +293,7 @@ function Profile({ userData }) {
               ...post,
               timestamp: post.timestamp.toDate().toDateString(),
             }));
+          console.log(sorted);
           return sorted;
         });
       }
@@ -306,6 +305,11 @@ function Profile({ userData }) {
 
   return (
     <>
+      <Head>
+        <title>Profile</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
       {/* PROFILE CARD */}
       <ProfileCard
         handleChangeSocials={handleChangeSocials}

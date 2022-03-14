@@ -10,6 +10,8 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { FaCaretDown } from "react-icons/fa";
 import { navActions } from "../store/nav-slice";
 
+// import logo from "../../public/newreadit.png";
+
 function Navbar() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -35,9 +37,27 @@ function Navbar() {
   };
 
   return (
-    <nav className="bg-purple-500 font-mono px-4 py-2">
+    <nav className="bg-purple-500 px-4 py-2 font-sans">
       <div className="flex justify-between max-w-7xl mx-auto py-2">
-        <Link href="/">logo</Link>
+        <Link passHref href="/">
+          <div className="cursor-pointer flex items-center space-x-1">
+            <img
+              className="h-10 w-10 object-cover"
+              src="/newreadit.png"
+              alt=""
+            />
+            <h2
+              className={
+                router.pathname == "/"
+                  ? "text-black text-3xl font-medium"
+                  : "text-2xl font-light"
+              }
+            >
+              Readis
+            </h2>
+          </div>
+        </Link>
+
         <button
           onClick={handleToggle}
           className={`${

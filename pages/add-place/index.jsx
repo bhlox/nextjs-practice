@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import Head from "next/head";
 import nookies from "nookies";
 import { FaPencilAlt } from "react-icons/fa";
 
@@ -125,7 +126,7 @@ function AddPlace() {
       dispatch(textActions.reset());
       dispatch(imageActions.reset());
       console.log("document added");
-      router.push("/");
+      router.push(`/post/${data.id}`);
     } catch (error) {
       dispatch(userActions.verifyComplete());
 
@@ -134,23 +135,31 @@ function AddPlace() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <h2 className="text-4xl">Share your thoughts </h2>
-      <div className="space-y-8 mt-12 p-4 border-4 border-purple-600 rounded-xl">
-        <div>
-          <Tiptap
-            titleInput={titleInput}
-            summaryInput={summaryInput}
-            handleCount={handleCount}
-            categoryInput={categoryInput}
-            imageInput={imageInput}
-          />
+    <>
+      <Head>
+        <title>Share your thoughts</title>
+        <meta name="description" content="share your thoughts" />
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
+      <div className="flex flex-col items-center justify-center">
+        <h2 className="text-4xl">Share your thoughts </h2>
+        <div className="space-y-8 mt-12 p-4 border-4 border-purple-600 rounded-xl">
+          <div>
+            <Tiptap
+              titleInput={titleInput}
+              summaryInput={summaryInput}
+              handleCount={handleCount}
+              categoryInput={categoryInput}
+              imageInput={imageInput}
+            />
+          </div>
+          <button disabled={checkingStatus} onClick={handleSubmit}>
+            {checkingStatus ? "sending" : "submit"}
+          </button>
         </div>
-        <button disabled={checkingStatus} onClick={handleSubmit}>
-          {checkingStatus ? "sending" : "submit"}
-        </button>
       </div>
-    </div>
+    </>
   );
 }
 

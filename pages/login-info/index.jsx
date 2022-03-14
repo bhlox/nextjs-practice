@@ -7,6 +7,7 @@ import {
 import { doc } from "firebase/firestore";
 import React, { useRef } from "react";
 import nookies from "nookies";
+import Head from "next/head";
 
 import { GiDialPadlock } from "react-icons/gi";
 import { GoEye } from "react-icons/go";
@@ -63,73 +64,79 @@ function ChangeLoginInfo() {
     }
   };
   return (
-    <div className="flex flex-col items-center gap-8">
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl font-bold">Change current password</h2>
+    <>
+      <Head>
+        <title>Change current password</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+      <div className="flex flex-col items-center gap-8">
+        <div className="text-center space-y-2">
+          <h2 className="text-4xl font-bold">Change current password</h2>
+        </div>
+        <form
+          className="mt-8 flex flex-col space-y-16 items-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type={showPassword ? "text" : "password"}
+              ref={currentPasswordInputRef}
+              id="currentPassword"
+              placeholder="enter current password"
+              // onChange={handleData}
+            />
+            <GiDialPadlock className="input-icon" />
+            <GoEye
+              onClick={handleShow}
+              className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+                showPassword ? "text-red-500" : "text-purple-600"
+              }  cursor-pointer `}
+            />
+          </div>
+
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type={showPassword ? "text" : "password"}
+              ref={passwordInputRef}
+              id="password"
+              placeholder="enter new password"
+              // onChange={handleData}
+            />
+            <GiDialPadlock className="input-icon" />
+            <GoEye
+              onClick={handleShow}
+              className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+                showPassword ? "text-red-500" : "text-purple-600"
+              }  cursor-pointer `}
+            />
+          </div>
+
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type={showPassword ? "text" : "password"}
+              ref={passwordConfirmInputRef}
+              id="passwordConfirm"
+              placeholder="confirm password"
+              // onChange={handleData}
+            />
+            <GiDialPadlock className="input-icon" />
+            <GoEye
+              onClick={handleShow}
+              className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+                showPassword ? "text-red-500" : "text-purple-600"
+              }  cursor-pointer `}
+            />
+          </div>
+
+          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+            Save
+          </button>
+        </form>
       </div>
-      <form
-        className="mt-8 flex flex-col space-y-16 items-center"
-        onSubmit={handleSubmit}
-      >
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type={showPassword ? "text" : "password"}
-            ref={currentPasswordInputRef}
-            id="currentPassword"
-            placeholder="enter current password"
-            // onChange={handleData}
-          />
-          <GiDialPadlock className="input-icon" />
-          <GoEye
-            onClick={handleShow}
-            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
-              showPassword ? "text-red-500" : "text-purple-600"
-            }  cursor-pointer `}
-          />
-        </div>
-
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type={showPassword ? "text" : "password"}
-            ref={passwordInputRef}
-            id="password"
-            placeholder="enter new password"
-            // onChange={handleData}
-          />
-          <GiDialPadlock className="input-icon" />
-          <GoEye
-            onClick={handleShow}
-            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
-              showPassword ? "text-red-500" : "text-purple-600"
-            }  cursor-pointer `}
-          />
-        </div>
-
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type={showPassword ? "text" : "password"}
-            ref={passwordConfirmInputRef}
-            id="passwordConfirm"
-            placeholder="confirm password"
-            // onChange={handleData}
-          />
-          <GiDialPadlock className="input-icon" />
-          <GoEye
-            onClick={handleShow}
-            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
-              showPassword ? "text-red-500" : "text-purple-600"
-            }  cursor-pointer `}
-          />
-        </div>
-
-        <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-          Save
-        </button>
-      </form>
-    </div>
+    </>
   );
 }
 

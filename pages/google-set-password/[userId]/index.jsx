@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { getAuth, updatePassword } from "firebase/auth";
 import { userActions } from "../../../components/store/user-slice";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function GoogleSetPassword({ setPassword }) {
   const auth = getAuth();
@@ -57,6 +58,11 @@ export default function GoogleSetPassword({ setPassword }) {
 
   return (
     <>
+      <Head>
+        <title>Set Password</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
       {setPassword && (
         <div className="flex flex-col items-center gap-8">
           <div className="text-center space-y-2">

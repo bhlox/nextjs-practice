@@ -5,6 +5,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { getAuth } from "firebase/auth";
+import { useRouter } from "next/router";
 
 function PlaceCard({
   id,
@@ -42,6 +43,8 @@ function PlaceCard({
       console.log(error);
     }
   };
+
+  const router = useRouter();
 
   return (
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
@@ -92,7 +95,9 @@ function PlaceCard({
               )}
               {showPostOptions && (
                 <div className="flex flex-col space-y-2 absolute bottom-9 right-9 p-2 bg-slate-500 divide-y-2 rounded-xl z-10">
-                  <button>Edit post</button>
+                  <button onClick={() => router.push(`/add-place/${id}`)}>
+                    Edit post
+                  </button>
                   <button onClick={() => setShowDeleteMsg((prev) => !prev)}>
                     Delete post
                   </button>

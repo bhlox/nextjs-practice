@@ -11,6 +11,7 @@ import {
 } from "firebase/auth";
 import { serverTimestamp, doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebase.config";
+import Head from "next/head";
 
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -105,65 +106,72 @@ function SignUp() {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-4xl">Registration form</h2>
-      <form
-        className="mt-8 flex flex-col space-y-16 items-center"
-        onSubmit={handleSubmit}
-      >
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type="text"
-            id="name"
-            onChange={handleData}
-            placeholder="enter full name"
-          />
-          <GoPerson className="input-icon" />
-        </div>
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type="text"
-            id="username"
-            onChange={handleData}
-            placeholder="enter username"
-          />
-          <VscOctoface className="input-icon" />
-        </div>
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type="email"
-            id="email"
-            onChange={handleData}
-            placeholder="enter email"
-          />
-          <MdEmail className="input-icon" />
-        </div>
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type={showPassword ? "text" : "password"}
-            ref={passwordInputRef}
-            id="password"
-            onChange={handleData}
-            placeholder="enter password"
-          />
-          <GiDialPadlock className="input-icon" />
-          <GoEye
-            onClick={handleShow}
-            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
-              showPassword ? "text-red-500" : "text-purple-600"
-            }  cursor-pointer hover:text-purple-400`}
-          />
-        </div>
-        <GoogleAuth sign="up" />
-        <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-          register
-        </button>
-      </form>
-    </div>
+    <>
+      <Head>
+        <title>Sign up</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
+      <div className="flex flex-col items-center">
+        <h2 className="text-4xl">Registration form</h2>
+        <form
+          className="mt-8 flex flex-col space-y-16 items-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type="text"
+              id="name"
+              onChange={handleData}
+              placeholder="enter full name"
+            />
+            <GoPerson className="input-icon" />
+          </div>
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type="text"
+              id="username"
+              onChange={handleData}
+              placeholder="enter username"
+            />
+            <VscOctoface className="input-icon" />
+          </div>
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type="email"
+              id="email"
+              onChange={handleData}
+              placeholder="enter email"
+            />
+            <MdEmail className="input-icon" />
+          </div>
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type={showPassword ? "text" : "password"}
+              ref={passwordInputRef}
+              id="password"
+              onChange={handleData}
+              placeholder="enter password"
+            />
+            <GiDialPadlock className="input-icon" />
+            <GoEye
+              onClick={handleShow}
+              className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+                showPassword ? "text-red-500" : "text-purple-600"
+              }  cursor-pointer hover:text-purple-400`}
+            />
+          </div>
+          <GoogleAuth sign="up" />
+          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+            register
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 

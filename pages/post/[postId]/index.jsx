@@ -33,6 +33,7 @@ import Image from "@tiptap/extension-image";
 import { generateHTML } from "@tiptap/html";
 import SidePosts from "../../../components/SidePosts";
 import PostInfo from "../../../components/PostInfo";
+import Head from "next/head";
 
 function PostId({ data, recentPosts }) {
   console.log(data);
@@ -97,6 +98,12 @@ function PostId({ data, recentPosts }) {
 
   return (
     <>
+      <Head>
+        <title>{data.title}</title>
+        <meta name="description" content={data.summary} />
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:justify-between md:space-x-12">
         {/* FIRST COLUMN */}
         <div className="space-y-10">
@@ -133,6 +140,7 @@ function PostId({ data, recentPosts }) {
             username={data.author.username}
             timestamp={timestamp}
             userpic={data.author.userpic}
+            title={data.title}
           />
 
           {/* RECENT POSTS */}

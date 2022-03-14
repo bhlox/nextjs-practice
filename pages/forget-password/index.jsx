@@ -1,4 +1,6 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import Head from "next/head";
+
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useRef } from "react";
@@ -24,37 +26,44 @@ function ForgetPassword() {
     }
   };
   return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-4xl">Enter your email address</h2>
-      <form
-        className="mt-8 flex flex-col space-y-16 items-center"
-        onSubmit={handleSubmit}
-      >
-        <div className="relative max-w-max">
-          <input
-            ref={emailInputRef}
-            className="styled-input"
-            type="email"
-            id="email"
-            placeholder="enter email"
-            // onChange={handleData}
-          />
-          <MdEmail className="input-icon" />
-          <h2 className="text-lg mt-2 flex">
-            Remeber your password?
-            <Link passHref href="/sign-in">
-              <span className="hover:underline hover:text-blue-400 mx-2 cursor-pointer flex items-center gap-1">
-                <FaArrowLeft /> Back to signin
-              </span>
-            </Link>
-          </h2>
-        </div>
+    <>
+      <Head>
+        <title>Forgot password</title>
+        <meta name="description" content="forgot password" />
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+      <div className="flex flex-col items-center">
+        <h2 className="text-4xl">Enter your email address</h2>
+        <form
+          className="mt-8 flex flex-col space-y-16 items-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="relative max-w-max">
+            <input
+              ref={emailInputRef}
+              className="styled-input"
+              type="email"
+              id="email"
+              placeholder="enter email"
+              // onChange={handleData}
+            />
+            <MdEmail className="input-icon" />
+            <h2 className="text-lg mt-2 flex">
+              Remeber your password?
+              <Link passHref href="/sign-in">
+                <span className="hover:underline hover:text-blue-400 mx-2 cursor-pointer flex items-center gap-1">
+                  <FaArrowLeft /> Back to signin
+                </span>
+              </Link>
+            </h2>
+          </div>
 
-        <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-          Send reset link
-        </button>
-      </form>
-    </div>
+          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+            Send reset link
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 

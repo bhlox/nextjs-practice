@@ -68,7 +68,7 @@ export default function ProfileCard({
         {self && (
           <label
             htmlFor="coverPic"
-            className="absolute top-5 right-5 overflow-hidden text-3xl hover:opacity-80"
+            className="absolute top-5 right-5 overflow-hidden text-3xl hover:opacity-80 text-slate-700"
           >
             <FaCamera />
             <input
@@ -134,7 +134,7 @@ export default function ProfileCard({
               </div>
             )}
             {isEditingUserName && (
-              <div className="space-y-3">
+              <div className="space-y-3 mb-2">
                 <div className="space-x-4">
                   <span>enter new username</span>
                   <span
@@ -173,7 +173,12 @@ export default function ProfileCard({
                     }  cursor-pointer hover:text-purple-400`}
                   />
                 </div>
-                <button onClick={handleSaveUserName}>save</button>
+                <button
+                  className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                  onClick={handleSaveUserName}
+                >
+                  Save
+                </button>
               </div>
             )}
             <div>
@@ -195,7 +200,7 @@ export default function ProfileCard({
                   </div>
                 )}
                 {editingName && (
-                  <>
+                  <div className="space-y-4 mb-2">
                     <div className="flex space-x-4">
                       <p className="text-xl">Enter full name</p>
                       <span
@@ -209,10 +214,16 @@ export default function ProfileCard({
                       value={currentName}
                       className="styled-input p-0 text-lg block"
                       type="text"
+                      placeholder="enter full name"
                       onChange={(e) => setCurrentName(e.target.value)}
                     />
-                    <button onClick={handleSaveName}>save</button>
-                  </>
+                    <button
+                      className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                      onClick={handleSaveName}
+                    >
+                      save
+                    </button>
+                  </div>
                 )}
               </div>
               <h2 className="text-base font-light">
@@ -237,12 +248,15 @@ export default function ProfileCard({
                 </div>
               )}
               {showEdit && (
-                <span
-                  className="cursor-pointer text-3xl font-bold"
-                  onClick={() => handleCancel("about")}
-                >
-                  X
-                </span>
+                <h2 className="text-2xl flex gap-x-6">
+                  About me
+                  <span
+                    className="cursor-pointer text-3xl font-bold"
+                    onClick={() => handleCancel("about")}
+                  >
+                    X
+                  </span>
+                </h2>
               )}
             </div>
             {!showEdit && (
@@ -261,9 +275,12 @@ export default function ProfileCard({
                   value={currentAbout}
                   maxLength="100"
                 />
-                <div className="flex justify-between">
+                <div className="flex justify-between mt-2">
                   <span className="">{textLength} / 100</span>
-                  <button onClick={handleAboutMe} className="">
+                  <button
+                    onClick={handleAboutMe}
+                    className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                  >
                     save
                   </button>
                 </div>
@@ -398,10 +415,10 @@ export default function ProfileCard({
                     />
                   </div>
                 </div>
-                <div className="flex md:justify-end mt-2">
+                <div className="flex md:justify-end mt-4">
                   <button
                     onClick={handleSaveSocials}
-                    className="px-2 border-2 rounded-2xl hover:opacity-80"
+                    className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
                   >
                     Save
                   </button>

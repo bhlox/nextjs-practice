@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
+import Head from "next/head";
 import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 import { GiDialPadlock } from "react-icons/gi";
@@ -53,51 +54,58 @@ function SignIn() {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-4xl">Sign in here</h2>
-      <form
-        className="mt-8 flex flex-col space-y-16 items-center"
-        onSubmit={handleSubmit}
-      >
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type="email"
-            id="email"
-            placeholder="enter email"
-            onChange={handleData}
-          />
-          <MdEmail className="input-icon" />
-        </div>
-        <div className="relative max-w-max">
-          <input
-            className="styled-input"
-            type={showPassword ? "text" : "password"}
-            ref={passwordInputRef}
-            id="password"
-            placeholder="enter password"
-            onChange={handleData}
-          />
-          <GiDialPadlock className="input-icon" />
-          <GoEye
-            onClick={handleShow}
-            className={`absolute right-0 top-0 text-3xl md:text-5xl ${
-              showPassword ? "text-red-500" : "text-purple-600"
-            }  cursor-pointer hover:text-purple-400`}
-          />
-          <Link passHref href="/forget-password">
-            <h2 className="cursor-pointer text-xl hover:underline hover:text-blue-400 mt-2">
-              Forget password?
-            </h2>
-          </Link>
-        </div>
+    <>
+      <Head>
+        <title>Sign in</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
 
-        <GoogleAuth sign="in" />
-        <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-          Sign-in
-        </button>
-      </form>
-    </div>
+      <div className="flex flex-col items-center">
+        <h2 className="text-4xl">Sign in here</h2>
+        <form
+          className="mt-8 flex flex-col space-y-16 items-center"
+          onSubmit={handleSubmit}
+        >
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type="email"
+              id="email"
+              placeholder="enter email"
+              onChange={handleData}
+            />
+            <MdEmail className="input-icon" />
+          </div>
+          <div className="relative max-w-max">
+            <input
+              className="styled-input"
+              type={showPassword ? "text" : "password"}
+              ref={passwordInputRef}
+              id="password"
+              placeholder="enter password"
+              onChange={handleData}
+            />
+            <GiDialPadlock className="input-icon" />
+            <GoEye
+              onClick={handleShow}
+              className={`absolute right-0 top-0 text-3xl md:text-5xl ${
+                showPassword ? "text-red-500" : "text-purple-600"
+              }  cursor-pointer hover:text-purple-400`}
+            />
+            <Link passHref href="/forget-password">
+              <h2 className="cursor-pointer text-xl hover:underline hover:text-blue-400 mt-2">
+                Forget password?
+              </h2>
+            </Link>
+          </div>
+
+          <GoogleAuth sign="in" />
+          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+            Sign-in
+          </button>
+        </form>
+      </div>
+    </>
   );
 }
 

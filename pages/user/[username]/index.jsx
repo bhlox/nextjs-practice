@@ -13,6 +13,7 @@ import { getAuth } from "firebase/auth";
 import ProfileCard from "../../../components/ProfileCard";
 import PlaceCard from "../../../components/PlaceCard";
 import ProfilePosts from "../../../components/ProfilePosts";
+import Head from "next/head";
 
 function OtherUserProfile({ user }) {
   // DATA IS THE OTHERS USERS DATA
@@ -51,6 +52,11 @@ function OtherUserProfile({ user }) {
 
   return (
     <>
+      <Head>
+        <title>{user.data.username}&apos;s profile</title>
+        <link rel="icon" href="/newreadit.png" />
+      </Head>
+
       {/* This is the profile of {name} with a id of : {id} */}
       <ProfileCard
         self={false}

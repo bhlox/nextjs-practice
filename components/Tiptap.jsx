@@ -231,6 +231,8 @@ const Tiptap = ({
   summaryInput,
   categoryInput,
   imageInput,
+  desc,
+  currentImage,
 }) => {
   const titleCount = useSelector((state) => state.text.titleLength);
   const summaryCount = useSelector((state) => state.text.summaryLength);
@@ -248,17 +250,21 @@ const Tiptap = ({
         emptyNodeClass: "before:content-['Write_Something...']",
       }),
     ],
-    // content: "start here",
+    content: desc,
     editorProps: {
       attributes: {
         class:
           "w-full prose prose-sm sm:prose-invert sm:prose lg:prose-lg xl:prose-2xl px-2 my-8",
       },
     },
+    onCreate: ({ editor }) => {
+      const json = editor.getJSON();
+
+      dispatch(textActions.setDesc(json));
+    },
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
-      // console.log(json);
-      //   setToAdd(json);
+
       dispatch(textActions.setDesc(json));
     },
   });
@@ -327,14 +333,15 @@ const Tiptap = ({
             id="upload"
             accept=".jpg, .jpeg, .png"
             onChange={handleImagePreview}
+            ref={imageInput}
+            required
           />
-          {previewImg && (
+          {(previewImg || currentImage) && (
             <div>
               {
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  ref={imageInput}
-                  src={previewImg}
+                  src={previewImg ?? currentImage}
                   alt="image-preview"
                   className="h-60 w-60 object-cover rounded-2xl border-2"
                 />

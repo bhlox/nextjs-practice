@@ -1,9 +1,16 @@
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { FaTwitter, FaFacebook, FaShareAlt } from "react-icons/fa";
 
-export default function PostInfo({ username, timestamp, userpic }) {
+export default function PostInfo({ username, timestamp, userpic, title }) {
+  const [location, setLocation] = useState("");
+
+  useEffect(() => {
+    setLocation(window.location.href);
+  }, []);
+
   return (
-    <div className="flex md:flex-col justify-between items-center md:items-start space-y-8">
+    <div className="flex md:flex-col justify-between items-center md:items-start space-y-8 bg-slate-700 p-4 rounded-xl">
       <div className="post-details flex flex-col">
         <div className="flex items-center space-x-2">
           <h4>Post by:</h4>
@@ -20,10 +27,27 @@ export default function PostInfo({ username, timestamp, userpic }) {
         </div>
         <h2>posted at: {timestamp}</h2>
       </div>
-      <div className="flex space-x-4">
-        <FaFacebook className="share-icon text-blue-500" />
-        <FaTwitter className="share-icon text-blue-400" />
-        <FaShareAlt className="share-icon text-yellow-300" />
+      <div className="space-y-2 flex flex-col">
+        <h2 className="text-lg font-base">Share Post</h2>
+        <div className="flex space-x-4">
+          <Link
+            passHref
+            href={`https://www.facebook.com/sharer/sharer.php?u=${location}`}
+          >
+            <a target="_blank">
+              <FaFacebook className="share-icon text-blue-500" />
+            </a>
+          </Link>
+          <Link
+            passHref
+            href={`https://twitter.com/intent/tweet?text="${title}..."&url=${location}`}
+          >
+            <a target="_blank">
+              <FaTwitter className="share-icon text-blue-400" />
+            </a>
+          </Link>
+        </div>
+        {/* <FaShareAlt className="share-icon text-yellow-300" /> */}
       </div>
     </div>
   );
