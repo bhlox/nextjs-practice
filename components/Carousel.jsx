@@ -104,9 +104,11 @@ function CarouselSlider({ posts }) {
                 }
               </Link>
               <div className="absolute bottom-0 bg-gradient-to-t from-slate-900 pl-2 pt-10 w-full space-y-1">
-                <span className="uppercase font-semibold px-2 py-1 bg-slate-500 rounded">
-                  {post.category}
-                </span>
+                <Link passHref href={`/blogs/${post.category}`}>
+                  <div className="uppercase font-semibold px-2 py-1 bg-slate-500 rounded cursor-pointer hover:scale-110 transition-all inline-block hover:bg-transparent">
+                    <h2>{post.category}</h2>
+                  </div>
+                </Link>
                 <Link passHref href={`/post/${post.id}`}>
                   <h2 className="font-bold cursor-pointer hover:underline">
                     {post.title}

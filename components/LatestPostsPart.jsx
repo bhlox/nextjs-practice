@@ -44,11 +44,13 @@ export default function LatestPostsPart({ latestPosts }) {
             <p className="text-base font-light">{latestPosts[0].timestamp}</p>
           </div>
         </div>
-        <div className="hidden sm:block absolute bottom-0 right-0 px-4 py-2">
-          <p className="text-lg bg-slate-500 text-gray-50 rounded-xl px-2 py-1 capitalize">
-            {latestPosts[0].category}
-          </p>
-        </div>
+        <Link passHref href={`/blogs/${latestPosts[0].category}`}>
+          <div className="hidden sm:block absolute bottom-0 right-0 px-4 py-2 cursor-pointer hover:scale-110 transition-all">
+            <p className="text-lg bg-slate-500 text-gray-50 rounded-xl px-2 py-1 capitalize">
+              {latestPosts[0].category}
+            </p>
+          </div>
+        </Link>
       </div>
 
       <div className="relative md:w-1/3 group">
@@ -90,11 +92,13 @@ export default function LatestPostsPart({ latestPosts }) {
             <p className="text-base font-light">{latestPosts[1].timestamp}</p>
           </div>
         </div>
-        <div className="hidden sm:block absolute bottom-0 right-0 px-4 py-2">
-          <p className="text-lg bg-slate-500 text-gray-50 rounded-xl px-2 py-1 capitalize">
-            {latestPosts[1].category}
-          </p>
-        </div>
+        <Link passHref href={`/blogs/${latestPosts[1].category}`}>
+          <div className="hidden sm:block absolute bottom-0 right-0 px-4 py-2 cursor-pointer hover:scale-110 transition-all">
+            <p className="text-lg bg-slate-500 text-gray-50 rounded-xl px-2 py-1 capitalize">
+              {latestPosts[1].category}
+            </p>
+          </div>
+        </Link>
       </div>
     </div>
   );

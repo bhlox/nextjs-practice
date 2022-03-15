@@ -6,12 +6,21 @@ import Footer from "./Footer.jsx";
 import Navbar from "./Navbar.jsx";
 
 function Layout({ children }) {
+  const dispatch = useDispatch();
+  const handleClose = () => {
+    dispatch(navActions.closeProfile());
+    dispatch(navActions.closeBlogs());
+  };
+
   return (
     <>
       <div className="pancake">
         <Navbar />
         <BackDrop />
-        <section className="max-w-7xl mx-auto my-8 space-y-16 py-8 px-4 min-h-[80vh]">
+        <section
+          onMouseEnter={handleClose}
+          className="max-w-7xl mx-auto my-8 space-y-16 py-8 px-4 min-h-[80vh]"
+        >
           {children}
         </section>
         <Footer />

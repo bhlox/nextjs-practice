@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-export default function RecentPostsPart({ recentPosts }) {
+export default function RecentPostsPart({ recentPosts, headline }) {
   return (
     <div>
-      <h2 className="text-4xl my-4 font-bold">Recent Posts</h2>
+      {headline && <h2 className="text-4xl my-4 font-bold">Recent Posts</h2>}
       <div className="flex flex-wrap">
         {recentPosts.map((post) => (
           <div key={post.id} className="w-full lg:w-1/4 md:w-1/3 sm:w-1/2">
@@ -19,9 +19,11 @@ export default function RecentPostsPart({ recentPosts }) {
                       />
                     </Link>
                   </div>
-                  <span className="absolute top-1 right-1 px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize">
-                    {post.category}
-                  </span>
+                  <Link passHref href={`/blogs/${post.category}`}>
+                    <div className="absolute top-1 right-1 px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize cursor-pointer hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-200 transition-all duration-300">
+                      <h2>{post.category}</h2>
+                    </div>
+                  </Link>
                 </div>
                 <div className="relative space-y-3 p-4">
                   <Link passHref href={`/user/${post.author.username}`}>

@@ -129,8 +129,9 @@ function PostId({ data, recentPosts }) {
           <div className="prose prose-invert prose-xl md:prose-2xl bg-slate-700 p-4">
             {parser(desc)}
           </div>
-          {/* END POST DESC */}
         </div>
+        {/* END POST DESC */}
+
         {/* END FIRST COLUMN */}
 
         {/* SECOND COLUMN */}
@@ -165,6 +166,7 @@ function PostId({ data, recentPosts }) {
           </div>
           {/* END CATEGORY POSTS */}
 
+          {/* OTHER SIDE POSTS */}
           <div className="hidden md:block">
             <h2 className="text-3xl font-semibold">Non-related posts</h2>
             <div className="flex flex-wrap md:flex-col md:flex-nowrap">
@@ -173,7 +175,9 @@ function PostId({ data, recentPosts }) {
               ))}
             </div>
           </div>
+          {/* END OTHER SIDE POSTS */}
         </div>
+
         {/* END SECOND COLUMN */}
       </div>
     </>

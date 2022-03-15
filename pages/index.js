@@ -130,7 +130,7 @@ export default function Home({ posts }) {
 
       <CarouselSlider posts={randomPosts} />
 
-      <RecentPostsPart recentPosts={recentPosts} />
+      <RecentPostsPart recentPosts={recentPosts} headline={true} />
     </>
   );
 }
@@ -152,6 +152,7 @@ export async function getStaticProps(context) {
     });
 
     return {
+      revalidate: 600,
       props: {
         posts,
       },

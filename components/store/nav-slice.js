@@ -2,7 +2,11 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export const navSlice = createSlice({
   name: "nav",
-  initialState: { showSide: false, showProfileOptions: false },
+  initialState: {
+    showSide: false,
+    showProfileOptions: false,
+    showBlogOptions: false,
+  },
   reducers: {
     toggle(state) {
       state.showSide = !state.showSide;
@@ -15,6 +19,12 @@ export const navSlice = createSlice({
     },
     closeProfile(state) {
       state.showProfileOptions = false;
+    },
+    toggleBlogs(state) {
+      state.showBlogOptions = !state.showBlogOptions;
+    },
+    closeBlogs(state) {
+      state.showBlogOptions = false;
     },
   },
 });

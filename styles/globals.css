@@ -12,11 +12,11 @@
   }
 
   .nav-link {
-    @apply hover:text-slate-500 transition-all text-xl;
+    @apply hover:text-slate-400 transition-all text-xl font-semibold cursor-pointer;
   }
 
   .nav-active {
-    @apply text-slate-900 text-2xl;
+    @apply text-slate-900 text-2xl font-semibold cursor-pointer;
   }
 
   .styled-input {
