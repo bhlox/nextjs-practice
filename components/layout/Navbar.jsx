@@ -11,6 +11,19 @@ import { FaCaretDown, FaPencilAlt } from "react-icons/fa";
 import { navActions } from "../store/nav-slice";
 import { categories } from "../Tiptap";
 import { BiNotepad } from "react-icons/bi";
+import useDebounce from "../hooks/useDebounce";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../../firebase.config";
+import SearchBarPosts from "../SearchBarPosts";
+import conjunctionsAndPreps from "../../utils/conjunctionList";
 
 // import logo from "../../public/newreadit.png";
 
@@ -19,12 +32,15 @@ function Navbar() {
   const dispatch = useDispatch();
   const auth = getAuth();
 
+  const colRef = collection(db, "posts");
+
   const { isLoggedIn } = useSelector((state) => state.user);
   const { showSide } = useSelector((state) => state.nav);
   const { showProfileOptions } = useSelector((state) => state.nav);
   const { showBlogOptions } = useSelector((state) => state.nav);
 
-  const searchInput = useRef();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchPosts, setSearchPosts] = useState([]);
 
   const firstName = auth.currentUser?.displayName?.split(" ")[0] ?? "";
 
@@ -41,11 +57,64 @@ function Navbar() {
     dispatch(navActions.toggle());
   };
 
-  const handleSearch = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
-    router.push(`/search?title=${searchInput.current.value}`);
+    setSearchTerm("");
+    router.push(`/search?q=${searchTerm}`);
   };
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const fetchSearch = async () => {
+    try {
+      const posts = await getDocs(colRef);
+      const postsData = [];
+      posts.docs.forEach((doc) => {
+        postsData.push({
+          title: doc
+            .data()
+            .title.split(" ")
+            .map((word) => word.toLowerCase())
+            .join(" "),
+          id: doc.id,
+        });
+      });
+
+      const matchedPostsId = [];
+      postsData.forEach((data) => {
+        searchTerm.split(" ").forEach((query) => {
+          if (data.title.split(" ").includes(query)) {
+            if (
+              !conjunctionsAndPreps.includes(query) &&
+              !matchedPostsId.includes(data.id)
+            ) {
+              matchedPostsId.push(data.id);
+            }
+          }
+        });
+      });
+
+      const matchedPosts = [];
+      for (const postId of matchedPostsId) {
+        const docRef = doc(db, "posts", postId);
+        const post = await getDoc(docRef);
+        matchedPosts.push({
+          ...post.data(),
+          timestamp: post.data().timestamp.toDate().toDateString(),
+          id: post.id,
+        });
+      }
+      setSearchPosts(matchedPosts);
+    } catch (error) {
+      console.log(error);
+      alert(error);
+    }
+  };
+
+  useDebounce(() => fetchSearch(), 1000, [searchTerm]);
 
   return (
     <nav className="bg-purple-500 px-4 py-2 font-sans relative">
@@ -76,14 +145,27 @@ function Navbar() {
         </Link>
         <div className="flex space-x-6 items-center">
           <div className="relative">
-            <form onSubmit={handleSearch}>
+            <form onSubmit={handleSubmit}>
               <input
-                ref={searchInput}
                 id="search"
                 type="text"
                 placeholder="Search..."
+                value={searchTerm}
+                onChange={handleSearch}
+                autoComplete="none"
               />
             </form>
+            {searchPosts && (
+              <div className="absolute h-96 top-10 left-5 space-y-2">
+                {searchPosts.map((post) => (
+                  <SearchBarPosts
+                    key={post.id}
+                    {...post}
+                    setSearchTerm={setSearchTerm}
+                  />
+                ))}
+              </div>
+            )}
           </div>
           <button
             onClick={handleToggle}

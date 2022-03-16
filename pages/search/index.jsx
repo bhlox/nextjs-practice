@@ -4,37 +4,47 @@ import React, { useEffect } from "react";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase.config";
 import Head from "next/head";
+import conjunctionsAndPreps from "../../utils/conjunctionList";
+import SearchCard from "../../components/SearchCard";
 
-function SearchPosts({ titleQuery, matchedPosts }) {
+function SearchPosts({ searchQuery, matchedPosts, message, postsData }) {
   const router = useRouter();
 
+  // console.log(searchQuery);
   console.log(matchedPosts);
-
-  // const matchedPosts = [];
-  // matchedPostsId.forEach(async (id) => {
-  //   const docRef = doc(db, "posts", id);
-  //   const post = await getDoc(docRef);
-  //   matchedPosts.push({ ...post.data(), id: post.id });
-  //   console.log(matchedPosts);
-  // });
-
-  // titles.forEach((title) => {
-  //   titleQuery.split(" ").forEach((query) => {
-  //     if (title.title.split(" ").includes(query)) {
-  //       console.log("search has matching data");
-  //       console.log(
-  //         `this is the query: ${query} ... and this is the title: ${title.title} with the post id: ${title.id}`
-  //       );
-  //     }
-  //   });
-  // });
+  // console.log(postsData);
+  // console.log(`the message: ${message}`);
+  // console.log(message);
 
   return (
     <>
       <Head>
-        <title>Search: {titleQuery} - Readis</title>
+        <title>Search: {searchQuery} - Readis</title>
         <link rel="icon" href="/newreadit.png" />
       </Head>
+
+      <div className="flex justify-center">
+        <h2 className="flex items-center font-light gap-x-3 text-3xl">
+          Results for:
+          <span className="text-4xl font-semibold">{searchQuery}</span>
+        </h2>
+      </div>
+
+      {(message || !matchedPosts.length) && (
+        <div className="flex justify-center text-center">
+          <h2 className="text-4xl font-medium">
+            Search could&apos;nt find a match. Try a different one
+          </h2>
+        </div>
+      )}
+
+      {matchedPosts && (
+        <div className="space-y-6">
+          {matchedPosts.map((post) => (
+            <SearchCard key={post.id} {...post} searchQuery={searchQuery} />
+          ))}
+        </div>
+      )}
     </>
   );
 }
@@ -44,17 +54,38 @@ export default SearchPosts;
 export async function getServerSideProps(context) {
   context.res.setHeader("Cache-control", "s-maxage=20, stale-while-revalidate");
 
-  const titleQuery = context.query.title.toLowerCase();
+  const searchQuery = context.query.q.trim().toLowerCase();
   const colRef = collection(db, "posts");
+  let count = 0;
+
+  const isQueryValid = searchQuery.split(" ").every((word, i) => {
+    if (conjunctionsAndPreps.includes(word)) {
+      count = count + 1;
+    }
+    if (i === searchQuery.split(" ").length - 1 && i + 1 === count) {
+      console.log("all are invalid");
+      return false;
+    }
+    return true;
+  });
 
   try {
+    if (!isQueryValid) {
+      throw new Error("no cock");
+    }
+
     const posts = await getDocs(colRef);
-    const titles = [];
+    const postsData = [];
     posts.docs.forEach((doc) =>
-      titles.push({
+      postsData.push({
         title: doc
           .data()
           .title.split(" ")
+          .map((word) => word.toLowerCase())
+          .join(" "),
+        summary: doc
+          .data()
+          .summary.split(" ")
           .map((word) => word.toLowerCase())
           .join(" "),
         id: doc.id,
@@ -62,10 +93,18 @@ export async function getServerSideProps(context) {
     );
 
     const matchedPostsId = [];
-    titles.forEach((title) => {
-      titleQuery.split(" ").forEach((query) => {
-        if (title.title.split(" ").includes(query)) {
-          matchedPostsId.push(title.id);
+    postsData.forEach((data) => {
+      searchQuery.split(" ").forEach((query) => {
+        if (
+          data.title.split(" ").includes(query) ||
+          data.summary.split(" ").includes(query)
+        ) {
+          if (
+            !conjunctionsAndPreps.includes(query) &&
+            !matchedPostsId.includes(data.id)
+          ) {
+            matchedPostsId.push(data.id);
+          }
         }
       });
     });
@@ -81,10 +120,10 @@ export async function getServerSideProps(context) {
       });
     }
 
-    return { props: { titleQuery, matchedPosts } };
+    return { props: { searchQuery, matchedPosts, postsData } };
   } catch (error) {
     console.log(error);
-    return { props: {} };
+    return { props: { searchQuery, message: "search invalid" } };
   }
 }
 

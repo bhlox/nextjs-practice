@@ -84,11 +84,11 @@ function AddPlace() {
       const downloadUrl = await url;
 
       const dataForm = {
-        title: titleInput.current.value,
+        title: titleInput.current.value.trim(),
         image: downloadUrl,
         category: categoryInput.current.value,
         desc: postDesc,
-        summary: summaryInput.current.value,
+        summary: summaryInput.current.value.trim(),
         // username: auth.currentUser.displayName,
         // useruid: auth.currentUser.uid,
         type: "post",
