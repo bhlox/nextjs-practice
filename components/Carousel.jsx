@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import Carousel from "react-elastic-carousel";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import Link from "next/link";
+import lazySizes from "lazysizes";
 
 function CarouselSlider({ posts }) {
   // const [width, setWidth] = useState(0);
@@ -97,9 +97,9 @@ function CarouselSlider({ posts }) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     ref={imageRef}
-                    src={post.image}
+                    data-src={post.image}
                     alt=""
-                    className="w-full object-cover h-[18rem] md:h-80 rounded-2xl cursor-pointer hover:scale-110 transition-all"
+                    className="w-full object-cover h-[18rem] md:h-80 rounded-2xl cursor-pointer hover:scale-110 transition-all lazyload"
                   />
                 }
               </Link>

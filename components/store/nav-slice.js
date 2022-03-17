@@ -6,6 +6,8 @@ export const navSlice = createSlice({
     showSide: false,
     showProfileOptions: false,
     showBlogOptions: false,
+    showSearch: false,
+    isSearchBarFocus: false,
   },
   reducers: {
     toggle(state) {
@@ -25,6 +27,21 @@ export const navSlice = createSlice({
     },
     closeBlogs(state) {
       state.showBlogOptions = false;
+    },
+    toggleSearch(state) {
+      state.showSearch = !state.showSearch;
+    },
+    openSearch(state) {
+      state.showSearch = true;
+    },
+    closeSearch(state) {
+      state.showSearch = false;
+    },
+    focusSearch(state) {
+      state.isSearchBarFocus = true;
+    },
+    blurSearch(state) {
+      state.isSearchBarFocus = false;
     },
   },
 });

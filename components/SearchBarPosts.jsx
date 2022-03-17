@@ -1,24 +1,18 @@
 import Link from "next/link";
 import React from "react";
+import { FaReadme } from "react-icons/fa";
 
 function SearchBarPosts({ title, image, author, id, setSearchTerm }) {
-  console.log(title);
   return (
     <>
       <Link passHref href={`/post/${id}`}>
         <div
           onClick={() => setSearchTerm("")}
-          className="flex space-x-2 cursor-pointer"
+          className="flex space-x-2 cursor-pointer pb-2  border-b-[1px] hover:opacity-80"
         >
-          <div>
-            <img
-              className="h-10 w-20 object-cover rounded"
-              src={image}
-              alt=""
-            />
-          </div>
-          <div>
-            <h3 className=" text-xs">{title}</h3>
+          <div className="flex space-x-2 items-center">
+            <FaReadme className="text-2xl" />
+            <h3 className="text-md">{title}</h3>
           </div>
         </div>
       </Link>

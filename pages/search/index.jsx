@@ -10,11 +10,7 @@ import SearchCard from "../../components/SearchCard";
 function SearchPosts({ searchQuery, matchedPosts, message, postsData }) {
   const router = useRouter();
 
-  // console.log(searchQuery);
   console.log(matchedPosts);
-  // console.log(postsData);
-  // console.log(`the message: ${message}`);
-  // console.log(message);
 
   return (
     <>
@@ -97,6 +93,7 @@ export async function getServerSideProps(context) {
       searchQuery.split(" ").forEach((query) => {
         if (
           data.title.split(" ").includes(query) ||
+          data.title.split(" ").some((word) => word.startsWith(query)) ||
           data.summary.split(" ").includes(query)
         ) {
           if (

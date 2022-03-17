@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
+import CharacterCount from "@tiptap/extension-character-count";
 import { useCallback, useRef, useState } from "react";
 import {
   FaBold,
@@ -25,6 +26,7 @@ import { GoHorizontalRule } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { imageActions } from "./store/image-slice";
 import { textActions } from "./store/text-slice";
+import { formActions } from "./store/form-slice";
 
 export const categories = [
   "business",
@@ -248,10 +250,16 @@ const Tiptap = ({
   imageInput,
   desc,
   currentImage,
+  setDescCount,
 }) => {
   const titleCount = useSelector((state) => state.text.titleLength);
   const summaryCount = useSelector((state) => state.text.summaryLength);
   const previewImg = useSelector((state) => state.image.previewImg.data_url);
+
+  // const formInputs = useSelector((state) => state.form.formInputs);
+  // const validity = useSelector((state) => state.form.validity);
+
+  // console.log(formInputs);
 
   //   const [previewImg, setPreviewImg] = useState("");
 
@@ -264,12 +272,15 @@ const Tiptap = ({
       Placeholder.configure({
         emptyNodeClass: "before:content-['Write_Something...']",
       }),
+      CharacterCount.configure({
+        limit: 3000,
+      }),
     ],
     content: desc,
     editorProps: {
       attributes: {
         class:
-          "w-full prose prose-sm sm:prose-invert sm:prose lg:prose-lg xl:prose-2xl px-2 my-8",
+          "w-full prose prose-invert prose-sm sm:prose-invert sm:prose lg:prose-lg xl:prose-2xl px-2 my-8",
       },
     },
     onCreate: ({ editor }) => {
@@ -279,8 +290,8 @@ const Tiptap = ({
     },
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
-
       dispatch(textActions.setDesc(json));
+      setDescCount(editor.storage.characterCount.words());
     },
   });
 
@@ -314,6 +325,9 @@ const Tiptap = ({
             ref={categoryInput}
             className="text-black"
           >
+            <option value="" selected disabled hidden>
+              Choose here
+            </option>
             {categories.map((category) => (
               <option value={category} key={Math.random() * 15353}>
                 {category}
@@ -362,6 +376,9 @@ const Tiptap = ({
           <div>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
+          </div>
+          <div>
+            <p>{editor?.storage?.characterCount.characters()} / 3000</p>
           </div>
         </div>
 

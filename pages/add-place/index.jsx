@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import nookies from "nookies";
 import { FaPencilAlt } from "react-icons/fa";
@@ -30,6 +30,7 @@ import { userActions } from "../../components/store/user-slice";
 import { textActions } from "../../components/store/text-slice";
 import Tiptap from "../../components/Tiptap";
 import { imageActions } from "../../components/store/image-slice";
+import { formActions } from "../../components/store/form-slice";
 
 const limit = 300;
 
@@ -53,17 +54,22 @@ function AddPlace() {
   const previewImg = useSelector((state) => state.image.previewImg);
   const postDesc = useSelector((state) => state.text.postDesc);
 
+  const [descCount, setDescCount] = useState(Number);
+  const [descValid, setDescValid] = useState(true);
+
   const handleCount = (e) => {
     if (e.target.id === "title") {
       dispatch(textActions.titleCount(e.target.value.length));
       titleInput.current.style.height =
         Math.min(titleInput.current.scrollHeight, limit) + "px";
+      // dispatch(formActions.submit({ [e.target.id]: e.target.value }));
     }
 
     if (e.target.id === "summary") {
       dispatch(textActions.summaryCount(e.target.value.length));
       summaryInput.current.style.height =
         Math.min(summaryInput.current.scrollHeight, limit) + "px";
+      // dispatch(formActions.submit({ [e.target.id]: e.target.value }));
     }
   };
 
@@ -71,68 +77,82 @@ function AddPlace() {
     e.preventDefault();
 
     const userRef = doc(db, "users", auth.currentUser.uid);
+
+    console.log(postDesc.content);
+    const formIsValid =
+      categoryInput.current.value.length &&
+      titleInput.current.value.trim().length &&
+      summaryInput.current.value.trim().length &&
+      // postDesc.length &&
+      previewImg.data_url;
+
+    if (!formIsValid) {
+      console.log("form not valid");
+      // const dataForm = {
+      //   category: categoryInput.current.value,
+      //   title: titleInput.current.value,
+      //   summary: summaryInput.current.value,
+      //   desc: postDesc,
+      //   image: previewImg?.data_url,
+      // };
+
+      // dispatch(formActions.missing(dataForm));
+
+      return;
+    }
+
+    console.log("form is valid");
+
     const uploadImgRef = ref(storage, `images/${previewImg.name}`);
     dispatch(userActions.verify());
 
     try {
-      const uploadTask = await uploadString(
-        uploadImgRef,
-        previewImg.data_url,
-        "data_url"
-      );
-      const url = getDownloadURL(uploadTask.ref);
-      const downloadUrl = await url;
-
-      const dataForm = {
-        title: titleInput.current.value.trim(),
-        image: downloadUrl,
-        category: categoryInput.current.value,
-        desc: postDesc,
-        summary: summaryInput.current.value.trim(),
-        // username: auth.currentUser.displayName,
-        // useruid: auth.currentUser.uid,
-        type: "post",
-        author: {
-          username: auth.currentUser.displayName,
-          useruid: auth.currentUser.uid,
-          userpic: auth.currentUser.photoURL,
-        },
-      };
-
-      const response = await fetch("/api/add-place", {
-        method: "POST",
-        body: JSON.stringify(dataForm),
-      });
-
-      const data = await response.json();
-
-      console.log(data);
-
-      // console.log(downloadUrl);
-      // const post = await addDoc(colRef, {
-      //   title: titleInput.current.value,
+      // const uploadTask = await uploadString(
+      //   uploadImgRef,
+      //   previewImg.data_url,
+      //   "data_url"
+      // );
+      // const url = getDownloadURL(uploadTask.ref);
+      // const downloadUrl = await url;
+      // const dataForm = {
+      //   title: titleInput.current.value.trim(),
       //   image: downloadUrl,
       //   category: categoryInput.current.value,
       //   desc: postDesc,
-      //   summary: summaryInput.current.value,
-      //   username: auth.currentUser.displayName,
-      //   useruid: auth.currentUser.uid,
-      //   timestamp: serverTimestamp(),
+      //   summary: summaryInput.current.value.trim(),
+      //   type: "post",
+      //   author: {
+      //     username: auth.currentUser.displayName,
+      //     useruid: auth.currentUser.uid,
+      //     userpic: auth.currentUser.photoURL,
+      //   },
+      // };
+      // const response = await fetch("/api/add-place", {
+      //   method: "POST",
+      //   body: JSON.stringify(dataForm),
       // });
-
-      await updateDoc(userRef, { posts: arrayUnion(data.id) });
-
-      dispatch(userActions.verifyComplete());
-      dispatch(textActions.reset());
-      dispatch(imageActions.reset());
-      console.log("document added");
-      router.push(`/post/${data.id}`);
+      // const data = await response.json();
+      // console.log(data);
+      // await updateDoc(userRef, { posts: arrayUnion(data.id) });
+      // dispatch(textActions.reset());
+      // dispatch(imageActions.reset());
+      // console.log("document added");
+      // dispatch(userActions.verifyComplete());
+      // router.push(`/post/${data.id}`);
     } catch (error) {
       dispatch(userActions.verifyComplete());
 
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      dispatch(imageActions.reset());
+    };
+  }, []);
+
+  console.log(descCount);
 
   return (
     <>
@@ -152,11 +172,18 @@ function AddPlace() {
               handleCount={handleCount}
               categoryInput={categoryInput}
               imageInput={imageInput}
+              setDescCount={setDescCount}
             />
           </div>
-          <button disabled={checkingStatus} onClick={handleSubmit}>
-            {checkingStatus ? "sending" : "submit"}
-          </button>
+          <div>
+            <button
+              className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
+              disabled={checkingStatus}
+              onClick={handleSubmit}
+            >
+              {checkingStatus ? "sending" : "submit"}
+            </button>
+          </div>
         </div>
       </div>
     </>

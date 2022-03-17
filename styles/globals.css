@@ -4,7 +4,7 @@
 
 @layer components {
   body {
-    @apply bg-slate-900 text-gray-300 overflow-x-hidden;
+    @apply bg-slate-900 text-gray-300 overflow-x-hidden scroll-smooth;
   }
 
   .css-console {
@@ -85,7 +85,11 @@ input[type="file"] {
   background-color: white;
 }
 
-/* .pancake {
-  display: grid;
-  grid-template-rows: 1fr auto 1fr;
-} */
+.lazyload {
+  opacity: 0;
+}
+
+.lazyloading {
+  opacity: 1;
+  transition: opacity 300ms;
+}

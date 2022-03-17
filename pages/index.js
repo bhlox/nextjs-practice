@@ -5,8 +5,6 @@ import PlaceCard from "../components/PlaceCard.jsx";
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
 
-// import Image from "next/image";
-import Link from "next/link";
 import CarouselSlider from "../components/Carousel.jsx";
 import { useEffect, useState } from "react";
 import LatestPostsPart from "../components/LatestPostsPart.jsx";

@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import { navActions } from "../store/nav-slice";
 import Footer from "./Footer.jsx";
 import Navbar from "./Navbar.jsx";
+import ScrollToTop from "./ScrollToTop";
 
 function Layout({ children }) {
   const dispatch = useDispatch();
   const handleClose = () => {
     dispatch(navActions.closeProfile());
     dispatch(navActions.closeBlogs());
+    dispatch(navActions.blurSearch());
   };
 
   return (
@@ -18,10 +20,11 @@ function Layout({ children }) {
         <Navbar />
         <BackDrop />
         <section
-          onMouseEnter={handleClose}
+          onClick={handleClose}
           className="max-w-7xl mx-auto my-8 space-y-16 py-8 px-4 min-h-[80vh]"
         >
           {children}
+          <ScrollToTop />
         </section>
         <Footer />
       </div>

@@ -18,11 +18,11 @@ function ForgetPassword() {
 
     try {
       await sendPasswordResetEmail(auth, emailInputRef.current.value);
-      console.log("password reset link sent");
+      alert("Link sent. pls check your email");
       router.push("/");
     } catch (error) {
       console.log(error);
-      //   alert(error);
+      alert(error);
     }
   };
   return (
@@ -32,6 +32,7 @@ function ForgetPassword() {
         <meta name="description" content="forgot password" />
         <link rel="icon" href="/newreadit.png" />
       </Head>
+
       <div className="flex flex-col items-center">
         <h2 className="text-4xl">Enter your email address</h2>
         <form
@@ -58,7 +59,10 @@ function ForgetPassword() {
             </h2>
           </div>
 
-          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
+          <button
+            onClick={handleSubmit}
+            className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full"
+          >
             Send reset link
           </button>
         </form>

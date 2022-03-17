@@ -4,6 +4,7 @@ import { navSlice } from "./nav-slice";
 import { textSlice } from "./text-slice";
 import { imageSlice } from "./image-slice";
 import { uiSlice } from "./ui-slice";
+import { formSlice } from "./form-slice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     text: textSlice.reducer,
     image: imageSlice.reducer,
     ui: uiSlice.reducer,
+    form: formSlice.reducer,
   },
 });
 
