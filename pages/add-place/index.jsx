@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Head from "next/head";
 import nookies from "nookies";
 import { FaPencilAlt } from "react-icons/fa";
 
 import {
-  addDoc,
+  // addDoc,
   arrayUnion,
-  collection,
+  // collection,
   doc,
-  getDoc,
-  serverTimestamp,
-  setDoc,
+  // getDoc,
+  // serverTimestamp,
+  // setDoc,
   updateDoc,
 } from "firebase/firestore";
 
@@ -32,8 +32,6 @@ import Tiptap from "../../components/Tiptap";
 import { imageActions } from "../../components/store/image-slice";
 import { formActions } from "../../components/store/form-slice";
 
-const limit = 300;
-
 function AddPlace() {
   const titleInput = useRef();
   const imageInput = useRef();
@@ -45,58 +43,69 @@ function AddPlace() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const colRef = collection(db, "posts");
+  // const colRef = collection(db, "posts");
 
   const storage = getStorage();
-  const storageRef = ref(storage);
+  // const storageRef = ref(storage);
 
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
   const previewImg = useSelector((state) => state.image.previewImg);
   const postDesc = useSelector((state) => state.text.postDesc);
-
-  const [descCount, setDescCount] = useState(Number);
-  const [descValid, setDescValid] = useState(true);
+  const validity = useSelector((state) => state.form.validity);
+  const formInputs = useSelector((state) => state.form.formInputs);
+  const isFormValid = useSelector((state) => state.form.isFormValid);
 
   const handleCount = (e) => {
     if (e.target.id === "title") {
       dispatch(textActions.titleCount(e.target.value.length));
       titleInput.current.style.height =
-        Math.min(titleInput.current.scrollHeight, limit) + "px";
-      // dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+        Math.min(titleInput.current.scrollHeight, 300) + "px";
+      if (!validity.title) {
+        console.log("submitting for validity");
+        dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+      }
     }
 
     if (e.target.id === "summary") {
       dispatch(textActions.summaryCount(e.target.value.length));
       summaryInput.current.style.height =
-        Math.min(summaryInput.current.scrollHeight, limit) + "px";
-      // dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+        Math.min(summaryInput.current.scrollHeight, 300) + "px";
+      if (!validity.summary) {
+        console.log("submitting for validity");
+        dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+      }
     }
   };
+
+  // console.log(validity);
+  // console.log(isFormValid);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const userRef = doc(db, "users", auth.currentUser.uid);
 
-    console.log(postDesc.content);
     const formIsValid =
       categoryInput.current.value.length &&
       titleInput.current.value.trim().length &&
       summaryInput.current.value.trim().length &&
-      // postDesc.length &&
-      previewImg.data_url;
+      previewImg.data_url?.length &&
+      formInputs.descCount;
+
+    // console.log(formInputs);
 
     if (!formIsValid) {
       console.log("form not valid");
-      // const dataForm = {
-      //   category: categoryInput.current.value,
-      //   title: titleInput.current.value,
-      //   summary: summaryInput.current.value,
-      //   desc: postDesc,
-      //   image: previewImg?.data_url,
-      // };
+      const dataForm = {
+        category: categoryInput.current.value,
+        title: titleInput.current.value,
+        summary: summaryInput.current.value,
+        descCount: formInputs.descCount,
+        image: previewImg?.data_url,
+      };
 
-      // dispatch(formActions.missing(dataForm));
+      // console.log(dataForm);
+      dispatch(formActions.missing(dataForm));
 
       return;
     }
@@ -107,38 +116,38 @@ function AddPlace() {
     dispatch(userActions.verify());
 
     try {
-      // const uploadTask = await uploadString(
-      //   uploadImgRef,
-      //   previewImg.data_url,
-      //   "data_url"
-      // );
-      // const url = getDownloadURL(uploadTask.ref);
-      // const downloadUrl = await url;
-      // const dataForm = {
-      //   title: titleInput.current.value.trim(),
-      //   image: downloadUrl,
-      //   category: categoryInput.current.value,
-      //   desc: postDesc,
-      //   summary: summaryInput.current.value.trim(),
-      //   type: "post",
-      //   author: {
-      //     username: auth.currentUser.displayName,
-      //     useruid: auth.currentUser.uid,
-      //     userpic: auth.currentUser.photoURL,
-      //   },
-      // };
-      // const response = await fetch("/api/add-place", {
-      //   method: "POST",
-      //   body: JSON.stringify(dataForm),
-      // });
-      // const data = await response.json();
+      const uploadTask = await uploadString(
+        uploadImgRef,
+        previewImg.data_url,
+        "data_url"
+      );
+      const url = getDownloadURL(uploadTask.ref);
+      const downloadUrl = await url;
+      const dataForm = {
+        title: titleInput.current.value.trim(),
+        image: downloadUrl,
+        category: categoryInput.current.value,
+        desc: postDesc,
+        summary: summaryInput.current.value.trim(),
+        type: "post",
+        author: {
+          username: auth.currentUser.displayName,
+          useruid: auth.currentUser.uid,
+          userpic: auth.currentUser.photoURL,
+        },
+      };
+      const response = await fetch("/api/add-place", {
+        method: "POST",
+        body: JSON.stringify(dataForm),
+      });
+      const data = await response.json();
       // console.log(data);
-      // await updateDoc(userRef, { posts: arrayUnion(data.id) });
-      // dispatch(textActions.reset());
-      // dispatch(imageActions.reset());
-      // console.log("document added");
-      // dispatch(userActions.verifyComplete());
-      // router.push(`/post/${data.id}`);
+      await updateDoc(userRef, { posts: arrayUnion(data.id) });
+      dispatch(textActions.reset());
+      dispatch(imageActions.reset());
+      console.log("document added");
+      dispatch(userActions.verifyComplete());
+      router.push(`/post/${data.id}`);
     } catch (error) {
       dispatch(userActions.verifyComplete());
 
@@ -149,10 +158,9 @@ function AddPlace() {
   useEffect(() => {
     return () => {
       dispatch(imageActions.reset());
+      dispatch(formActions.reset());
     };
   }, []);
-
-  console.log(descCount);
 
   return (
     <>
@@ -172,17 +180,26 @@ function AddPlace() {
               handleCount={handleCount}
               categoryInput={categoryInput}
               imageInput={imageInput}
-              setDescCount={setDescCount}
             />
           </div>
           <div>
-            <button
-              className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
-              disabled={checkingStatus}
-              onClick={handleSubmit}
-            >
-              {checkingStatus ? "sending" : "submit"}
-            </button>
+            {!isFormValid && (
+              <button
+                disabled
+                className="w-full p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
+              >
+                Pls fill out all entries
+              </button>
+            )}
+            {isFormValid && (
+              <button
+                className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
+                disabled={checkingStatus}
+                onClick={handleSubmit}
+              >
+                {checkingStatus ? "sending" : "submit"}
+              </button>
+            )}
           </div>
         </div>
       </div>

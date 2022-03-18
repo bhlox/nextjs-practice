@@ -120,16 +120,16 @@ function PlaceCard({
             </h2>
             <div className="flex space-x-4 items-center">
               <button
-                onClick={handleDeletePost}
-                className="rounded-xl p-2 border-2 hover:opacity-80"
-              >
-                Confirm
-              </button>
-              <button
                 className="rounded-xl p-2 border-2 hover:opacity-80"
                 onClick={() => setShowDeleteMsg(false)}
               >
                 Hold on for now
+              </button>
+              <button
+                onClick={handleDeletePost}
+                className="rounded-xl p-2 border-2 hover:opacity-80"
+              >
+                Confirm
               </button>
             </div>
           </div>

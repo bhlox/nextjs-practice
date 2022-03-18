@@ -12,20 +12,24 @@ import {
   ref,
   uploadString,
 } from "firebase/storage";
+import nookies from "nookies";
+import { firebaseAdmin } from "../../../firebaseAdmin";
+
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { formActions } from "../../../components/store/form-slice";
 import { imageActions } from "../../../components/store/image-slice";
 import { textActions } from "../../../components/store/text-slice";
+import { userActions } from "../../../components/store/user-slice";
 import Tiptap from "../../../components/Tiptap";
 import { db } from "../../../firebase.config";
+// import { firebaseAdmin } from "../../../firebaseAdmin";
 
-const limit = 300;
-
-function EditPost({ data, id }) {
+function EditPost({ data, postId }) {
   // console.log(data);
-  console.log(id);
 
   const titleInput = useRef();
   const imageInput = useRef();
@@ -33,7 +37,7 @@ function EditPost({ data, id }) {
   // const descInput = useRef();
   const summaryInput = useRef();
 
-  const auth = getAuth();
+  // const auth = getAuth();
   const router = useRouter();
   const dispatch = useDispatch();
   const storage = getStorage();
@@ -41,31 +45,70 @@ function EditPost({ data, id }) {
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
   const previewImg = useSelector((state) => state.image.previewImg);
   const postDesc = useSelector((state) => state.text.postDesc);
+  const formInputs = useSelector((state) => state.form.formInputs);
+  const validity = useSelector((state) => state.form.validity);
+  const isFormValid = useSelector((state) => state.form.isFormValid);
+
+  // console.log(validity);
+  // console.log(isFormValid);
 
   const handleCount = (e) => {
     if (e.target.id === "title") {
       dispatch(textActions.titleCount(e.target.value.length));
       titleInput.current.style.height =
-        Math.min(titleInput.current.scrollHeight, limit) + "px";
+        Math.min(titleInput.current.scrollHeight, 300) + "px";
+      if (!validity.title) {
+        console.log("submitting for validity");
+        dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+      }
     }
 
     if (e.target.id === "summary") {
       dispatch(textActions.summaryCount(e.target.value.length));
       summaryInput.current.style.height =
-        Math.min(summaryInput.current.scrollHeight, limit) + "px";
+        Math.min(summaryInput.current.scrollHeight, 300) + "px";
+      if (!validity.summary) {
+        console.log("submitting for validity");
+        dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+      }
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const docRef = doc(db, "posts", id);
+
     let downloadUrl;
     let uploadImgRef;
+
+    const formIsValid =
+      categoryInput.current.value.length &&
+      titleInput.current.value.trim().length &&
+      summaryInput.current.value.trim().length &&
+      formInputs.descCount;
+
+    // console.log(formIsValid);
+
+    if (!formIsValid) {
+      console.log("form not valid");
+      const dataForm = {
+        category: categoryInput.current.value,
+        title: titleInput.current.value,
+        summary: summaryInput.current.value,
+        descCount: formInputs.descCount,
+      };
+
+      // console.log(dataForm);
+      dispatch(formActions.missing(dataForm));
+
+      return;
+    }
+
+    console.log("form is valid");
 
     if (previewImg.name) {
       uploadImgRef = ref(storage, `images/${previewImg.name}`);
     }
-    // dispatch(userActions.verify());
+    dispatch(userActions.verify());
 
     try {
       if (uploadImgRef) {
@@ -77,27 +120,23 @@ function EditPost({ data, id }) {
         const url = getDownloadURL(uploadTask.ref);
         downloadUrl = await url;
       }
-
       const dataForm = {
         title: titleInput.current.value,
         category: categoryInput.current.value,
         desc: postDesc,
         summary: summaryInput.current.value,
-        id,
+        postId,
       };
-
-      console.log(dataForm);
+      // console.log(dataForm);
       if (downloadUrl) dataForm.image = downloadUrl;
-
       const response = await fetch("/api/add-place", {
         method: "PATCH",
         body: JSON.stringify(dataForm),
       });
-
       const data = await response.json();
-      console.log(data);
-
-      router.push(`/post/${id}`);
+      // console.log(data);
+      dispatch(userActions.verifyComplete());
+      router.push(`/post/${postId}`);
     } catch (error) {
       console.log(error);
     }
@@ -107,9 +146,12 @@ function EditPost({ data, id }) {
     titleInput.current.value = data.title;
     categoryInput.current.value = data.category;
     summaryInput.current.value = data.summary;
-  }, []);
 
-  console.log(previewImg);
+    return () => {
+      dispatch(formActions.reset());
+      dispatch(imageActions.reset());
+    };
+  }, []);
 
   return (
     <>
@@ -131,9 +173,28 @@ function EditPost({ data, id }) {
               imageInput={imageInput}
               desc={data.desc}
               currentImage={data.image}
+              currentCategory={data.category}
             />
           </div>
-          <button onClick={handleSubmit}>submit edit</button>
+          <div>
+            {!isFormValid && (
+              <button
+                disabled
+                className="w-full p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
+              >
+                Pls fill out all entries
+              </button>
+            )}
+            {isFormValid && (
+              <button
+                className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
+                disabled={checkingStatus}
+                onClick={handleSubmit}
+              >
+                {checkingStatus ? "Sending..." : "Save edit"}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </>
@@ -142,33 +203,54 @@ function EditPost({ data, id }) {
 
 export default EditPost;
 
-export async function getStaticPaths() {
-  const colRef = collection(db, "posts");
-  try {
-    const posts = await getDocs(colRef);
-    const ids = [];
-    posts.docs.forEach((doc) => {
-      ids.push(doc.id);
-    });
+// export async function getStaticPaths() {
+//   const colRef = collection(db, "posts");
+//   try {
+//     const posts = await getDocs(colRef);
+//     const ids = [];
+//     posts.docs.forEach((doc) => {
+//       ids.push(doc.id);
+//     });
 
-    return {
-      fallback: false,
-      paths: ids.map((id) => ({ params: { postId: id } })),
-    };
-  } catch (error) {
-    console.log(error);
-  }
-}
+//     return {
+//       fallback: false,
+//       paths: ids.map((id) => ({ params: { postId: id } })),
+//     };
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
-export async function getStaticProps(context) {
-  const id = context.params.postId;
-  const docRef = doc(db, "posts", id);
+export async function getServerSideProps(context) {
+  const postId = context.params.postId;
+  const docRef = doc(db, "posts", postId);
+  const cookies = nookies.get(context);
+
   try {
+    if (!cookies) {
+      context.res.writeHead(302, { Location: "/" });
+      context.res.end();
+    }
+    const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+
+    const { uid } = token;
+
+    const userRef = doc(db, "users", uid);
+    const userData = await getDoc(userRef);
+    const userPosts = userData.data().posts;
+
+    const isAuthor = userPosts.some((post) => post == postId);
+
+    if (!isAuthor) {
+      context.res.writeHead(302, { Location: "/" });
+      context.res.end();
+    }
+
     const docData = await getDoc(docRef);
     const data = { ...docData.data(), timestamp: "" };
-    return { props: { data, id } };
+    return { props: { data, postId, isAuthor } };
   } catch (error) {
     console.log(error);
-    return { props: {} };
+    return { props: { data: {} } };
   }
 }

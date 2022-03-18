@@ -3,7 +3,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import CharacterCount from "@tiptap/extension-character-count";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FaBold,
   FaItalic,
@@ -11,6 +11,7 @@ import {
   FaParagraph,
   FaUndo,
   FaRedo,
+  FaQuestionCircle,
 } from "react-icons/fa";
 import {
   RiH1,
@@ -22,6 +23,7 @@ import {
   RiListOrdered,
   RiChatQuoteFill,
 } from "react-icons/ri";
+import { TiWarning } from "react-icons/ti";
 import { GoHorizontalRule } from "react-icons/go";
 import { useDispatch, useSelector } from "react-redux";
 import { imageActions } from "./store/image-slice";
@@ -250,18 +252,24 @@ const Tiptap = ({
   imageInput,
   desc,
   currentImage,
-  setDescCount,
+  currentCategory,
 }) => {
   const titleCount = useSelector((state) => state.text.titleLength);
   const summaryCount = useSelector((state) => state.text.summaryLength);
   const previewImg = useSelector((state) => state.image.previewImg.data_url);
 
-  // const formInputs = useSelector((state) => state.form.formInputs);
-  // const validity = useSelector((state) => state.form.validity);
+  const formInputs = useSelector((state) => state.form.formInputs);
+  const validity = useSelector((state) => state.form.validity);
 
-  // console.log(formInputs);
+  const [selectedCategory, setSelectedCategory] = useState(
+    currentCategory ?? ""
+  );
 
-  //   const [previewImg, setPreviewImg] = useState("");
+  useEffect(() => {
+    if (currentImage) {
+      dispatch(formActions.submit({ image: currentImage }));
+    }
+  }, []);
 
   const dispatch = useDispatch();
 
@@ -287,11 +295,24 @@ const Tiptap = ({
       const json = editor.getJSON();
 
       dispatch(textActions.setDesc(json));
+      if (currentImage)
+        dispatch(
+          formActions.submit({
+            descCount: editor.storage.characterCount.words(),
+          })
+        );
     },
     onUpdate: ({ editor }) => {
       const json = editor.getJSON();
       dispatch(textActions.setDesc(json));
-      setDescCount(editor.storage.characterCount.words());
+
+      // if (editor.storage.characterCount.words() <= 51) {
+      dispatch(
+        formActions.submit({
+          descCount: editor.storage.characterCount.words(),
+        })
+      );
+      // }
     },
   });
 
@@ -308,6 +329,7 @@ const Tiptap = ({
             data_url: reader.result,
           })
         );
+        dispatch(formActions.submit({ [e.target.id]: file.name }));
         // console.log(reader.result);
       };
       reader.readAsDataURL(file);
@@ -317,47 +339,46 @@ const Tiptap = ({
   return (
     <>
       <div className="space-y-12 p-2 bg-slate-700 pt-4 rounded-xl">
-        <div className="space-y-3">
-          <h2 className="text-3xl font-medium">Select category</h2>
-          <select
-            name="category"
-            id="category"
-            ref={categoryInput}
-            className="text-black"
-          >
-            <option value="" selected disabled hidden>
-              Choose here
-            </option>
-            {categories.map((category) => (
-              <option value={category} key={Math.random() * 15353}>
-                {category}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="relative">
           <textarea
             id="title"
             rows="1"
             ref={titleInput}
             placeholder="Enter title..."
-            className="resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-b-2 focus:outline-none p-2 text-gray-200"
+            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-b-2 focus:outline-none p-2 text-gray-200 ${
+              !validity.title ? "border-b-4 border-red-600" : ""
+            }`}
             onChange={handleCount}
             maxLength="60"
           />
           <span>{titleCount} / 60</span>
+          {!validity.title && (
+            <div className="flex space-x-2 items-center text-2xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold text-red-400">Pls enter a title</h2>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
           <h3 className="text-3xl font-medium">Set Thumbnail Picture</h3>
           <input
             type="file"
-            id="upload"
+            name="image"
+            id="image"
             accept=".jpg, .jpeg, .png"
             onChange={handleImagePreview}
             ref={imageInput}
             required
           />
+          {!validity.image && (
+            <div className="flex space-x-2 items-center text-2xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold text-red-400">
+                Pls upload a thumbnail picture
+              </h2>
+            </div>
+          )}
           {(previewImg || currentImage) && (
             <div>
               {
@@ -372,30 +393,91 @@ const Tiptap = ({
           )}
         </div>
 
-        <div className="p-2 pt-1 rounded-xl border-2">
+        <div className="space-y-3">
+          <h2 className="text-3xl font-medium">Select category</h2>
+          <select
+            name="category"
+            id="category"
+            ref={categoryInput}
+            className="text-black"
+            value={selectedCategory}
+            onChange={(e) => {
+              dispatch(formActions.submit({ [e.target.id]: e.target.value }));
+              setSelectedCategory(e.target.value);
+            }}
+          >
+            {categories.map((category) => (
+              <option value={category} key={Math.random() * 15353}>
+                {category}
+              </option>
+            ))}
+          </select>
+          {!validity.category && (
+            <div className="flex space-x-2 items-center text-2xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold text-red-400">Pls enter a category</h2>
+            </div>
+          )}
+        </div>
+
+        <div
+          className={`p-2 pt-1 rounded-xl border-2 ${
+            !validity.descCount ? "border-red-600 border-4" : ""
+          }`}
+        >
           <div>
             <MenuBar editor={editor} />
             <EditorContent editor={editor} />
           </div>
-          <div>
-            <p>{editor?.storage?.characterCount.characters()} / 3000</p>
+          <div className="space-y-4">
+            <div>
+              <p>{editor?.storage?.characterCount.words()} / 300 words</p>
+              <p>
+                {editor?.storage?.characterCount.characters()} / 3000 character
+                limit
+              </p>
+            </div>
+            {!validity.descCount && (
+              <div className="flex space-x-2 items-center text-3xl">
+                <TiWarning className="text-yellow-400" />
+                <h2 className=" font-bold text-red-400">
+                  Pls enter at least 50 words
+                </h2>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-2xl">
-            Summary <span>tooltip here</span>
-          </h2>
+          <div className="flex items-center gap-x-2 text-2xl">
+            <h2 className="">Summary</h2>
+            <h3 className="hover:text-yellow-400 transition-all relative group">
+              <FaQuestionCircle />
+              <span className="hidden absolute bottom-6 left-6 bg-slate-600 text-2xl group-hover:inline-block w-64 p-2">
+                this will improve your post&apos;s visibility in search. You may
+                use this also as tags.(do not use #)
+              </span>
+            </h3>
+          </div>
+
           <textarea
             id="summary"
             rows="1"
             ref={summaryInput}
             placeholder="Enter summary..."
-            className="resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-2 focus:outline-none p-2 rounded text-gray-200"
+            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-2 focus:outline-none p-2 rounded text-gray-200 ${
+              !validity.summary ? "border-red-600 border-4" : ""
+            }`}
             onChange={handleCount}
             maxLength="100"
           />
           <span>{summaryCount} / 100</span>
+          {!validity.summary && (
+            <div className="flex space-x-2 items-center text-2xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold text-red-400">Pls enter a summary</h2>
+            </div>
+          )}
         </div>
       </div>
     </>

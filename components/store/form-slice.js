@@ -6,32 +6,47 @@ export const formSlice = createSlice({
     formInputs: {
       category: "",
       title: "",
-      image: true,
-      desc: true,
-      summary: true,
+      image: "",
+      descCount: 0,
+      summary: "",
     },
     validity: {
       category: true,
       title: true,
       image: true,
-      desc: true,
+      descCount: true,
       summary: true,
     },
+    isFormValid: true,
   },
   reducers: {
     missing(state, action) {
       const data = action.payload;
-      state.formInputs = data;
+      state.formInputs = { ...state.formInputs, ...data };
       Object.entries(data).forEach((arr) => {
         const [key, value] = arr;
-        state.validity[key] = value?.length > 2 ?? false;
+        state.validity[key] = (value?.length > 2 || value >= 50) ?? false;
       });
+      state.isFormValid = false;
     },
     submit(state, action) {
       const data = action.payload;
-      state.formInputs = { ...data };
       const [key, value] = Object.entries(data).flat();
-      state.validity[key] = value.length > 2;
+      state.formInputs = { ...state.formInputs, [key]: value };
+      state.validity[key] = (value?.length > 2 || value >= 50) ?? false;
+      state.isFormValid = Object.values(state.validity).every(
+        (entry) => entry === true
+      );
+    },
+    reset(state) {
+      state.validity = {
+        category: true,
+        title: true,
+        image: true,
+        descCount: true,
+        summary: true,
+      };
+      state.isFormValid = true;
     },
   },
 });
