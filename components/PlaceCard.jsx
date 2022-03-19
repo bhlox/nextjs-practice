@@ -66,9 +66,11 @@ function PlaceCard({
         </div>
         {/* INFO */}
         <div className="space-y-2 p-4 pt-1">
-          <span className="px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize">
-            {category}
-          </span>
+          <Link passHref href={`/blogs/${category}`}>
+            <span className="px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize cursor-pointer hover:bg-transparent transition-all outline outline-2 outline-blue-200">
+              {category}
+            </span>
+          </Link>
           <Link passHref href={`/post/${id}`}>
             <h2 className="font-bold text-2xl capitalize cursor-pointer hover:underline">
               {title}

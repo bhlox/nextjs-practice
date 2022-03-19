@@ -3,26 +3,46 @@ import Head from "next/head";
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { MdEmail } from "react-icons/md";
+import { TiWarning } from "react-icons/ti";
+import { HiCheckCircle } from "react-icons/hi";
 import { FaArrowLeft } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { textActions } from "../../components/store/text-slice";
 
 function ForgetPassword() {
   const auth = getAuth();
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const emailInputRef = useRef();
+
+  const { message } = useSelector((state) => state.text);
+
+  useEffect(() => {
+    return () => dispatch(textActions.reset());
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await sendPasswordResetEmail(auth, emailInputRef.current.value);
-      alert("Link sent. pls check your email");
-      router.push("/");
+      // alert("Link sent. pls check your email");
+      dispatch(textActions.submitErrorMsg(""));
+      dispatch(textActions.submitSuccessMsg("Email link sent!"));
+      // router.push("/");
     } catch (error) {
+      const errorMsg = error
+        .toString()
+        ?.split(" ")
+        ?.slice(-1)
+        ?.toString()
+        ?.replace(/[^a-zA-Z ]/g, " ");
+      dispatch(textActions.submitErrorMsg(errorMsg));
       console.log(error);
-      alert(error);
+      // alert(error);
     }
   };
   return (
@@ -58,12 +78,29 @@ function ForgetPassword() {
               </Link>
             </h2>
           </div>
+          {message.success && (
+            <div className="flex items-center text-4xl space-x-1 bg-blue-600 p-2 rounded-xl">
+              <HiCheckCircle className="text-green-400" />
+              <h2 className=" font-bold capitalize">{message.success}</h2>
+            </div>
+          )}
 
+          {message.error && (
+            <div className="flex items-center text-4xl space-x-1 bg-red-600 p-2 rounded-xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold capitalize">{message.error}</h2>
+            </div>
+          )}
           <button
+            disabled={message.success}
             onClick={handleSubmit}
-            className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full"
+            className={`px-4 py-2 ${
+              message.success
+                ? "bg-transparent"
+                : "bg-purple-600 hover:bg-purple-700"
+            }  rounded-3xl text-3xl  w-full`}
           >
-            Send reset link
+            {message.success ? "Check email" : "Send reset link"}
           </button>
         </form>
       </div>

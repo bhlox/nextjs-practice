@@ -7,6 +7,7 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 import { GoEye } from "react-icons/go";
+import { TiWarning } from "react-icons/ti";
 import { useDispatch, useSelector } from "react-redux";
 import { uiActions } from "./store/ui-slice";
 import Link from "next/link";
@@ -48,10 +49,12 @@ export default function ProfileCard({
   previewSocials,
   timestamp,
   email,
+  message,
 }) {
   const dispatch = useDispatch();
 
   const showPassword = useSelector((state) => state.user.showPassword);
+  const { load } = useSelector((state) => state.ui);
 
   const handleEmail = () => {
     window.open(`mailto:${email}?subject=Title&body=Enter%message%20here`);
@@ -133,53 +136,69 @@ export default function ProfileCard({
                 )}
               </div>
             )}
+
             {isEditingUserName && (
-              <div className="space-y-3 mb-2">
-                <div className="space-x-4">
-                  <span>enter new username</span>
-                  <span
-                    onClick={() => handleCancel("username")}
-                    className="cursor-pointer text-2xl"
-                  >
-                    X
-                  </span>
+              <form onSubmit={handleSaveUserName}>
+                <div className="space-y-3 mb-2">
+                  <div className="space-x-4">
+                    <span>enter new username</span>
+                    <span
+                      onClick={() => handleCancel("username")}
+                      className="cursor-pointer text-2xl"
+                    >
+                      X
+                    </span>
+                  </div>
+                  <div>
+                    <input
+                      className="styled-input p-0 text-lg md:text-xl"
+                      ref={usernameInputRef}
+                      type="text"
+                      onChange={handleUsernameCount}
+                      value={currentUsername}
+                      maxLength={15}
+                      required
+                      min={3}
+                    />
+                    <span> {textLength} / 15</span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      className="styled-input p-0 text-lg md:text-xl"
+                      ref={passwordInputRef}
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      id="password"
+                      placeholder="confirm password"
+                    />
+                    <GoEye
+                      onClick={handleShow}
+                      className={`absolute right-0 top-0 text-3xl ${
+                        showPassword ? "text-red-500" : "text-purple-600"
+                      }  cursor-pointer hover:text-purple-400`}
+                    />
+                  </div>
+                  {!load && message.error && (
+                    <div className="flex items-center gap-x-1">
+                      <TiWarning className="text-yellow-400" />
+                      <h4 className="text-red-400 font-semibold">
+                        {message.error}
+                      </h4>
+                    </div>
+                  )}
+                  {load && (
+                    <h2 className="text-xl font-semibold">Loading...</h2>
+                  )}
+                  {!load && (
+                    <button
+                      className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                      onClick={handleSaveUserName}
+                    >
+                      Save
+                    </button>
+                  )}
                 </div>
-                <div>
-                  <input
-                    className="styled-input p-0 text-lg md:text-xl"
-                    ref={usernameInputRef}
-                    type="text"
-                    onChange={handleUsernameCount}
-                    value={currentUsername}
-                    maxLength={15}
-                    required
-                    min={3}
-                  />
-                  <span> {textLength} / 15</span>
-                </div>
-                <div className="relative">
-                  <input
-                    className="styled-input p-0 text-lg md:text-xl"
-                    ref={passwordInputRef}
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    id="password"
-                    placeholder="confirm password"
-                  />
-                  <GoEye
-                    onClick={handleShow}
-                    className={`absolute right-0 top-0 text-3xl ${
-                      showPassword ? "text-red-500" : "text-purple-600"
-                    }  cursor-pointer hover:text-purple-400`}
-                  />
-                </div>
-                <button
-                  className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
-                  onClick={handleSaveUserName}
-                >
-                  Save
-                </button>
-              </div>
+              </form>
             )}
             <div>
               <div className="">
@@ -199,6 +218,7 @@ export default function ProfileCard({
                     )}
                   </div>
                 )}
+
                 {editingName && (
                   <div className="space-y-4 mb-2">
                     <div className="flex space-x-4">

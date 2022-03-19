@@ -8,6 +8,7 @@ export const textSlice = createSlice({
     postDesc: "",
     aboutMe: "",
     textLength: 0,
+    message: {},
   },
   reducers: {
     titleCount(state, action) {
@@ -32,6 +33,7 @@ export const textSlice = createSlice({
       state.titleLength = 0;
       state.aboutMe = "";
       state.textLength = 0;
+      state.message = {};
     },
     setAboutMe(state, action) {
       const data = action.payload;
@@ -40,6 +42,14 @@ export const textSlice = createSlice({
     editAboutMe(state, action) {
       const data = action.payload;
       state.aboutMe = data;
+    },
+    submitErrorMsg(state, action) {
+      const data = action.payload;
+      state.message.error = data;
+    },
+    submitSuccessMsg(state, action) {
+      const data = action.payload;
+      state.message.success = data;
     },
   },
 });

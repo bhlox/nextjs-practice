@@ -7,10 +7,12 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
 
 import { GiHamburgerMenu } from "react-icons/gi";
+import { GoSignIn } from "react-icons/go";
+import { BsPersonPlusFill, BsPersonSquare, BsGearFill } from "react-icons/bs";
 import { FaCaretDown, FaPencilAlt, FaSearch } from "react-icons/fa";
 import { navActions } from "../store/nav-slice";
 import { categories } from "../Tiptap";
-import { BiNotepad } from "react-icons/bi";
+import { BiNotepad, BiExit } from "react-icons/bi";
 import useDebounce from "../hooks/useDebounce";
 import {
   collection,
@@ -261,6 +263,7 @@ function Navbar() {
                   dispatch(navActions.closeProfile());
                   dispatch(navActions.closeBlogs());
                   dispatch(navActions.blurSearch());
+                  dispatch(navActions.close());
                 }}
                 className={
                   router.pathname == "/add-place"
@@ -365,23 +368,26 @@ function Navbar() {
                   >
                     <Link passHref href="/profile">
                       <h3
-                        className="nav-link border-b-2 pb-2"
+                        className="nav-link border-b-2 pb-2 flex items-center gap-x-1"
                         onClick={() => dispatch(navActions.close())}
                       >
-                        Profile
+                        <BsPersonSquare /> Profile
                       </h3>
                     </Link>
                     <Link passHref href="/login-info">
                       <h3
-                        className="nav-link border-b-2 pb-2"
+                        className="nav-link border-b-2 pb-2 flex items-center gap-x-1"
                         onClick={() => dispatch(navActions.close())}
                       >
-                        Change password
+                        <BsGearFill className="text-2xl" /> Change password
                       </h3>
                     </Link>
                     <Link passHref href="/">
-                      <h3 className="nav-link " onClick={handleSignOut}>
-                        Sign-out
+                      <h3
+                        className="nav-link flex items-center gap-x-1"
+                        onClick={handleSignOut}
+                      >
+                        <BiExit /> Sign-out
                       </h3>
                     </Link>
                   </div>
@@ -394,10 +400,12 @@ function Navbar() {
                 <a
                   onClick={() => dispatch(navActions.close())}
                   className={
-                    router.pathname == "/sign-in" ? "nav-active" : "nav-link"
+                    router.pathname == "/sign-in"
+                      ? "nav-active flex items-center gap-x-1"
+                      : "nav-link flex items-center gap-x-1"
                   }
                 >
-                  Sign-in
+                  <GoSignIn /> Sign-in
                 </a>
               </Link>
             )}
@@ -406,10 +414,12 @@ function Navbar() {
                 <a
                   onClick={() => dispatch(navActions.close())}
                   className={
-                    router.pathname == "/sign-up" ? "nav-active" : "nav-link"
+                    router.pathname == "/sign-up"
+                      ? "nav-active flex items-center gap-x-1"
+                      : "nav-link flex items-center gap-x-1"
                   }
                 >
-                  Sign-up
+                  <BsPersonPlusFill /> Sign-up
                 </a>
               </Link>
             )}

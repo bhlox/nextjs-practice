@@ -109,7 +109,7 @@ function PostId({ data, recentPosts }) {
         <div className="space-y-10">
           {/* POST TITLE */}
           <div className="space-y-7">
-            <h2 className="font-extrabold text-4xl md:text-6xl max-w-3xl">
+            <h2 className="font-extrabold text-5xl md:text-6xl max-w-3xl">
               {title}
             </h2>
             <div className="max-w-[53rem]">

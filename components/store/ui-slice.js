@@ -7,6 +7,7 @@ export const uiSlice = createSlice({
     isUpdating: false,
     showEdit: false,
     isEditingUserName: false,
+    load: false,
   },
   reducers: {
     toggle(state) {
@@ -35,6 +36,12 @@ export const uiSlice = createSlice({
     },
     editedUserName(state) {
       state.isEditingUserName = false;
+    },
+    loading(state) {
+      state.load = true;
+    },
+    loaded(state) {
+      state.load = false;
     },
   },
 });

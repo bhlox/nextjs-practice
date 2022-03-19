@@ -431,11 +431,8 @@ const Tiptap = ({
           </div>
           <div className="space-y-4">
             <div>
-              <p>{editor?.storage?.characterCount.words()} / 300 words</p>
-              <p>
-                {editor?.storage?.characterCount.characters()} / 3000 character
-                limit
-              </p>
+              <p>{editor?.storage?.characterCount.words()} words</p>
+              <p>{editor?.storage?.characterCount.characters()} / 3000</p>
             </div>
             {!validity.descCount && (
               <div className="flex space-x-2 items-center text-3xl">

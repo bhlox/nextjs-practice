@@ -6,14 +6,18 @@ import { useDispatch } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 import { GiDialPadlock } from "react-icons/gi";
 import { GoEye } from "react-icons/go";
+import { TiWarning } from "react-icons/ti";
 import { MdEmail } from "react-icons/md";
 import nookies from "nookies";
 import GoogleAuth from "../../components/GoogleAuth";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import { textActions } from "../../components/store/text-slice";
+import { uiActions } from "../../components/store/ui-slice";
 
 function SignIn() {
   const [formData, setFormData] = useState({});
+
   const dispatch = useDispatch();
   const router = useRouter();
   const auth = getAuth();
@@ -21,9 +25,13 @@ function SignIn() {
   const passwordInputRef = useRef();
 
   const showPassword = useSelector((state) => state.user.showPassword);
+  const { message } = useSelector((state) => state.text);
+  const { load } = useSelector((state) => state.ui);
 
   useEffect(() => {
     dispatch(userActions.hide());
+
+    return () => dispatch(textActions.reset());
   }, [dispatch]);
 
   const handleData = (e) => {
@@ -34,6 +42,7 @@ function SignIn() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    dispatch(uiActions.loading());
 
     try {
       const userCredential = await signInWithEmailAndPassword(
@@ -42,8 +51,17 @@ function SignIn() {
         formData.password
       );
       dispatch(userActions.success());
+      dispatch(uiActions.loaded());
       router.push("/");
     } catch (error) {
+      const errorMsg = error
+        .toString()
+        ?.split(" ")
+        ?.slice(-1)
+        ?.toString()
+        ?.replace(/[^a-zA-Z ]/g, " ");
+      dispatch(textActions.submitErrorMsg(errorMsg));
+      dispatch(uiActions.loaded());
       console.log(error);
     }
   };
@@ -99,9 +117,20 @@ function SignIn() {
             </Link>
           </div>
 
-          <GoogleAuth sign="in" />
-          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-            Sign-in
+          {!load && message.error && (
+            <div className="flex items-center text-4xl space-x-1 bg-red-600 p-2 rounded-xl">
+              <TiWarning className="text-yellow-400" />
+              <h2 className=" font-bold capitalize">{message.error}</h2>
+            </div>
+          )}
+          {!load && <GoogleAuth sign="in" />}
+          <button
+            disabled={load}
+            className={`px-4 py-2 ${
+              load ? "bg-transparent" : "bg-purple-600"
+            }  rounded-3xl text-3xl hover:bg-purple-700 w-full`}
+          >
+            {!load ? "Sign-in" : "Verifying..."}
           </button>
         </form>
       </div>

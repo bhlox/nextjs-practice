@@ -30,28 +30,11 @@ import { userActions } from "../../components/store/user-slice";
 import nookies from "nookies";
 import { useSelector } from "react-redux";
 import GoogleAuth from "../../components/GoogleAuth";
-
-const pattern = /..+@.+\...+/;
+import { accountFormActions } from "../../components/store/account-form-slice";
 
 function SignUp() {
   const showPassword = useSelector((state) => state.user.showPassword);
-  const [formData, setFormData] = useState({
-    name: "",
-    username: "",
-    password: "",
-    email: "",
-  });
 
-  const [isNameValid, setIsNameValid] = useState(false);
-
-  const [usernameLength, setusernameLength] = useState(false);
-  const [formValidity, setFormValidity] = useState(false);
-  const [usernameExists, setUsernameExists] = useState(false);
-
-  const [isEmailValid, setisEmailValid] = useState(false);
-  const [emailExists, setemailExists] = useState(false);
-
-  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const router = useRouter();
 
   const passwordInputRef = useRef();
@@ -59,30 +42,39 @@ function SignUp() {
   const auth = getAuth();
   const dispatch = useDispatch();
 
+  const { accountInfo } = useSelector((state) => state.accountForm);
+  const { validity } = useSelector((state) => state.accountForm);
+  const { lengthValidity } = useSelector((state) => state.accountForm);
+  const { exists } = useSelector((state) => state.accountForm);
+  const { specialCharacters } = useSelector((state) => state.accountForm);
+  const { signUpValidity } = useSelector((state) => state.accountForm);
+
   const usersRef = collection(db, "users");
 
   useEffect(() => {
     dispatch(userActions.hide());
+
+    return () => dispatch(accountFormActions.reset());
   }, [dispatch]);
 
   const handleData = async (e) => {
-    if (e.target.id === "name") {
-      setFormData((prevData) => {
-        return { ...prevData, [e.target.id]: e.target.value };
-      });
+    if (e.target.id === "fullName") {
+      dispatch(
+        accountFormActions.submitInfo({ [e.target.id]: e.target.value })
+      );
 
-      setIsNameValid(e.target.value.length > 2);
+      dispatch(accountFormActions.isNameHasSpecial());
+      dispatch(accountFormActions.isNameLengthValid());
+      dispatch(accountFormActions.isNameValid());
     }
 
     if (e.target.id === "username") {
-      setFormData((prevData) => {
-        return { ...prevData, [e.target.id]: e.target.value };
-      });
-      if (e.target.value.length > 5) {
-        setusernameLength(true);
-      } else {
-        setusernameLength(false);
-      }
+      dispatch(
+        accountFormActions.submitInfo({ [e.target.id]: e.target.value })
+      );
+
+      dispatch(accountFormActions.isUsernameLengthValid());
+
       const userQuery = query(
         usersRef,
         where("username", "==", e.target.value.trim())
@@ -90,102 +82,81 @@ function SignUp() {
       const snapshot = await getDocs(userQuery);
       const taken = snapshot.docs.length !== 0;
 
-      if (taken) {
-        setUsernameExists(true);
-      } else {
-        setUsernameExists(false);
-      }
+      dispatch(accountFormActions.isUsernameTaken(taken));
+      dispatch(accountFormActions.isUsernameValid());
     }
 
     if (e.target.id === "email") {
-      setFormData((prevData) => {
-        return { ...prevData, [e.target.id]: e.target.value };
-      });
-      if (e.target.value.match(pattern)) {
-        setisEmailValid(true);
-        const userQuery = query(
-          usersRef,
-          where("email", "==", e.target.value.trim())
-        );
-        const snapshot = await getDocs(userQuery);
-        const taken = snapshot.docs.length > 0;
+      dispatch(
+        accountFormActions.submitInfo({ [e.target.id]: e.target.value })
+      );
 
-        if (!taken) {
-          setemailExists(false);
-        } else {
-          setemailExists(true);
-          setisEmailValid(false);
-        }
-      } else setisEmailValid(false);
+      const userQuery = query(
+        usersRef,
+        where("email", "==", e.target.value.trim())
+      );
+      const snapshot = await getDocs(userQuery);
+      const taken = snapshot.docs.length > 0;
+
+      dispatch(accountFormActions.isEmailTaken(taken));
+      dispatch(accountFormActions.isEmailValid());
     }
 
     if (e.target.id === "password") {
-      setFormData((prevData) => {
-        return { ...prevData, [e.target.id]: e.target.value };
-      });
-      if (e.target.value.length > 5 && e.target.value.match(/[0-9]/)) {
-        setIsPasswordValid(true);
-      } else {
-        setIsPasswordValid(false);
-      }
+      dispatch(
+        accountFormActions.submitInfo({ [e.target.id]: e.target.value })
+      );
+      dispatch(accountFormActions.isPasswordValid());
     }
 
-    const formIsValid = Object.values(formData).every(
-      (entry) => entry.length > 2
-    );
-    // console.log("handling data, is form valid", formIsValid);
-    setFormValidity(formIsValid);
+    dispatch(accountFormActions.isSignUpValid());
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const formIsValid = Object.values(formData).every(
-    //   (entry) => entry.length > 2
-    // );
+    console.log(accountInfo);
 
     // console.log(formIsValid);
-
-    if (!formIsValid) {
-      console.log("form not valid");
-      setFormValidity(false);
-    }
+    console.log(
+      `handle submit function is called, sign up validity is ${signUpValidity}`
+    );
 
     try {
-      // const userCredential = await createUserWithEmailAndPassword(
-      //   auth,
-      //   formData.email,
-      //   formData.password
-      // );
-      // const user = userCredential.user;
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        accountInfo.email,
+        accountInfo.password
+      );
+      const user = userCredential.user;
       // console.log(formData);
-      // await updateProfile(auth.currentUser, {
-      //   displayName: formData.username,
-      //   photoURL:
-      //     "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
-      // });
-      // const formDataCopy = {
-      //   username: formData.username,
-      //   name: formData.name,
-      //   email: formData.email,
-      //   posts: [],
-      //   profilePic:
-      //     "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
-      //   coverPic:
-      //     "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg",
-      //   socials: {
-      //     facebook: "",
-      //     twitter: "",
-      //     instagram: "",
-      //   },
-      //   aboutMe: "",
-      //   timestamp: serverTimestamp(),
-      // };
+      await updateProfile(auth.currentUser, {
+        displayName: accountInfo.username,
+        photoURL:
+          "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
+      });
+      const formDataCopy = {
+        username: accountInfo.username,
+        name: accountInfo.fullName,
+        email: accountInfo.email,
+        posts: [],
+        profilePic:
+          "https://cdn.pixabay.com/photo/2017/07/18/23/23/user-2517433__480.png",
+        coverPic:
+          "https://forum.gameznetwork.com/styles/brivium/ProfileCover/default.jpg",
+        socials: {
+          facebook: "",
+          twitter: "",
+          instagram: "",
+        },
+        aboutMe: "",
+        timestamp: serverTimestamp(),
+      };
       // console.log(formDataCopy);
-      // await setDoc(doc(db, "users", user.uid), formDataCopy);
-      // console.log("registration success");
-      // dispatch(userActions.success());
-      // router.push("/profile");
+      await setDoc(doc(db, "users", user.uid), formDataCopy);
+      console.log("registration success");
+      dispatch(userActions.success());
+      router.push("/profile");
     } catch (error) {
       console.log(error);
       alert(error);
@@ -212,20 +183,34 @@ function SignUp() {
         >
           <div className="relative max-w-max">
             <input
-              className="styled-input"
+              className={`styled-input ${
+                accountInfo.fullName && !validity.fullName
+                  ? "border-red-400 border-b-4"
+                  : ""
+              }`}
               type="text"
-              id="name"
+              id="fullName"
               onChange={handleData}
               placeholder="enter full name"
               autoComplete="none"
             />
             <GoPerson className="input-icon" />
-            {formData.name && isNameValid && (
+
+            {accountInfo.fullName && validity.fullName && (
               <HiCheckCircle className="text-green-400 text-3xl absolute top-1/2 -translate-y-1/2 right-0" />
             )}
-            {formData.name && !isNameValid && (
-              <div>
-                <p className="text-xl font-light">Minimum of 3 characters</p>
+
+            {accountInfo.fullName && specialCharacters.fullName && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>name contains special characters</p>
+              </div>
+            )}
+
+            {accountInfo.fullName && !lengthValidity.fullName && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>minimum of 2 letters</p>
               </div>
             )}
           </div>
@@ -233,7 +218,7 @@ function SignUp() {
           <div className="relative max-w-max">
             <input
               className={`styled-input ${
-                usernameExists ? "border-red-400 border-b-4" : ""
+                exists.username ? "border-red-400 border-b-4" : ""
               }`}
               type="text"
               id="username"
@@ -243,17 +228,20 @@ function SignUp() {
               maxLength={20}
             />
             <VscOctoface className="input-icon" />
-            {formData.username && !usernameExists && usernameLength && (
-              <HiCheckCircle className="text-green-400 text-3xl absolute top-1/2 -translate-y-1/2 right-0" />
-            )}
-            {formData.username && !usernameLength && (
-              <div>
-                <p className="text-xl font-light">Minimum of 6 characters</p>
+            {accountInfo.username &&
+              !exists.username &&
+              lengthValidity.username && (
+                <HiCheckCircle className="text-green-400 text-3xl absolute top-1/2 -translate-y-1/2 right-0" />
+              )}
+            {accountInfo.username && !lengthValidity.username && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>minimum of 6 characters</p>
               </div>
             )}
-            {formData.username &&
-              usernameExists &&
-              formData.username.length > 5 && (
+            {accountInfo.username &&
+              exists.username &&
+              lengthValidity.username && (
                 <div className="flex gap-x-1 items-center text-2xl font-bold">
                   <TiWarning className="text-yellow-400" />
                   <p>username is taken</p>
@@ -263,7 +251,11 @@ function SignUp() {
 
           <div className="relative max-w-max">
             <input
-              className="styled-input"
+              className={`styled-input ${
+                exists.email || (accountInfo.email && !validity.email)
+                  ? "border-red-400 border-b-4"
+                  : ""
+              }`}
               type="email"
               id="email"
               onChange={handleData}
@@ -271,12 +263,25 @@ function SignUp() {
               autoComplete="none"
             />
             <MdEmail className="input-icon" />
-            {formData.email && emailExists && <div>email already exists</div>}
-            {formData.email && !isEmailValid && <div>email invalid</div>}
+            {accountInfo.email && !exists.email && validity.email && (
+              <HiCheckCircle className="text-green-400 text-3xl absolute top-1/2 -translate-y-1/2 right-0" />
+            )}
+            {accountInfo.email && exists.email && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>email address already exists</p>
+              </div>
+            )}
+            {accountInfo.email && !validity.email && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>email invalid</p>
+              </div>
+            )}
           </div>
           <div className="relative max-w-max">
             <input
-              className="styled-input"
+              className={`styled-input`}
               type={showPassword ? "text" : "password"}
               ref={passwordInputRef}
               id="password"
@@ -290,22 +295,28 @@ function SignUp() {
                 showPassword ? "text-red-500" : "text-purple-600"
               }  cursor-pointer hover:text-purple-400`}
             />
-            {formData.password && !isPasswordValid && (
-              <div>your password is weak</div>
+            {accountInfo.password && validity.password && (
+              <HiCheckCircle className="text-green-400 text-3xl absolute top-1/2 -translate-y-1/2 right-10" />
+            )}
+            {accountInfo.password && !validity.password && (
+              <div className="flex gap-x-1 items-center text-2xl font-bold">
+                <TiWarning className="text-yellow-400" />
+                <p>password is weak</p>
+              </div>
             )}
           </div>
           <GoogleAuth sign="up" />
           <button
             type="submit"
             onClick={handleSubmit}
-            disabled={!formValidity}
+            disabled={!signUpValidity}
             className={`px-4 py-2 ${
-              formValidity
+              signUpValidity
                 ? "bg-purple-600 hover:bg-purple-700"
                 : "bg-transparent"
             }  rounded-3xl text-3xl  w-full outline-2 outline-purple-500 outline`}
           >
-            {formValidity ? "Submit registration" : "Pls check your entries"}
+            {signUpValidity ? "Submit registration" : "Pls check your entries"}
           </button>
         </form>
       </div>

@@ -5,15 +5,21 @@ import {
   updatePassword,
 } from "firebase/auth";
 import { doc } from "firebase/firestore";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import nookies from "nookies";
 import Head from "next/head";
 
 import { GiDialPadlock } from "react-icons/gi";
 import { GoEye } from "react-icons/go";
+import { TiWarning } from "react-icons/ti";
+import { HiCheckCircle } from "react-icons/hi";
 import { useDispatch, useSelector } from "react-redux";
 import { userActions } from "../../components/store/user-slice";
 import { db } from "../../firebase.config";
+import { uiActions } from "../../components/store/ui-slice";
+import { textActions } from "../../components/store/text-slice";
+
+const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~0-9]/;
 
 function ChangeLoginInfo() {
   const auth = getAuth();
@@ -25,6 +31,12 @@ function ChangeLoginInfo() {
   const dispatch = useDispatch();
 
   const showPassword = useSelector((state) => state.user.showPassword);
+  const { load } = useSelector((state) => state.ui);
+  const { message } = useSelector((state) => state.text);
+
+  useEffect(() => {
+    return () => dispatch(textActions.reset());
+  }, []);
 
   const handleShow = () => {
     dispatch(userActions.show());
@@ -33,7 +45,8 @@ function ChangeLoginInfo() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const userRef = doc(db, "users", auth.currentUser.uid);
+    dispatch(uiActions.loading());
+    // const userRef = doc(db, "users", auth.currentUser.uid);
 
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
@@ -47,22 +60,42 @@ function ChangeLoginInfo() {
       );
 
       if (
+        passwordConfirmInputRef.current.value.length <= 5 ||
+        passwordInputRef.current.value.length <= 5
+      ) {
+        throw new Error("Firebase: Error (auth/password-too-short)");
+      }
+
+      if (!format.test(passwordConfirmInputRef.current.value)) {
+        throw new Error("Firebase: Error (auth/password-is-weak)");
+      }
+      if (
         passwordConfirmInputRef.current.value !== passwordInputRef.current.value
       ) {
-        throw new Error("New passwords do not match. Pls revalidate");
+        throw new Error("Firebase: Error (auth/new-passwords-do-not-match)");
       }
 
       await updatePassword(
         auth.currentUser,
         passwordConfirmInputRef.current.value
       );
-      alert("password successfully updated");
-      console.log("password successfully updated");
+      dispatch(textActions.submitErrorMsg(""));
+      dispatch(textActions.submitSuccessMsg("Password successfully updated!"));
+      dispatch(uiActions.loaded());
     } catch (error) {
-      console.log(error);
-      alert(error);
+      const errorMsg = error
+        .toString()
+        ?.split(" ")
+        ?.slice(-1)
+        ?.toString()
+        ?.replace(/[^a-zA-Z ]/g, " ");
+      dispatch(textActions.submitErrorMsg(errorMsg));
+      dispatch(textActions.submitSuccessMsg(""));
+      dispatch(uiActions.loaded());
+      console.error(error);
     }
   };
+
   return (
     <>
       <Head>
@@ -130,10 +163,31 @@ function ChangeLoginInfo() {
               }  cursor-pointer `}
             />
           </div>
-
-          <button className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full">
-            Save
-          </button>
+          {load && (
+            <div>
+              <h2 className="text-2xl text-bold">Loading...</h2>
+            </div>
+          )}
+          {!load && message.success && (
+            <div className="text-3xl flex items-center space-x-1">
+              <HiCheckCircle className="text-green-400" />
+              <h2>{message.success}</h2>
+            </div>
+          )}
+          {!load && message.error && (
+            <div className="flex items-center space-x-1 text-3xl ">
+              <TiWarning className="text-yellow-400" />
+              <h2 className="text-red-400 font-bold">{message.error}</h2>
+            </div>
+          )}
+          {!load && (
+            <button
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-purple-600 rounded-3xl text-3xl hover:bg-purple-700 w-full"
+            >
+              Save
+            </button>
+          )}
         </form>
       </div>
     </>

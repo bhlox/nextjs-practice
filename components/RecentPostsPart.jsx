@@ -1,13 +1,16 @@
 import Link from "next/link";
 
 export default function RecentPostsPart({ recentPosts, headline }) {
-  console.log(recentPosts);
+  // console.log(recentPosts);
   return (
     <div>
       {headline && <h2 className="text-4xl my-4 font-bold">Recent Posts</h2>}
       <div className="flex flex-wrap">
         {recentPosts.map((post) => (
-          <div key={post.id} className="w-full lg:w-1/4 md:w-1/3 sm:w-1/2">
+          <div
+            key={Math.random() * 2767313}
+            className="w-full lg:w-1/4 md:w-1/3 sm:w-1/2"
+          >
             <div className="p-2">
               <div className="bg-slate-700 rounded-xl h-96 group">
                 <div className="relative">

@@ -8,12 +8,17 @@ import {
 } from "firebase/auth";
 import { db } from "../../firebase.config";
 import { useDispatch, useSelector } from "react-redux";
-import { useAuthContext } from "../../components/context/auth-context";
 import nookies from "nookies";
 import { firebaseAdmin } from "../../firebaseAdmin";
-import { doc, getDoc, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { updateDoc } from "firebase/firestore";
-import { async } from "@firebase/util";
 import {
   getDownloadURL,
   getStorage,
@@ -26,6 +31,7 @@ import { textActions } from "../../components/store/text-slice";
 import ProfileCard from "../../components/ProfileCard";
 import ProfilePosts from "../../components/ProfilePosts";
 import Head from "next/head";
+import { userActions } from "../../components/store/user-slice";
 
 function Profile({ userData }) {
   // console.log(userData);
@@ -77,6 +83,7 @@ function Profile({ userData }) {
   const textLength = useSelector((state) => state.text.textLength);
   // const isUpdating = useSelector((state) => state.ui.isUpdating);
   const isEditingUserName = useSelector((state) => state.ui.isEditingUserName);
+  const { message } = useSelector((state) => state.text);
 
   const aboutInputRef = useRef();
   const usernameInputRef = useRef();
@@ -121,7 +128,7 @@ function Profile({ userData }) {
 
           postsId.forEach(async (id, i) => {
             const colRef = doc(db, "posts", id);
-            await updateDoc(colRef, { author: { userpic: downloadUrl } });
+            await updateDoc(colRef, { "author.userpic": downloadUrl });
           });
           console.log("posts userpic updated");
         };
@@ -187,6 +194,7 @@ function Profile({ userData }) {
     if (action === "about") setCurrentAbout(aboutMe);
     if (action === "username") {
       dispatch(uiActions.editedUserName());
+      dispatch(userActions.hide());
       setCurrentUsername(username);
     }
     if (action === "socials") {
@@ -207,18 +215,38 @@ function Profile({ userData }) {
     dispatch(uiActions.editingUserName());
   };
 
-  const handleSaveUserName = async () => {
+  const handleSaveUserName = async (e) => {
+    e.preventDefault();
+
+    dispatch(uiActions.loading());
     const userProvidedPassword = passwordInputRef.current.value;
     const credential = EmailAuthProvider.credential(
       auth.currentUser.email,
       userProvidedPassword
     );
 
+    const usersRef = collection(db, "users");
+    const userQuery = query(
+      usersRef,
+      where("username", "==", usernameInputRef.current.value.trim())
+    );
+
     try {
+      const snapshot = await getDocs(userQuery);
+      const taken = snapshot.docs.length !== 0;
+
+      if (taken) {
+        throw new Error("Firebase: Error (auth/username-is-taken)");
+      }
+
       const result = await reauthenticateWithCredential(
         auth.currentUser,
         credential
       );
+      const isUsernameValid = usernameInputRef.current.value.length > 5;
+
+      if (!isUsernameValid)
+        throw new Error("Firebase: Error (auth/username-is-too-short)");
 
       await updateDoc(userRef, { username: usernameInputRef.current.value });
       updateProfile(auth.currentUser, {
@@ -234,10 +262,18 @@ function Profile({ userData }) {
         console.log("posts username updated");
       });
       dispatch(textActions.reset());
+      dispatch(uiActions.loaded());
       dispatch(uiActions.editedUserName());
     } catch (error) {
+      const errorMsg = error
+        .toString()
+        ?.split(" ")
+        ?.slice(-1)
+        ?.toString()
+        ?.replace(/[^a-zA-Z ]/g, " ");
+      dispatch(textActions.submitErrorMsg(errorMsg));
+      dispatch(uiActions.loaded());
       console.log(error);
-      alert(error);
     }
   };
 
@@ -278,6 +314,11 @@ function Profile({ userData }) {
   useEffect(() => {
     // if (didDelete) {
     const allPosts = [];
+    if (!postsId.length) {
+      setPosts([]);
+      return;
+    }
+
     postsId.forEach(async (id, i) => {
       const docRef = doc(db, "posts", id);
 
@@ -303,6 +344,8 @@ function Profile({ userData }) {
     // }
   }, [postsId]);
 
+  console.log(userPosts);
+
   return (
     <>
       <Head>
@@ -310,7 +353,6 @@ function Profile({ userData }) {
         <link rel="icon" href="/newreadit.png" />
       </Head>
 
-      {/* PROFILE CARD */}
       <ProfileCard
         handleChangeSocials={handleChangeSocials}
         self={true}
@@ -348,6 +390,7 @@ function Profile({ userData }) {
         editingName={editingName}
         setCurrentName={setCurrentName}
         handleSaveName={handleSaveName}
+        message={message}
       />
 
       <ProfilePosts

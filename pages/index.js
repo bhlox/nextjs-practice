@@ -7,16 +7,28 @@ import CarouselSlider from "../components/Carousel.jsx";
 import { useEffect, useState } from "react";
 import LatestPostsPart from "../components/LatestPostsPart.jsx";
 import RecentPostsPart from "../components/RecentPostsPart.jsx";
+import LoadMorePosts from "../components/LoadMorePosts";
+import { useDispatch, useSelector } from "react-redux";
+import { homePostsActions } from "../components/store/home-posts-slice";
 
-export default function Home({ posts }) {
+export default function Home({ posts, lastPostData }) {
   // console.log(posts);
+
+  const dispatch = useDispatch();
+
   const colRef = collection(db, "posts");
 
-  const latestPosts = posts.filter((post, i) => i <= 1);
-
+  const [latestPosts, setLatestPosts] = useState(
+    posts.filter((post, i) => i <= 1)
+  );
   const [randomPosts, setRandomPosts] = useState([]);
+  const [recentPosts, setRecentPosts] = useState(
+    posts.filter((post, i) => i > 1)
+  );
 
-  const recentPosts = posts.filter((post, i) => i > 1);
+  // const { latestPosts } = useSelector((state) => state.homePosts);
+  // const { randomPosts } = useSelector((state) => state.homePosts);
+  // const { recentPosts } = useSelector((state) => state.homePosts);
 
   const fetchRandomPosts = async () => {
     const posts = [];
@@ -35,7 +47,6 @@ export default function Home({ posts }) {
           posts.push({ ...doc });
           return true;
         });
-      // console.log(posts);
       setRandomPosts(posts);
     } catch (error) {
       console.log(error);
@@ -70,6 +81,8 @@ export default function Home({ posts }) {
       <CarouselSlider posts={randomPosts} />
 
       <RecentPostsPart recentPosts={recentPosts} headline={true} />
+
+      <LoadMorePosts setRecentPosts={setRecentPosts} />
     </>
   );
 }
@@ -89,6 +102,12 @@ export async function getStaticProps(context) {
         timestamp: doc.data().timestamp.toDate().toDateString(),
       });
     });
+
+    const lastPostData = snapshot.docs.slice(-1).map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+      timestamp: doc.data().timestamp.toDate().toDateString(),
+    }));
 
     return {
       revalidate: 600,
