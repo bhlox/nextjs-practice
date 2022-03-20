@@ -2,6 +2,7 @@ import Head from "next/head";
 
 import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
 import { db } from "../firebase.config";
+import nookies from "nookies";
 
 import CarouselSlider from "../components/Carousel.jsx";
 import { useEffect, useState } from "react";
@@ -11,8 +12,9 @@ import LoadMorePosts from "../components/LoadMorePosts";
 import { useDispatch, useSelector } from "react-redux";
 import { homePostsActions } from "../components/store/home-posts-slice";
 
-export default function Home({ posts, lastPostData }) {
+export default function Home({ posts, cookies }) {
   // console.log(posts);
+  console.log(cookies);
 
   const dispatch = useDispatch();
 
@@ -68,7 +70,7 @@ export default function Home({ posts, lastPostData }) {
       <div className="mx-auto flex flex-col md:flex-row items-center justify-center space-y-6 font-handLee">
         <div>
           <h2 className="text-5xl">Readis Thoughts</h2>
-          <h2 className="text-6xl italic font-semibold text-orange-400">
+          <h2 className="text-6xl italic font-semibold text-orange-400 text-center">
             &quot;Blogs&quot;
           </h2>
           <p className="hidden sm:block max-w-sm text-center md:text-left font-sans">
@@ -94,6 +96,8 @@ export default function Home({ posts, lastPostData }) {
 
 export async function getStaticProps(context) {
   const colRef = collection(db, "posts");
+  const cookies = nookies.get(context);
+
   try {
     const q = query(colRef, orderBy("timestamp", "desc"), limit(14));
 
@@ -118,6 +122,7 @@ export async function getStaticProps(context) {
       revalidate: 600,
       props: {
         posts,
+        cookies,
       },
     };
   } catch (error) {

@@ -9,7 +9,7 @@ export const uiSlice = createSlice({
     isEditingUserName: false,
     load: false,
     postSent: false,
-    darkMode: false,
+    darkMode: true,
   },
   reducers: {
     toggle(state) {
@@ -53,6 +53,13 @@ export const uiSlice = createSlice({
     },
     toggleDark(state) {
       state.darkMode = !state.darkMode;
+      localStorage.setItem("color-theme", !state.darkMode ? "light" : "dark");
+    },
+    darkModeOn(state) {
+      state.darkMode = true;
+    },
+    darkModeOff(state) {
+      state.darkMode = false;
     },
   },
 });

@@ -14,7 +14,7 @@ function SearchCard({
   const re = new RegExp(`\\b${searchQuery.split(" ").join("|")}\\b`, "gi");
 
   return (
-    <div className="mx-auto max-w-max flex flex-col items-center md:items-start md:flex-row bg-slate-700 rounded-b-xl md:rounded-r-xl md:space-x-1">
+    <div className="mx-auto max-w-max flex flex-col items-center md:items-start md:flex-row dark:bg-slate-700 bg-gray-300 rounded-b-xl md:rounded-r-xl md:space-x-1">
       {/* POST IMAGE */}
       <Link passHref href={`/post/${id}`}>
         <div className="cursor-pointer overflow-hidden group">
@@ -29,7 +29,7 @@ function SearchCard({
 
       {/* POST INFO */}
       <div className="md:h-96 md:flex md:flex-col md:justify-between">
-        <div className="space-y-4 p-4 md:pt-0 w-96">
+        <div className="space-y-4 p-4 md:pt-2 w-96">
           <div className="relative">
             <Link passHref href={`/post/${id}`}>
               <h2
@@ -44,7 +44,7 @@ function SearchCard({
               </h2>
             </Link>
             <Link passHref href={`/blogs/${category}`}>
-              <span className=" text-lg capitalize font-light bg-blue-400 px-1 rounded cursor-pointer absolute -bottom-7 right-4 hover:underline">
+              <span className=" text-lg capitalize font-light bg-blue-400 px-1 rounded cursor-pointer absolute -bottom-7 right-4 outline outline-2 outline-blue-400 hover:bg-transparent transition-all">
                 {category}
               </span>
             </Link>
@@ -77,7 +77,7 @@ function SearchCard({
 
         <div className="p-4 j">
           <Link passHref href={`/post/${id}`}>
-            <button className="bg-green-700 w-full rounded text-lg flex items-center justify-center gap-x-2 hover:bg-transparent outline outline-2 outline-green-700 transition-all duration-300">
+            <button className="bg-green-600 w-full rounded text-lg flex items-center justify-center gap-x-2 hover:bg-transparent outline outline-2 outline-green-600 transition-all duration-300">
               <FaHandPointRight /> Read more
             </button>
           </Link>

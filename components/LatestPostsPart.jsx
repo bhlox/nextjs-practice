@@ -13,7 +13,7 @@ export default function LatestPostsPart({ latestPosts }) {
             <h2 className="font-bold">Latest posts</h2>
           </div>
           <div className="flex space-x-8 font-handLee text-gray-200">
-            <div className="md:w-2/3 relative group">
+            <div className="md:w-2/3 relative group shadow-2xl">
               <div>
                 <Link passHref href={`/post/${latestPosts[0].id}`}>
                   <img
@@ -74,7 +74,7 @@ export default function LatestPostsPart({ latestPosts }) {
               </Link>
             </div>
 
-            <div className="relative md:w-1/3 group">
+            <div className="relative md:w-1/3 group shadow-2xl">
               <div>
                 <Link passHref href={`/post/${latestPosts[1].id}`}>
                   <img
