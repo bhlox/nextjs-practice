@@ -8,6 +8,8 @@ import ScrollToTop from "./ScrollToTop";
 
 function Layout({ children }) {
   const dispatch = useDispatch();
+
+  const { darkMode } = useSelector((state) => state.ui);
   const handleClose = () => {
     dispatch(navActions.closeProfile());
     dispatch(navActions.closeBlogs());
@@ -16,16 +18,20 @@ function Layout({ children }) {
 
   return (
     <>
-      <div className="pancake">
+      <div className={`${darkMode ? "dark" : ""}`}>
         <Navbar />
         <BackDrop />
-        <section
-          onClick={handleClose}
-          className="max-w-7xl mx-auto my-8 space-y-16 py-8 px-4 min-h-[80vh]"
+        <div
+          className={`dark:bg-slate-800 py-8 dark:text-zinc-200 bg-stone-200`}
         >
-          {children}
-          <ScrollToTop />
-        </section>
+          <section
+            onClick={handleClose}
+            className="max-w-7xl mx-auto space-y-16 py-8 px-4 min-h-[80vh]  relative"
+          >
+            {children}
+            <ScrollToTop />
+          </section>
+        </div>
         <Footer />
       </div>
     </>

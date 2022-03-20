@@ -66,7 +66,7 @@ export default function ProfileCard({
   };
 
   return (
-    <div className="relative bg-slate-700 rounded-xl">
+    <div className="relative bg-gray-300 dark:bg-slate-700 rounded-xl">
       <div className="relative border-b-2">
         {self && (
           <label
@@ -144,7 +144,7 @@ export default function ProfileCard({
                     <span>enter new username</span>
                     <span
                       onClick={() => handleCancel("username")}
-                      className="cursor-pointer text-2xl"
+                      className="cursor-pointer text-2xl hover:scale-110"
                     >
                       X
                     </span>
@@ -191,7 +191,7 @@ export default function ProfileCard({
                   )}
                   {!load && (
                     <button
-                      className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                      className="text-2xl rounded py-1 px-2 outline-2 dark:outline-gray-300 outline-slate-800 outline hover:scale-110"
                       onClick={handleSaveUserName}
                     >
                       Save
@@ -224,7 +224,7 @@ export default function ProfileCard({
                     <div className="flex space-x-4">
                       <p className="text-xl">Enter full name</p>
                       <span
-                        className="cursor-pointer text-xl font-bold"
+                        className="cursor-pointer text-xl font-bold hover:scale-110"
                         onClick={() => handleCancel("name")}
                       >
                         X
@@ -238,7 +238,7 @@ export default function ProfileCard({
                       onChange={(e) => setCurrentName(e.target.value)}
                     />
                     <button
-                      className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                      className="text-2xl rounded py-1 px-2 outline-2 dark:outline-gray-300 outline-slate-800 outline hover:scale-110"
                       onClick={handleSaveName}
                     >
                       save
@@ -271,7 +271,7 @@ export default function ProfileCard({
                 <h2 className="text-2xl flex gap-x-6">
                   About me
                   <span
-                    className="cursor-pointer text-3xl font-bold"
+                    className="cursor-pointer text-3xl font-bold hover:scale-110"
                     onClick={() => handleCancel("about")}
                   >
                     X
@@ -299,7 +299,7 @@ export default function ProfileCard({
                   <span className="">{textLength} / 100</span>
                   <button
                     onClick={handleAboutMe}
-                    className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                    className="text-2xl rounded py-1 px-2 outline-2 dark:outline-gray-300 outline-slate-800 outline hover:scale-110"
                   >
                     save
                   </button>
@@ -339,7 +339,7 @@ export default function ProfileCard({
 
               {addSocials && (
                 <span
-                  className="cursor-pointer text-lg font-bold"
+                  className="cursor-pointer text-lg font-bold hover:scale-110"
                   onClick={() => handleCancel("socials")}
                 >
                   X
@@ -438,7 +438,7 @@ export default function ProfileCard({
                 <div className="flex md:justify-end mt-4">
                   <button
                     onClick={handleSaveSocials}
-                    className="text-2xl rounded py-1 px-2 outline-2 outline-gray-300 outline hover:opacity-80"
+                    className="text-2xl rounded py-1 px-2 outline-2 dark:outline-gray-300 outline-slate-800 outline hover:scale-110"
                   >
                     Save
                   </button>

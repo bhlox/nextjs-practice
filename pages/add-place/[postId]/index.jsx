@@ -25,7 +25,8 @@ import { imageActions } from "../../../components/store/image-slice";
 import { textActions } from "../../../components/store/text-slice";
 import { userActions } from "../../../components/store/user-slice";
 import Tiptap from "../../../components/Tiptap";
-import { db } from "../../../firebase.config";
+import { db, storage } from "../../../firebase.config";
+import { uiActions } from "../../../components/store/ui-slice";
 // import { firebaseAdmin } from "../../../firebaseAdmin";
 
 function EditPost({ data, postId }) {
@@ -40,7 +41,6 @@ function EditPost({ data, postId }) {
   // const auth = getAuth();
   const router = useRouter();
   const dispatch = useDispatch();
-  const storage = getStorage();
 
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
   const previewImg = useSelector((state) => state.image.previewImg);
@@ -48,6 +48,7 @@ function EditPost({ data, postId }) {
   const formInputs = useSelector((state) => state.form.formInputs);
   const validity = useSelector((state) => state.form.validity);
   const isFormValid = useSelector((state) => state.form.isFormValid);
+  const postSent = useSelector((state) => state.ui.postSent);
 
   // console.log(validity);
   // console.log(isFormValid);
@@ -136,6 +137,7 @@ function EditPost({ data, postId }) {
       const data = await response.json();
       // console.log(data);
       dispatch(userActions.verifyComplete());
+      dispatch(uiActions.postSent());
       router.push(`/post/${postId}`);
     } catch (error) {
       console.log(error);
@@ -150,6 +152,7 @@ function EditPost({ data, postId }) {
     return () => {
       dispatch(formActions.reset());
       dispatch(imageActions.reset());
+      dispatch(uiActions.resetSent());
     };
   }, []);
 
@@ -185,7 +188,7 @@ function EditPost({ data, postId }) {
                 Pls fill out all entries
               </button>
             )}
-            {isFormValid && (
+            {isFormValid && !postSent && (
               <button
                 className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
                 disabled={checkingStatus}

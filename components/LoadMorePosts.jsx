@@ -63,10 +63,10 @@ function LoadMorePosts({ setRecentPosts }) {
   return (
     <>
       {isNextAvailable && (
-        <div className="flex justify-center border-t-2 relative">
+        <div className="flex justify-center border-t-2 relative font-handLee">
           <button
             onClick={handleFetchMore}
-            className="rounded-2xl p-2 bg-slate-500 text-2xl font-light absolute -top-7 left-1/2 -translate-x-1/2 hover:scale-110 transition-all"
+            className="rounded-2xl px-2 py-1 bg-slate-500 text-2xl font-light absolute -top-6 left-1/2 -translate-x-1/2 hover:scale-110 transition-all"
           >
             Load more
           </button>

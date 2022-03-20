@@ -2,9 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: "Handlee";
+    src: url("/fonts/Handlee.woff2") format("woff2");
+    font-weight: 400;
+    font-display: swap;
+  }
+}
+
 @layer components {
   body {
-    @apply bg-slate-900 text-gray-300 overflow-x-hidden scroll-smooth;
+    @apply /* bg-slate-900 text-gray-300  */
+    overflow-x-hidden scroll-smooth;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-handLee;
   }
 
   .css-console {
@@ -12,15 +27,15 @@
   }
 
   .nav-link {
-    @apply hover:text-slate-400 transition-all text-xl font-semibold cursor-pointer;
+    @apply transition-all text-xl font-semibold cursor-pointer;
   }
 
   .nav-active {
-    @apply text-slate-900 text-2xl font-semibold cursor-pointer;
+    @apply text-gray-200 dark:text-slate-800 text-3xl font-semibold cursor-pointer;
   }
 
   .styled-input {
-    @apply text-gray-200 text-2xl md:text-4xl bg-transparent focus:outline-none px-10 md:px-14 md:pb-2 border-b-[1px];
+    @apply dark:text-gray-200 text-slate-800 text-2xl md:text-4xl bg-transparent focus:outline-none px-10 md:px-14 md:pb-2 dark:border-stone-200 border-slate-800 border-b-[1px];
   }
 
   .input-icon {
@@ -32,15 +47,15 @@
   }
 
   .font-btn {
-    @apply p-2 border-r-2 relative;
+    @apply p-2 border-r-2 dark:border-stone-200 border-slate-800 relative;
   }
 
   .active-font-btn {
-    @apply text-purple-500 p-2 border-r-2 relative;
+    @apply text-purple-500 p-2 border-r-2 relative dark:border-stone-200 border-slate-800;
   }
 
   .font-tooltip {
-    @apply absolute -top-10 left-0 hidden
+    @apply absolute -top-14 left-0 hidden
     text-lg rounded p-1 capitalize;
   }
 

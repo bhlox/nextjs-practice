@@ -50,7 +50,7 @@ function PlaceCard({
     <div className="p-4 block w-full sm:w-1/2 lg:w-1/3">
       <div
         onMouseLeave={() => setShowPostOptions(false)}
-        className="relative rounded bg-slate-700 group"
+        className="relative rounded dark:text-stone-200 text-slate-800 bg-gray-300 dark:bg-slate-700 group"
       >
         <div className="overflow-hidden mb-3">
           <Link passHref href={`/post/${id}`}>
@@ -90,17 +90,23 @@ function PlaceCard({
               {self && (
                 <button
                   onClick={() => setShowPostOptions((prev) => !prev)}
-                  className="text-4xl absolute bottom-0 right-0 hover:opacity-80"
+                  className="text-4xl dark:text-stone-200 text-slate-800 absolute bottom-0 right-0 hover:opacity-80"
                 >
                   <HiDotsHorizontal />
                 </button>
               )}
               {showPostOptions && (
                 <div className="flex flex-col space-y-2 absolute bottom-9 right-9 p-2 bg-slate-500 divide-y-2 rounded-xl z-10">
-                  <button onClick={() => router.push(`/add-place/${id}`)}>
+                  <button
+                    className="hover:underline text-xl"
+                    onClick={() => router.push(`/add-place/${id}`)}
+                  >
                     Edit post
                   </button>
-                  <button onClick={() => setShowDeleteMsg((prev) => !prev)}>
+                  <button
+                    className="hover:underline text-xl"
+                    onClick={() => setShowDeleteMsg((prev) => !prev)}
+                  >
                     Delete post
                   </button>
                 </div>
@@ -111,31 +117,34 @@ function PlaceCard({
         {/* END OF INFO */}
       </div>
       {showDeleteMsg && (
-        <div
-          className="fixed top-0 left-0 h-screen w-screen z-10 flex justify-center items-center bg-slate-800 bg-opacity-40 backdrop-blur-[1px]"
-          onClick={() => setShowDeleteMsg(false)}
-        >
-          <div className="bg-slate-700 p-6 flex flex-col justify-center items-center space-y-8 max-w-sm rounded-xl">
-            <h2>
-              You are about this delete this post &lsquo;
-              <span className="font-bold text-lg">{title}</span>&lsquo;
-            </h2>
-            <div className="flex space-x-4 items-center">
-              <button
-                className="rounded-xl p-2 border-2 hover:opacity-80"
-                onClick={() => setShowDeleteMsg(false)}
-              >
-                Hold on for now
-              </button>
-              <button
-                onClick={handleDeletePost}
-                className="rounded-xl p-2 border-2 hover:opacity-80"
-              >
-                Confirm
-              </button>
+        <>
+          <div
+            onClick={() => setShowDeleteMsg(false)}
+            className="fixed top-0 left-0 h-screen w-screen z-10 flex justify-center items-center bg-slate-800 bg-opacity-40 backdrop-blur-[1px]"
+          ></div>
+          <div className="">
+            <div className="dark:bg-slate-700 bg-gray-300 dark:text-stone-200 text-slate-800 p-6 flex flex-col justify-center items-center space-y-8 max-w-sm rounded-xl z-20 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+              <h2 className="text-xl">
+                You are about this delete this post &ldquo;
+                <span className="font-bold text-2xl">{title}</span>&ldquo;
+              </h2>
+              <div className="flex space-x-12 items-center">
+                <button
+                  className="rounded-xl p-2 dark:border-stone-200 border-slate-800 border-2 transition-all hover:scale-125 hover:opacity-80"
+                  onClick={() => setShowDeleteMsg(false)}
+                >
+                  Hold on for now
+                </button>
+                <button
+                  onClick={handleDeletePost}
+                  className="rounded-xl p-2 dark:border-stone-200 border-slate-800 border-2 transition-all hover:scale-125 hover:opacity-80"
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

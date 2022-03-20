@@ -65,15 +65,20 @@ export default function Home({ posts, lastPostData }) {
         <link rel="icon" href="/newreadit.png" />
       </Head>
 
-      <div className="mx-auto flex flex-col items-center justify-center space-y-6 ">
-        <h2 className="text-5xl font-bold">Readis Thoughts</h2>
-        <h2 className="text-6xl italic font-semibold text-orange-400">
-          &quot;Blogs&quot;
-        </h2>
-        <p className="hidden sm:block max-w-sm text-center">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi,
-          aspernatur accusamus. Odit!
-        </p>
+      <div className="mx-auto flex flex-col md:flex-row items-center justify-center space-y-6 font-handLee">
+        <div>
+          <h2 className="text-5xl">Readis Thoughts</h2>
+          <h2 className="text-6xl italic font-semibold text-orange-400">
+            &quot;Blogs&quot;
+          </h2>
+          <p className="hidden sm:block max-w-sm text-center md:text-left font-sans">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi,
+            aspernatur accusamus. Odit!
+          </p>
+        </div>
+        <div>
+          <img src="/Vector_Landing.png" alt="" />
+        </div>
       </div>
 
       <LatestPostsPart latestPosts={latestPosts} />

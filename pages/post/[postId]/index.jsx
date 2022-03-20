@@ -126,7 +126,7 @@ function PostId({ data, recentPosts }) {
           {/* END POST TITLE */}
 
           {/* POST DESC */}
-          <div className="prose prose-invert prose-xl md:prose-2xl bg-slate-700 p-4">
+          <div className="prose dark:prose-invert prose-xl md:prose-2xl dark:bg-slate-800 bg-stone-200 p-4 font-sans border-b-4 border-slate-800 dark:border-stone-200 pb-12">
             {parser(desc)}
           </div>
         </div>

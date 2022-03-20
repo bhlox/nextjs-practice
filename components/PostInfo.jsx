@@ -10,8 +10,8 @@ export default function PostInfo({ username, timestamp, userpic, title }) {
   }, []);
 
   return (
-    <div className="flex md:flex-col justify-between items-center md:items-start space-y-8 bg-slate-700 p-4 rounded-xl">
-      <div className="post-details flex flex-col">
+    <div className="flex md:flex-col justify-between items-center md:items-start space-y-8 dark:bg-slate-700 bg-gray-300 p-4 rounded-xl">
+      <div className="post-details flex flex-col dark:text-stone-200 text-slate-800 ">
         <div className="flex items-center space-x-2">
           <h4>Post by:</h4>
           <Link passHref href={`/user/${username}`}>
@@ -22,10 +22,10 @@ export default function PostInfo({ username, timestamp, userpic, title }) {
             />
           </Link>
           <Link passHref href={`/user/${username}`}>
-            <span className="post-user">{username}</span>
+            <span className="post-user font-handLee">{username}</span>
           </Link>
         </div>
-        <h2>posted at: {timestamp}</h2>
+        <p>posted at: {timestamp}</p>
       </div>
       <div className="space-y-2 flex flex-col">
         <h2 className="text-lg font-base">Share Post</h2>

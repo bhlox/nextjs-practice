@@ -21,7 +21,7 @@ import {
   uploadString,
 } from "firebase/storage";
 
-import { db } from "../../firebase.config";
+import { db, storage } from "../../firebase.config";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -31,6 +31,7 @@ import { textActions } from "../../components/store/text-slice";
 import Tiptap from "../../components/Tiptap";
 import { imageActions } from "../../components/store/image-slice";
 import { formActions } from "../../components/store/form-slice";
+import { uiActions } from "../../components/store/ui-slice";
 
 function AddPlace() {
   const titleInput = useRef();
@@ -45,15 +46,13 @@ function AddPlace() {
 
   // const colRef = collection(db, "posts");
 
-  const storage = getStorage();
-  // const storageRef = ref(storage);
-
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
   const previewImg = useSelector((state) => state.image.previewImg);
   const postDesc = useSelector((state) => state.text.postDesc);
   const validity = useSelector((state) => state.form.validity);
   const formInputs = useSelector((state) => state.form.formInputs);
   const isFormValid = useSelector((state) => state.form.isFormValid);
+  const postSent = useSelector((state) => state.ui.postSent);
 
   const handleCount = (e) => {
     if (e.target.id === "title") {
@@ -147,6 +146,7 @@ function AddPlace() {
       dispatch(imageActions.reset());
       console.log("document added");
       dispatch(userActions.verifyComplete());
+      dispatch(uiActions.postSent());
       router.push(`/post/${data.id}`);
     } catch (error) {
       dispatch(userActions.verifyComplete());
@@ -159,6 +159,7 @@ function AddPlace() {
     return () => {
       dispatch(imageActions.reset());
       dispatch(formActions.reset());
+      dispatch(uiActions.resetSent());
     };
   }, []);
 
@@ -191,7 +192,7 @@ function AddPlace() {
                 Pls fill out all entries
               </button>
             )}
-            {isFormValid && (
+            {isFormValid && !postSent && (
               <button
                 className="w-full bg-purple-500 p-2 outline-2 outline outline-purple-500 hover:bg-transparent transition-all capitalize text-3xl"
                 disabled={checkingStatus}

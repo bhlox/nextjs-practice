@@ -26,6 +26,7 @@ import {
 import { db } from "../../firebase.config";
 import SearchBarPosts from "../SearchBarPosts";
 import conjunctionsAndPreps from "../../utils/conjunctionList";
+import { uiActions } from "../store/ui-slice";
 
 function Navbar() {
   const router = useRouter();
@@ -40,6 +41,7 @@ function Navbar() {
   const { showBlogOptions } = useSelector((state) => state.nav);
   const { showSearch } = useSelector((state) => state.nav);
   const { isSearchBarFocus } = useSelector((state) => state.nav);
+  const { darkMode } = useSelector((state) => state.ui);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchPosts, setSearchPosts] = useState([]);
@@ -135,8 +137,8 @@ function Navbar() {
   useDebounce(() => fetchSearch(), 1000, [searchTerm]);
 
   return (
-    <nav className="bg-purple-500 px-4 py-1 font-sans relative">
-      <div className="flex justify-between max-w-7xl mx-auto py-2">
+    <nav className={`bg-purple-500 px-4 py-1 relative font-handLee`}>
+      <div className="flex justify-between max-w-7xl mx-auto py-2 text-slate-800 dark:text-zinc-200">
         <Link passHref href="/">
           <div
             onClick={() => {
@@ -154,8 +156,8 @@ function Navbar() {
             <h2
               className={
                 router.pathname == "/"
-                  ? "text-black text-3xl font-medium"
-                  : "text-2xl font-light"
+                  ? "text-gray-100 dark:text-slate-800 text-5xl font-medium"
+                  : "text-3xl font-light"
               }
             >
               Readis
@@ -268,7 +270,7 @@ function Navbar() {
                 className={
                   router.pathname == "/add-place"
                     ? "nav-active flex items-center gap-x-1"
-                    : "nav-link flex items-center gap-x-1"
+                    : "nav-link flex items-center gap-x-1 hover:scale-125"
                 }
               >
                 <span>
@@ -289,7 +291,7 @@ function Navbar() {
                 className={
                   router.pathname == "/blogs/[category]"
                     ? "nav-active flex items-center gap-x-1"
-                    : "nav-link flex items-center gap-x-1"
+                    : "nav-link flex items-center gap-x-1 hover:scale-125"
                 }
               >
                 <span>
@@ -328,6 +330,12 @@ function Navbar() {
                 ))}
               </div>
             </div>
+            <button
+              className="text-3xl"
+              onClick={() => dispatch(uiActions.toggleDark())}
+            >
+              {darkMode ? "off" : "on"} dark mode
+            </button>
             {isLoggedIn && auth.currentUser && (
               <>
                 {/* <Link passHref href="/profile"> */}
@@ -368,7 +376,7 @@ function Navbar() {
                   >
                     <Link passHref href="/profile">
                       <h3
-                        className="nav-link border-b-2 pb-2 flex items-center gap-x-1"
+                        className="nav-link dark:border-stone-200 border-slate-800 border-b-2 pb-2 flex items-center gap-x-3"
                         onClick={() => dispatch(navActions.close())}
                       >
                         <BsPersonSquare /> Profile
@@ -376,7 +384,7 @@ function Navbar() {
                     </Link>
                     <Link passHref href="/login-info">
                       <h3
-                        className="nav-link border-b-2 pb-2 flex items-center gap-x-1"
+                        className="nav-link dark:border-stone-200 border-slate-800 border-b-2 pb-2 flex items-center gap-x-3"
                         onClick={() => dispatch(navActions.close())}
                       >
                         <BsGearFill className="text-2xl" /> Change password
@@ -384,7 +392,7 @@ function Navbar() {
                     </Link>
                     <Link passHref href="/">
                       <h3
-                        className="nav-link flex items-center gap-x-1"
+                        className="nav-link flex items-center gap-x-3"
                         onClick={handleSignOut}
                       >
                         <BiExit /> Sign-out
@@ -402,7 +410,7 @@ function Navbar() {
                   className={
                     router.pathname == "/sign-in"
                       ? "nav-active flex items-center gap-x-1"
-                      : "nav-link flex items-center gap-x-1"
+                      : "nav-link flex items-center gap-x-1 hover:scale-125"
                   }
                 >
                   <GoSignIn /> Sign-in
@@ -415,8 +423,8 @@ function Navbar() {
                   onClick={() => dispatch(navActions.close())}
                   className={
                     router.pathname == "/sign-up"
-                      ? "nav-active flex items-center gap-x-1"
-                      : "nav-link flex items-center gap-x-1"
+                      ? "nav-active flex items-center gap-x-1 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl"
+                      : "nav-link flex items-center gap-x-1 hover:scale-125 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl"
                   }
                 >
                   <BsPersonPlusFill /> Sign-up

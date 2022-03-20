@@ -3,16 +3,16 @@ import Link from "next/link";
 export default function RecentPostsPart({ recentPosts, headline }) {
   // console.log(recentPosts);
   return (
-    <div>
+    <div className="font-handLee">
       {headline && <h2 className="text-4xl my-4 font-bold">Recent Posts</h2>}
       <div className="flex flex-wrap">
         {recentPosts.map((post) => (
           <div
             key={Math.random() * 2767313}
-            className="w-full lg:w-1/4 md:w-1/3 sm:w-1/2"
+            className="w-full lg:w-1/4 md:w-1/3 sm:w-1/2 dark:text-gray-200 shadow-xl"
           >
             <div className="p-2">
-              <div className="bg-slate-700 rounded-xl h-96 group">
+              <div className="dark:bg-slate-700 bg-stone-200 rounded-xl h-96 group">
                 <div className="relative">
                   <div className="overflow-hidden">
                     <Link passHref href={`/post/${post.id}`}>
@@ -24,7 +24,7 @@ export default function RecentPostsPart({ recentPosts, headline }) {
                     </Link>
                   </div>
                   <Link passHref href={`/blogs/${post.category}`}>
-                    <div className="absolute top-1 right-1 px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize cursor-pointer hover:bg-transparent hover:outline hover:outline-2 hover:outline-blue-200 transition-all duration-300">
+                    <div className="absolute top-1 right-1 px-2 py-1 font-medium bg-blue-200 rounded-lg text-md text-blue-500 capitalize cursor-pointer hover:bg-transparent outline outline-2 outline-blue-200 transition-all duration-300">
                       <h2>{post.category}</h2>
                     </div>
                   </Link>
@@ -40,7 +40,9 @@ export default function RecentPostsPart({ recentPosts, headline }) {
                       {post.title.substring(0, 45)}...
                     </h2>
                   </Link>
-                  <p className="text-base font-extralight">{post.timestamp}</p>
+                  <p className="text-base font-extralight font-sans">
+                    {post.timestamp}
+                  </p>
                   <Link passHref href={`/user/${post.author.username}`}>
                     <img
                       className="absolute -top-12 right-5 rounded-full h-[4.5rem] w-[4.5rem] object-cover border-2 cursor-pointer"

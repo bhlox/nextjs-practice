@@ -8,6 +8,8 @@ export const uiSlice = createSlice({
     showEdit: false,
     isEditingUserName: false,
     load: false,
+    postSent: false,
+    darkMode: false,
   },
   reducers: {
     toggle(state) {
@@ -42,6 +44,15 @@ export const uiSlice = createSlice({
     },
     loaded(state) {
       state.load = false;
+    },
+    postSent(state) {
+      state.postSent = true;
+    },
+    resetSent(state) {
+      state.postSent = false;
+    },
+    toggleDark(state) {
+      state.darkMode = !state.darkMode;
     },
   },
 });

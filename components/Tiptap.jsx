@@ -60,7 +60,7 @@ const MenuBar = ({ editor }) => {
 
   return (
     <>
-      <div className="flex flex-wrap text-3xl mt-1 border-b-2">
+      <div className="flex flex-wrap text-3xl mt-1 border-b-2 dark:border-stone-200 border-slate-800">
         <button
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={
@@ -288,7 +288,7 @@ const Tiptap = ({
     editorProps: {
       attributes: {
         class:
-          "w-full prose prose-invert prose-sm sm:prose-invert sm:prose lg:prose-lg xl:prose-2xl px-2 my-8",
+          "w-full prose dark:prose-invert prose-sm dark:sm:prose-invert sm:prose lg:prose-lg xl:prose-2xl px-2 my-8",
       },
     },
     onCreate: ({ editor }) => {
@@ -338,14 +338,14 @@ const Tiptap = ({
 
   return (
     <>
-      <div className="space-y-12 p-2 bg-slate-700 pt-4 rounded-xl">
+      <div className="space-y-12 p-2 dark:bg-slate-700 bg-stone-100 pt-4 rounded-xl">
         <div className="relative">
           <textarea
             id="title"
             rows="1"
             ref={titleInput}
             placeholder="Enter title..."
-            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-b-2 focus:outline-none p-2 text-gray-200 ${
+            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-slate-800 dark:border-stone-200 border-b-2 focus:outline-none p-2 dark:text-gray-200 ${
               !validity.title ? "border-b-4 border-red-600" : ""
             }`}
             onChange={handleCount}
@@ -386,7 +386,7 @@ const Tiptap = ({
                 <img
                   src={previewImg ?? currentImage}
                   alt="image-preview"
-                  className="h-60 w-60 object-cover rounded-2xl border-2"
+                  className="h-60 w-60 object-cover rounded-2xl border-2 dark:border-stone-200 border-slate-800"
                 />
               }
             </div>
@@ -399,7 +399,7 @@ const Tiptap = ({
             name="category"
             id="category"
             ref={categoryInput}
-            className="text-black"
+            className="text-black text-xl p-1 capitalize shadow-lg outline-2 dark:outline-stone-200 outline-slate-800"
             value={selectedCategory}
             onChange={(e) => {
               dispatch(formActions.submit({ [e.target.id]: e.target.value }));
@@ -421,7 +421,7 @@ const Tiptap = ({
         </div>
 
         <div
-          className={`p-2 pt-1 rounded-xl border-2 ${
+          className={`p-2 pt-1 rounded-xl border-2 dark:border-stone-200 border-slate-800 ${
             !validity.descCount ? "border-red-600 border-4" : ""
           }`}
         >
@@ -448,9 +448,9 @@ const Tiptap = ({
         <div className="space-y-2">
           <div className="flex items-center gap-x-2 text-2xl">
             <h2 className="">Summary</h2>
-            <h3 className="hover:text-yellow-400 transition-all relative group">
-              <FaQuestionCircle />
-              <span className="hidden absolute bottom-6 left-6 bg-slate-600 text-2xl group-hover:inline-block w-64 p-2">
+            <h3 className="dark:hover:text-stone-200 text-slate-800 transition-all relative group">
+              <FaQuestionCircle className="dark:text-stone-200 text-slate-800" />
+              <span className="hidden absolute bottom-6 left-6  bg-gray-200 dark:bg-slate-600 text-2xl group-hover:inline-block w-64 p-2">
                 this will improve your post&apos;s visibility in search. You may
                 use this also as tags.(do not use #)
               </span>
@@ -462,7 +462,7 @@ const Tiptap = ({
             rows="1"
             ref={summaryInput}
             placeholder="Enter summary..."
-            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-2 focus:outline-none p-2 rounded text-gray-200 ${
+            className={`resize w-full overflow-hidden bg-transparent text-3xl font-semibold border-2 dark:border-stone-200 border-slate-800 focus:outline-none p-2 rounded dark:text-gray-200 ${
               !validity.summary ? "border-red-600 border-4" : ""
             }`}
             onChange={handleCount}

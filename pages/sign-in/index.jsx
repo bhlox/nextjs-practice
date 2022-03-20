@@ -78,7 +78,7 @@ function SignIn() {
         <link rel="icon" href="/newreadit.png" />
       </Head>
 
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center font-sans">
         <h2 className="text-4xl">Sign in here</h2>
         <form
           className="mt-8 flex flex-col space-y-16 items-center"
