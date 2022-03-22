@@ -34,13 +34,21 @@ import { generateHTML } from "@tiptap/html";
 import SidePosts from "../../../components/SidePosts";
 import PostInfo from "../../../components/PostInfo";
 import Head from "next/head";
+import Comments from "../../../components/Comments";
 
 function PostId({ data, recentPosts }) {
-  console.log(data);
-  const { id, image, title, username, timestamp, summary, desc, category } =
-    data;
-
-  // console.log(recentPosts);
+  // console.log(data);
+  const {
+    id,
+    image,
+    title,
+    username,
+    timestamp,
+    summary,
+    desc,
+    category,
+    comments,
+  } = data;
 
   const [categoryPosts, setCategoryPosts] = useState([]);
   const [othersPosts, setOthersPosts] = useState([]);
@@ -129,8 +137,13 @@ function PostId({ data, recentPosts }) {
           <div className="prose dark:prose-invert prose-xl md:prose-2xl dark:bg-slate-800 bg-stone-200 p-4 font-sans border-b-4 border-slate-800 dark:border-stone-200 pb-12">
             {parser(desc)}
           </div>
+          {/* END POST DESC */}
+
+          {/* COMMENT SECTION */}
+          <Comments postId={id} comments={comments} />
+
+          {/* END COMMENT SECTION */}
         </div>
-        {/* END POST DESC */}
 
         {/* END FIRST COLUMN */}
 
@@ -245,6 +258,7 @@ export async function getStaticProps(context) {
         data: {
           ...docData.data(),
           timestamp: docData.data().timestamp.toDate().toDateString(),
+          id: docData.id,
           desc,
         },
         recentPosts,

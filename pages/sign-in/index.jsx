@@ -40,6 +40,8 @@ function SignIn() {
     });
   };
 
+  useEffect(() => console.log(window.history.length), []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(uiActions.loading());
@@ -52,7 +54,9 @@ function SignIn() {
       );
       dispatch(userActions.success());
       dispatch(uiActions.loaded());
-      router.push("/");
+      if (window.history.length <= 2) {
+        router.push("/");
+      } else router.back();
     } catch (error) {
       const errorMsg = error
         .toString()

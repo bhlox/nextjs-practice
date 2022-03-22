@@ -6,7 +6,7 @@ export default function LatestPostsPart({ latestPosts }) {
 
   return (
     <>
-      {latestPosts.length && (
+      {latestPosts.length > 0 && (
         <div className="flex flex-col space-y-3">
           <div className="text-4xl flex items-center space-x-2">
             <FaFireAlt className=" text-orange-500" />

@@ -1,11 +1,11 @@
 import Link from "next/link";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import { getAuth, signOut } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
-
+import { MdEmail } from "react-icons/md";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GoSignIn } from "react-icons/go";
 import { BsPersonPlusFill, BsPersonSquare, BsGearFill } from "react-icons/bs";
@@ -134,7 +134,7 @@ function Navbar() {
       alert(error);
     }
   };
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (
       localStorage.getItem("color-theme") === "dark" ||
       (!("color-theme" in localStorage) &&
@@ -344,28 +344,51 @@ function Navbar() {
                 </div>
               </div>
 
+              {/* CONTACT LINK*/}
+              <Link passHref href="/contact">
+                <h4
+                  onClick={() => {
+                    dispatch(navActions.closeProfile());
+                    dispatch(navActions.closeBlogs());
+                    dispatch(navActions.blurSearch());
+                    dispatch(navActions.close());
+                  }}
+                  className={
+                    router.pathname == "/contact"
+                      ? "nav-active flex items-center gap-x-1"
+                      : "nav-link flex items-center gap-x-1 hover:scale-125"
+                  }
+                >
+                  <span>
+                    <MdEmail />
+                  </span>
+                  Contact
+                </h4>
+              </Link>
+              {/* END CONTACT LINK */}
+
               {/* THEME BTN */}
               <div className="flex items-center text-2xl space-x-1">
-                <span>
-                  <RiMoonClearLine />
-                </span>
                 <div
-                  className={`flex relative w-12 h-6  rounded-xl ${
-                    darkMode ? "bg-blue-600" : "bg-gray-300"
+                  className={`flex items-center relative w-13 h-7  rounded-full cursor-pointer ${
+                    darkMode ? "bg-gray-800" : "bg-gray-300"
                   }`}
                 >
+                  <span>
+                    <RiMoonClearLine />
+                  </span>
                   <button
-                    className={`text-3xl  w-6 h-6 rounded-full absolute transition-all hover:bg-white ${
+                    className={`text-3xl  w-6 h-6 rounded-full absolute transition-all duration-300 hover:bg-white ${
                       darkMode
                         ? "translate-x-0 bg-gray-200"
                         : "translate-x-6 bg-slate-700"
                     }`}
                     onClick={() => dispatch(uiActions.toggleDark())}
                   ></button>
+                  <span>
+                    <RiSunLine className="text-yellow-400" />
+                  </span>
                 </div>
-                <span>
-                  <RiSunLine className="text-yellow-400" />
-                </span>
               </div>
               {/* END THEME BTN */}
 
@@ -378,7 +401,6 @@ function Navbar() {
                       dispatch(navActions.blurSearch());
                       dispatch(navActions.toggleProfile());
                     }}
-                    // onClick={() =>)}
                     className="cursor-pointer flex flex-col items-center space-x-1 relative space-y-2 "
                   >
                     <div className="flex space-x-1 items-center hover:opacity-80">

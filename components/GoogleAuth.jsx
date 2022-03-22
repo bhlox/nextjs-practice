@@ -39,6 +39,8 @@ function GoogleAuth({ sign }) {
             twitter: "",
           },
           setPassword: true,
+          comments: [],
+          aboutMe: "",
         });
       }
       router.push(`/google-set-password/${user.uid}`);
@@ -47,15 +49,17 @@ function GoogleAuth({ sign }) {
     }
   };
   return (
-    <div className="flex justify-center">
-      <button
-        type="button"
-        onClick={handleClick}
-        className="flex items-center bg-gray-200 text-black px-4 py-2 text-4xl rounded-3xl gap-4 border-2 hover:text-gray-300 hover:bg-transparent transition-all"
-      >
-        Sign {sign} with <FcGoogle />
-      </button>
-    </div>
+    <>
+      <div className="flex flex-col items-center justify-center space-y-6">
+        <button
+          type="button"
+          onClick={handleClick}
+          className="flex items-center px-4 py-2 text-4xl rounded-xl gap-4 border-2 transition-all dark:border-stone-200 hover:scale-110 border-slate-800"
+        >
+          <FcGoogle /> Sign {sign} with Google
+        </button>
+      </div>
+    </>
   );
 }
 

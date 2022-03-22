@@ -15,14 +15,14 @@ function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center space-y-3 md:justify-between p-4 md:space-y-0">
         <h2 className="flex gap-x-1 font-light text-lg">
           Copyright &copy; Travel Blogs | Website by
-          <Link passHref href="www.kurkboard.com">
+          {/* <Link passHref href="www.kurkboard.com">
             <a
               target="_blank"
               className="hover:underline hover:text-blue-400 text-xl"
             >
               Kurk
             </a>
-          </Link>
+          </Link> */}
         </h2>
         <div className="flex space-x-3">
           <a
@@ -33,7 +33,7 @@ function Footer() {
           >
             <MdEmail />
           </a>
-          <Link passHref href={"twitter.com"}>
+          {/* <Link passHref href={"twitter.com"}>
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -41,8 +41,8 @@ function Footer() {
             >
               <FaTwitter />
             </a>
-          </Link>
-          <Link passHref href={"github.com"}>
+          </Link> */}
+          {/* <Link passHref href={"github.com"}>
             <a
               target="_blank"
               rel="noopener noreferrer"
@@ -50,7 +50,7 @@ function Footer() {
             >
               <FaGithub />
             </a>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </footer>

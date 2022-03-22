@@ -134,6 +134,7 @@ function AddPlace() {
           useruid: auth.currentUser.uid,
           userpic: auth.currentUser.photoURL,
         },
+        comments: [],
       };
       const response = await fetch("/api/add-place", {
         method: "POST",

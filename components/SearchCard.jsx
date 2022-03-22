@@ -75,7 +75,7 @@ function SearchCard({
           </div>
         </div>
 
-        <div className="p-4 j">
+        <div className="p-4">
           <Link passHref href={`/post/${id}`}>
             <button className="bg-green-600 w-full rounded text-lg flex items-center justify-center gap-x-2 hover:bg-transparent outline outline-2 outline-green-600 transition-all duration-300">
               <FaHandPointRight /> Read more

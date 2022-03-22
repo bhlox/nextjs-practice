@@ -1,7 +1,20 @@
 import Head from "next/head";
 
-import { collection, getDocs, limit, orderBy, query } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { db } from "../firebase.config";
+import { FiChevronsRight } from "react-icons/fi";
+
+import { firebaseAdmin } from "../firebaseAdmin";
+// import { firebaseAdmin } from "../firebaseAdmin";
+
 import nookies from "nookies";
 
 import CarouselSlider from "../components/Carousel.jsx";
@@ -11,15 +24,20 @@ import RecentPostsPart from "../components/RecentPostsPart.jsx";
 import LoadMorePosts from "../components/LoadMorePosts";
 import { useDispatch, useSelector } from "react-redux";
 import { homePostsActions } from "../components/store/home-posts-slice";
+// import Link from "next/link";
+import HomeHeadline from "../components/HomeHeadline";
+import { getAuth } from "firebase/auth";
 
-export default function Home({ posts, cookies }) {
+let initial = true;
+
+export default function Home({ posts, username, didPost }) {
   // console.log(posts);
-  console.log(cookies);
 
-  const dispatch = useDispatch();
+  const auth = getAuth();
 
   const colRef = collection(db, "posts");
 
+  const [currentUser, setCurrentUser] = useState(username);
   const [latestPosts, setLatestPosts] = useState(
     posts.filter((post, i) => i <= 1)
   );
@@ -28,9 +46,7 @@ export default function Home({ posts, cookies }) {
     posts.filter((post, i) => i > 1)
   );
 
-  // const { latestPosts } = useSelector((state) => state.homePosts);
-  // const { randomPosts } = useSelector((state) => state.homePosts);
-  // const { recentPosts } = useSelector((state) => state.homePosts);
+  const { isLoggedIn } = useSelector((state) => state.user);
 
   const fetchRandomPosts = async () => {
     const posts = [];
@@ -56,6 +72,14 @@ export default function Home({ posts, cookies }) {
   };
 
   useEffect(() => {
+    // console.log(isLoggedIn);
+    if (!isLoggedIn && !initial) {
+      console.log("no user detected");
+      setCurrentUser("");
+    } else initial = false;
+  }, [isLoggedIn]);
+
+  useEffect(() => {
     fetchRandomPosts();
   }, []);
 
@@ -67,34 +91,17 @@ export default function Home({ posts, cookies }) {
         <link rel="icon" href="/newreadit.png" />
       </Head>
 
-      <div className="mx-auto flex flex-col md:flex-row items-center justify-center space-y-6 font-handLee">
-        <div>
-          <h2 className="text-5xl">Readis Thoughts</h2>
-          <h2 className="text-6xl italic font-semibold text-orange-400 text-center">
-            &quot;Blogs&quot;
-          </h2>
-          <p className="hidden sm:block max-w-sm text-center md:text-left font-sans">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi,
-            aspernatur accusamus. Odit!
-          </p>
-        </div>
-        <div>
-          <img src="/Vector_Landing.png" alt="" />
-        </div>
-      </div>
+      <HomeHeadline username={currentUser} didPost={didPost} />
 
       <LatestPostsPart latestPosts={latestPosts} />
-
       <CarouselSlider posts={randomPosts} />
-
       <RecentPostsPart recentPosts={recentPosts} headline={true} />
-
       <LoadMorePosts setRecentPosts={setRecentPosts} />
     </>
   );
 }
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   const colRef = collection(db, "posts");
   const cookies = nookies.get(context);
 
@@ -112,20 +119,32 @@ export async function getStaticProps(context) {
       });
     });
 
-    const lastPostData = snapshot.docs.slice(-1).map((doc) => ({
-      ...doc.data(),
-      id: doc.id,
-      timestamp: doc.data().timestamp.toDate().toDateString(),
-    }));
+    if (!cookies.token) {
+      return {
+        props: {
+          posts,
+          username: "",
+          didPost: "",
+        },
+      };
+    }
+
+    const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
+    const { uid } = token;
+    const userRef = doc(db, "users", uid);
+    const userData = await getDoc(userRef);
+    const username = userData.data().username;
+    const postsId = userData.data().posts;
 
     return {
-      revalidate: 600,
       props: {
         posts,
-        cookies,
+        username,
+        didPost: postsId.length,
       },
     };
   } catch (error) {
+    console.log(error);
     return {
       props: {
         posts: [],

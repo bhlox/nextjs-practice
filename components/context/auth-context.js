@@ -1,4 +1,9 @@
-import { getAuth, getIdToken, onAuthStateChanged } from "firebase/auth";
+import {
+  getAuth,
+  getIdToken,
+  onAuthStateChanged,
+  onIdTokenChanged,
+} from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { userActions } from "../store/user-slice";
@@ -14,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     dispatch(userActions.verify());
-    onAuthStateChanged(auth, async (user) => {
+    onIdTokenChanged(auth, async (user) => {
       if (user) {
         // console.log(auth.currentUser);
         setUser(user);
@@ -26,9 +31,11 @@ export const AuthProvider = ({ children }) => {
         nookies.set(undefined, "token", "", { path: "/" });
       }
     });
-  }, [auth, dispatch]);
+  }, [auth.currentUser, dispatch, auth]);
 
-  return <AuthContext.Provider value={user}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user }}>{children}</AuthContext.Provider>
+  );
 };
 
 export const useAuthContext = () => {

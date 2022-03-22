@@ -31,6 +31,7 @@ import nookies from "nookies";
 import { useSelector } from "react-redux";
 import GoogleAuth from "../../components/GoogleAuth";
 import { accountFormActions } from "../../components/store/account-form-slice";
+import { uiActions } from "../../components/store/ui-slice";
 
 function SignUp() {
   const showPassword = useSelector((state) => state.user.showPassword);
@@ -48,6 +49,7 @@ function SignUp() {
   const { exists } = useSelector((state) => state.accountForm);
   const { specialCharacters } = useSelector((state) => state.accountForm);
   const { signUpValidity } = useSelector((state) => state.accountForm);
+  const { load } = useSelector((state) => state.ui);
 
   const usersRef = collection(db, "users");
 
@@ -115,7 +117,8 @@ function SignUp() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(accountInfo);
+    // console.log(accountInfo);
+    dispatch(uiActions.loading());
 
     // console.log(formIsValid);
     console.log(
@@ -151,15 +154,18 @@ function SignUp() {
         },
         aboutMe: "",
         timestamp: serverTimestamp(),
+        comments: [],
       };
       // console.log(formDataCopy);
       await setDoc(doc(db, "users", user.uid), formDataCopy);
+      dispatch(uiActions.loaded());
       console.log("registration success");
       dispatch(userActions.success());
       router.push("/profile");
     } catch (error) {
       console.log(error);
       alert(error);
+      dispatch(uiActions.loaded());
     }
   };
 
@@ -306,18 +312,22 @@ function SignUp() {
             )}
           </div>
           <GoogleAuth sign="up" />
-          <button
-            type="submit"
-            onClick={handleSubmit}
-            disabled={!signUpValidity}
-            className={`px-4 py-2 ${
-              signUpValidity
-                ? "bg-purple-600 hover:bg-purple-700"
-                : "bg-transparent"
-            }  rounded-3xl text-3xl  w-full outline-2 outline-purple-500 outline`}
-          >
-            {signUpValidity ? "Submit registration" : "Pls check your entries"}
-          </button>
+          {!load && (
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={!signUpValidity}
+              className={`px-4 py-2 ${
+                signUpValidity
+                  ? "bg-purple-600 hover:bg-purple-700"
+                  : "bg-transparent"
+              }  rounded-3xl text-3xl  w-full outline-2 outline-purple-500 outline`}
+            >
+              {signUpValidity
+                ? "Submit registration"
+                : "Pls check your entries"}
+            </button>
+          )}
         </form>
       </div>
     </>
