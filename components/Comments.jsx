@@ -17,7 +17,6 @@ import {
 import { updateDoc } from "firebase/firestore";
 import { db } from "../firebase.config";
 import { useDispatch, useSelector } from "react-redux";
-import { textActions } from "./store/text-slice";
 import CommentTextArea from "./CommentTextArea";
 import { commentsActions } from "./store/comments-slice";
 import { useRouter } from "next/router";
@@ -27,29 +26,14 @@ function Comments({ postId, comments }) {
   const dispatch = useDispatch();
   // const router = useRouter();
 
-  // console.log(comments);
-
-  const [currentUserData, setCurrentUserData] = useState({});
-
-  // console.log(commentsId);
-
-  const { message } = useSelector((state) => state.text);
   const { commentList } = useSelector((state) => state.comments);
-  const { content } = useSelector((state) => state.comments);
+  // const { content } = useSelector((state) => state.comments);
   const { commentsId } = useSelector((state) => state.comments);
-
-  // console.log(currentUserData);
 
   // console.log(commentList);
 
   useEffect(() => {
-    console.log("changing to different post");
     dispatch(commentsActions.setCommentsId(comments));
-
-    return () => {
-      dispatch(commentsActions.reset());
-      console.log("time to reset");
-    };
   }, [comments, dispatch]);
 
   useEffect(() => {
@@ -58,7 +42,14 @@ function Comments({ postId, comments }) {
         const userRef = doc(db, "users", user.uid);
         const userSnapshot = await getDoc(userRef);
         const userData = { ...userSnapshot.data(), id: userSnapshot.id };
-        setCurrentUserData(userData);
+        // console.log(userData);
+        dispatch(
+          commentsActions.setCurrentUserData({
+            userpic: userData.profilePic,
+            commentIds: userData.comments,
+            repliesIds: userData.replies,
+          })
+        );
       };
       fetchCurrentUserData();
     }
@@ -91,62 +82,10 @@ function Comments({ postId, comments }) {
             .toDate()
             .toLocaleTimeString()}`,
         }));
-      // console.log(fixedList);
       dispatch(commentsActions.setCommentList(fixedList));
     };
     fetchComments();
-  }, [commentsId, dispatch, comments]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!content.trim().length) {
-      console.log("no characters");
-      dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
-      return;
-    }
-
-    if (content.trim().length < 2) {
-      console.log("only 1 character");
-      dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
-      return;
-    }
-
-    const colRef = collection(db, "comments");
-    const docRef = doc(db, "posts", postId);
-    const userRef = doc(db, "users", user.uid);
-
-    try {
-      const userSnapshot = await getDoc(userRef);
-      const userData = { ...userSnapshot.data(), id: userSnapshot.id };
-      const formData = {
-        content: content.trim(),
-        author: {
-          userpic: userData.profilePic,
-          username: userData.username,
-          useruid: user.uid,
-        },
-        postId,
-        timestamp: serverTimestamp(),
-      };
-
-      // CHECK IF OWNER COMMENT HERE
-      // const commentOwner = commentsId.some((id) => {
-      //   if (currentUserData.comments?.includes(id)) return true;
-      // });
-      // console.log(commentOwner);
-
-      const comment = await addDoc(colRef, formData);
-      await updateDoc(docRef, { comments: arrayUnion(comment.id) });
-      await updateDoc(userRef, { comments: arrayUnion(comment.id) });
-
-      console.log("comment submited");
-      dispatch(commentsActions.addIdToComments(comment.id));
-      dispatch(commentsActions.resetContent());
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }, [commentsId, dispatch]);
 
   return (
     <div className="space-y-4">
@@ -154,13 +93,7 @@ function Comments({ postId, comments }) {
         <h2 className="text-3xl">Comments</h2>
       </div>
 
-      {user && (
-        <CommentTextArea
-          pic={currentUserData.profilePic}
-          message={message}
-          handleSubmit={handleSubmit}
-        />
-      )}
+      {user && <CommentTextArea />}
 
       {/* COMMENT SECTION */}
       {!commentsId.length > 0 && (
@@ -172,13 +105,7 @@ function Comments({ postId, comments }) {
       {commentList && (
         <div className="space-y-6">
           {commentList.map((comment) => (
-            <Comment
-              key={comment.id}
-              {...comment}
-              userCommentIds={currentUserData.comments}
-              // postCommentIds={comments}
-              postId={postId}
-            />
+            <Comment key={comment.id} {...comment} postId={postId} />
           ))}
         </div>
       )}

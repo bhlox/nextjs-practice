@@ -155,6 +155,7 @@ function SignUp() {
         aboutMe: "",
         timestamp: serverTimestamp(),
         comments: [],
+        replies: [],
       };
       // console.log(formDataCopy);
       await setDoc(doc(db, "users", user.uid), formDataCopy);

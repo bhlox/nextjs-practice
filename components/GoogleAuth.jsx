@@ -40,6 +40,7 @@ function GoogleAuth({ sign }) {
           },
           setPassword: true,
           comments: [],
+          replies: [],
           aboutMe: "",
         });
       }
