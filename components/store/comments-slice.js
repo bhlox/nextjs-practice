@@ -14,6 +14,7 @@ export const commentsSlice = createSlice({
     contentToEdit: "",
     isReplying: false,
     activeReplyId: "",
+    postAuthorUsername: "",
   },
   reducers: {
     setCurrentUserData(state, action) {
@@ -23,6 +24,9 @@ export const commentsSlice = createSlice({
       const data = action.payload;
       const [key, value] = Object.entries(data).flat();
       state.currentUserData[key] = [...state.currentUserData[key], value];
+    },
+    setPostAuthorUsername(state, action) {
+      state.postAuthorUsername = action.payload;
     },
     setCurrentPostId(state, action) {
       state.currentPostId = action.payload;

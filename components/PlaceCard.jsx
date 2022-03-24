@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "../firebase.config";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
@@ -34,10 +40,48 @@ function PlaceCard({
       const newPosts = postsId.filter((post) => post !== id);
       // console.log(postsId);
 
+      const docSnapshot = await getDoc(docRef);
+      const commentsIdList = docSnapshot.data().comments;
+
+      for (const commentId of commentsIdList) {
+        const commentRef = doc(db, "comments", commentId);
+        const commentSnapshot = await getDoc(commentRef);
+        // console.log({ ...commentSnapshot.data() });
+
+        const commenterUseruid = commentSnapshot.data().author.useruid;
+        const commenterRef = doc(db, "users", commenterUseruid);
+        // const commenterSnapshot = await getDoc(commenterRef);
+        // console.log({ ...commenterSnapshot.data() });
+        // const commenterCommentsIdList = commenterSnapshot.data().comments;
+        // const commenterRepliesIdList = commenterSnapshot.data().replies;
+        // console.log(
+        //   "this is commenterCommentsIdList",
+        //   commenterCommentsIdList,
+        //   "this is commentId",
+        //   commentId
+        // );
+        await updateDoc(commenterRef, { comments: arrayRemove(commentId) });
+
+        const repliesIdList = commentSnapshot.data().replies;
+        for (const replyId of repliesIdList) {
+          const replyRef = doc(db, "replies", replyId);
+          await deleteDoc(replyRef);
+          await updateDoc(commenterRef, { replies: arrayRemove(replyId) });
+          // console.log(
+          //   "this is commenterRepliesIdList",
+          //   commenterRepliesIdList,
+          //   "this is replyId",
+          //   replyId
+          // );
+        }
+        await deleteDoc(commentRef);
+      }
+
       await deleteDoc(docRef);
       await updateDoc(userRef, { posts: newPosts });
       setPostsId(newPosts);
-      // setDidDelete(true);
+      setDidDelete(true);
+      // setShowDeleteMsg(false);
       console.log("post deleted");
     } catch (error) {
       console.log(error);

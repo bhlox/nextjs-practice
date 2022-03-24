@@ -35,6 +35,8 @@ import SidePosts from "../../../components/SidePosts";
 import PostInfo from "../../../components/PostInfo";
 import Head from "next/head";
 import Comments from "../../../components/Comments";
+import { commentsActions } from "../../../components/store/comments-slice";
+import { useDispatch } from "react-redux";
 
 function PostId({ data, recentPosts }) {
   // console.log(data);
@@ -48,7 +50,10 @@ function PostId({ data, recentPosts }) {
     desc,
     category,
     comments,
+    author,
   } = data;
+
+  const dispatch = useDispatch();
 
   const [categoryPosts, setCategoryPosts] = useState([]);
   const [othersPosts, setOthersPosts] = useState([]);
@@ -104,6 +109,10 @@ function PostId({ data, recentPosts }) {
     getOthersPosts();
   }, [category]);
 
+  useEffect(() => {
+    dispatch(commentsActions.setPostAuthorUsername(author.username));
+  }, []);
+
   return (
     <>
       <Head>
@@ -151,9 +160,9 @@ function PostId({ data, recentPosts }) {
 
         <div className="space-y-6 p-2 md:w-1/4  ">
           <PostInfo
-            username={data.author.username}
+            username={author.username}
             timestamp={timestamp}
-            userpic={data.author.userpic}
+            userpic={author.userpic}
             title={data.title}
           />
 

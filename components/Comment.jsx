@@ -13,6 +13,8 @@ import { useAuthContext } from "./context/auth-context";
 import Reply from "./Reply";
 import ReplyTextarea from "./ReplyTextarea";
 import { commentsActions } from "./store/comments-slice";
+import { FaFeatherAlt } from "react-icons/fa";
+import Link from "next/link";
 
 function Comment({
   content,
@@ -27,6 +29,7 @@ function Comment({
 
   const [replyIdList, setReplyIdList] = useState([]);
   const [replyList, setReplyList] = useState([]);
+  const [activeReplyId, setActiveReplyId] = useState("");
 
   // console.log(replyIdList);
 
@@ -36,6 +39,7 @@ function Comment({
   const { isEditing } = useSelector((state) => state.comments);
   const { activeCommentId } = useSelector((state) => state.comments);
   const { isReplying } = useSelector((state) => state.comments);
+  const { postAuthorUsername } = useSelector((state) => state.comments);
 
   useEffect(() => {
     setReplyIdList(replies);
@@ -122,21 +126,35 @@ function Comment({
   return (
     <>
       <div className="border-b-[1px] pb-4 dark:border-gray-500 border-gray-300">
-        <div className="flex flex-col md:flex-row md:space-x-4">
+        <div className="flex flex-row md:space-x-4">
           <div>
-            <img
-              className="h-20 w-20 rounded-full object-cover"
-              src={author.userpic}
-              alt=""
-            />
+            <Link passHref href={`/user/${author.username}`}>
+              <img
+                className="h-20 w-20 rounded-full object-cover cursor-pointer"
+                src={author.userpic}
+                alt=""
+              />
+            </Link>
           </div>
           <div className="space-y-4">
             <div className="space-y-1">
               <div className="flex space-x-2 items-center">
-                <h3>{author.username}</h3>
-                <p className="font-light text-sm">{timestamp}</p>
+                <div className="flex gap-x-[0.15rem]">
+                  <Link passHref href={`/user/${author.username}`}>
+                    <h3 className="text-lg hover:underline cursor-pointer hover:text-blue-400">
+                      {author.username}
+                    </h3>
+                  </Link>
+                  {author.username === postAuthorUsername && (
+                    <p className="">
+                      <FaFeatherAlt />
+                    </p>
+                  )}
+                </div>
+                <p className="font-light text-sm dark:text-gray-400 text-gray-500">
+                  {timestamp}
+                </p>
               </div>
-              {/* activeCommentId === commentId && */}
               {isEditing && activeCommentId === commentId ? (
                 <CommentTextArea edit={isEditing} />
               ) : (
@@ -173,7 +191,10 @@ function Comment({
               </div>
             </div>
             {isReplying && activeCommentId === commentId && (
-              <ReplyTextarea setReplyIdList={setReplyIdList} />
+              <ReplyTextarea
+                setReplyIdList={setReplyIdList}
+                setActiveReplyId={setActiveReplyId}
+              />
             )}
             {replyList &&
               replyList.map((reply) => (
@@ -182,6 +203,10 @@ function Comment({
                   {...reply}
                   setReplyIdList={setReplyIdList}
                   commentId={commentId}
+                  setActiveReplyId={setActiveReplyId}
+                  activeReplyId={activeReplyId}
+                  setReplyList={setReplyList}
+                  replyIdList={replyIdList}
                 />
               ))}
           </div>

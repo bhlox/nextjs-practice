@@ -1,19 +1,42 @@
-import { arrayRemove, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../firebase.config";
 import { useAuthContext } from "./context/auth-context";
 import { commentsActions } from "./store/comments-slice";
+import ReplyTextarea from "./ReplyTextarea";
+import { FaFeatherAlt } from "react-icons/fa";
+import Link from "next/link";
 
-function Reply({ author, content, timestamp, id, setReplyIdList, commentId }) {
+function Reply({
+  setActiveReplyId,
+  activeReplyId,
+  author,
+  content,
+  timestamp,
+  id,
+  setReplyIdList,
+  commentId,
+  setReplyList,
+  replyIdList,
+}) {
   const { user } = useAuthContext();
   const dispatch = useDispatch();
+
   const { currentUserData } = useSelector((state) => state.comments);
+  const { isReplying } = useSelector((state) => state.comments);
+  const { postAuthorUsername } = useSelector((state) => state.comments);
+
   // const { activeCommentId } = useSelector((state) => state.comments);
 
   const [isReplyOwner, setIsReplyOwner] = useState(false);
-
-  // console.log(currentUserData);
+  const [toBeEditedContent, setToBeEditedContent] = useState("");
 
   useEffect(() => {
     if (currentUserData.repliesIds.includes(id)) {
@@ -36,26 +59,64 @@ function Reply({ author, content, timestamp, id, setReplyIdList, commentId }) {
     }
   };
 
-  const handleEdit = async () => {};
+  const handleEdit = async () => {
+    setActiveReplyId(id);
+    dispatch(commentsActions.setIsReplying(true));
+    dispatch(commentsActions.setActiveCommentId(""));
+    const replyRef = doc(db, "replies", id);
+    try {
+      const snapshot = await getDoc(replyRef);
+      setToBeEditedContent(snapshot.data().content);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="flex space-x-2">
       <div>
-        <img
-          className="w-10 h-10 rounded-full object-cover"
-          src={author.userpic}
-          alt=""
-        />
+        <Link passHref href={`/user/${author.username}`}>
+          <img
+            className="w-12 h-12 rounded-full object-cover cursor-pointer"
+            src={author.userpic}
+            alt=""
+          />
+        </Link>
       </div>
       <div className="space-y-2">
         <div>
           <div className="flex space-x-2">
-            <h3>{author.username}</h3>
-            <p>{timestamp}</p>
+            <div className="flex gap-x-[0.15rem]">
+              <Link passHref href={`/user/${author.username}`}>
+                <h3 className="text-lg hover:underline cursor-pointer hover:text-blue-400">
+                  {author.username}
+                </h3>
+              </Link>
+              {postAuthorUsername === author.username && (
+                <p>
+                  <FaFeatherAlt />
+                </p>
+              )}
+            </div>
+            <p className="font-light text-sm dark:text-gray-400 text-gray-500">
+              {timestamp}
+            </p>
           </div>
-          <p>{content}</p>
+          {isReplying && activeReplyId === id ? (
+            <ReplyTextarea
+              setReplyIdList={setReplyIdList}
+              setActiveReplyId={setActiveReplyId}
+              toBeEditedContent={toBeEditedContent}
+              setToBeEditedContent={setToBeEditedContent}
+              activeReplyId={activeReplyId}
+              replyIdList={replyIdList}
+              setReplyList={setReplyList}
+            />
+          ) : (
+            <p>{content}</p>
+          )}
         </div>
-        {isReplyOwner && (
+        {isReplyOwner && !isReplying && (
           <div className="space-x-2">
             <span
               onClick={handleEdit}

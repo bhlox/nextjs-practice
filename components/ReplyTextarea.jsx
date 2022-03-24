@@ -13,7 +13,15 @@ import { db } from "../firebase.config";
 import { useAuthContext } from "./context/auth-context";
 import { commentsActions } from "./store/comments-slice";
 
-function ReplyTextarea({ edit, setReplyIdList }) {
+function ReplyTextarea({
+  replyIdList,
+  setReplyIdList,
+  setActiveReplyId,
+  toBeEditedContent,
+  setToBeEditedContent,
+  activeReplyId,
+  setReplyList,
+}) {
   const { user } = useAuthContext();
   const replyInputRef = useRef();
   const editReplyInputRef = useRef();
@@ -24,9 +32,36 @@ function ReplyTextarea({ edit, setReplyIdList }) {
 
   const [replyContent, setReplyContent] = useState("");
 
+  const fetchUpdatedReplies = async () => {
+    const list = [];
+    for (const id of replyIdList) {
+      const snapshot = await getDoc(doc(db, "replies", id));
+      list.push({ ...snapshot.data(), id: snapshot.id });
+    }
+    const fixedList = list
+      .sort((a, b) => b.timestamp - a.timestamp)
+      .map((entry) => ({
+        ...entry,
+        timestamp: `${entry.timestamp
+          .toDate()
+          .toDateString()} at ${entry.timestamp.toDate().toLocaleTimeString()}`,
+      }));
+    setReplyList(fixedList);
+  };
+
+  const handleCancel = () => {
+    setActiveReplyId("");
+    dispatch(commentsActions.setIsReplying(false));
+  };
+
   const handleSubmit = async () => {
     if (!replyContent.trim().length) {
-      console.log("no characters");
+      dispatch(commentsActions.setIsReplying(false));
+      // dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
+      return;
+    }
+
+    if (replyContent.trim().length < 2) {
       // dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
       return;
     }
@@ -63,14 +98,35 @@ function ReplyTextarea({ edit, setReplyIdList }) {
     }
   };
 
+  const handleSubmitEdit = async () => {
+    if (!toBeEditedContent.trim().length) {
+      dispatch(commentsActions.setIsReplying(false));
+      return;
+    }
+
+    if (toBeEditedContent.trim().length < 2) {
+      return;
+    }
+
+    const replyRef = doc(db, "replies", activeReplyId);
+    try {
+      await updateDoc(replyRef, {
+        content: toBeEditedContent.trim(),
+      });
+      dispatch(commentsActions.setIsReplying(false));
+      fetchUpdatedReplies();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = (e) => {
-    if (!edit) {
-      // dispatch(commentsActions.setContent(e.target.value));
+    if (!toBeEditedContent) {
       setReplyContent(e.target.value);
       replyInputRef.current.style.height =
         Math.min(replyInputRef.current.scrollHeight, 300) + "px";
     } else {
-      //   dispatch(commentsActions.setContentToEdit(e.target.value));
+      setToBeEditedContent(e.target.value);
       editReplyInputRef.current.style.height =
         Math.min(editReplyInputRef.current.scrollHeight, 300) + "px";
     }
@@ -87,19 +143,19 @@ function ReplyTextarea({ edit, setReplyIdList }) {
       </div>
       <div>
         <div className="flex space-x-4">
-          <p>{replyContent.length} / 60</p>
+          <p>
+            {toBeEditedContent ? toBeEditedContent.length : replyContent.length}{" "}
+            / 60
+          </p>
           {/* <p className="text-red-400 text-lg">{message.error}</p> */}
 
-          <p
-            onClick={() => dispatch(commentsActions.setIsReplying(false))}
-            className="cursor-pointer hover:underline"
-          >
+          <p onClick={handleCancel} className="cursor-pointer hover:underline">
             cancel reply
           </p>
         </div>
         <div>
           <textarea
-            ref={edit ? editReplyInputRef : replyInputRef}
+            ref={toBeEditedContent ? editReplyInputRef : replyInputRef}
             className={`resize w-full overflow-auto bg-transparent text-xl font-semibold border-slate-800 dark:border-stone-200 border-b-2 focus:outline-none p-2 dark:text-gray-200 dark:bg-slate-600 bg-gray-300`}
             name="addReply"
             id="addReply"
@@ -107,11 +163,11 @@ function ReplyTextarea({ edit, setReplyIdList }) {
             cols="35"
             placeholder="Enter reply..."
             onChange={handleChange}
-            value={edit ? contentToEdit : replyContent}
+            value={toBeEditedContent ? toBeEditedContent : replyContent}
             maxLength="60"
           />
           <button
-            onClick={handleSubmit}
+            onClick={toBeEditedContent ? handleSubmitEdit : handleSubmit}
             className="w-full bg-red-400 text-2xl rounded p-1"
           >
             Reply
