@@ -84,19 +84,25 @@ export default function ProfileCard({
             />
           </label>
         )}
-        <img
-          className=" h-[360px] w-full md:h-[312px] object-cover object-center rounded-t-xl"
-          src={previewCover}
-          alt=""
-        />
+        {
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className=" h-[360px] w-full md:h-[312px] object-cover object-center rounded-t-xl"
+            src={previewCover}
+            alt=""
+          />
+        }
         {/* PROF PIC */}
         <div className="absolute -bottom-[5rem] left-5 translate-x-0">
           <div className="relative max-w-max">
-            <img
-              className="h-36 w-36 md:h-48 md:w-48 rounded-full border-2 object-cover object-center relative"
-              src={previewProf}
-              alt=""
-            />
+            {
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="h-36 w-36 md:h-48 md:w-48 rounded-full border-2 object-cover object-center relative"
+                src={previewProf}
+                alt=""
+              />
+            }
 
             {self && (
               <label

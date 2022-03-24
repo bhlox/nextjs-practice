@@ -16,11 +16,14 @@ export default function LatestPostsPart({ latestPosts }) {
             <div className="md:w-2/3 relative group shadow-2xl">
               <div>
                 <Link passHref href={`/post/${latestPosts[0].id}`}>
-                  <img
-                    className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
-                    src={latestPosts[0].image}
-                    alt=""
-                  />
+                  {
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
+                      src={latestPosts[0].image}
+                      alt=""
+                    />
+                  }
                 </Link>
               </div>
               <div className="absolute top-0 left-0 p-4 space-y-8 overflow-hidden">
@@ -44,11 +47,14 @@ export default function LatestPostsPart({ latestPosts }) {
                     passHref
                     href={`/user/${latestPosts[0].author.username}`}
                   >
-                    <img
-                      className="rounded-full w-14 h-14 cursor-pointer "
-                      src={latestPosts[0].author.userpic}
-                      alt=""
-                    />
+                    {
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        className="rounded-full w-14 h-14 cursor-pointer "
+                        src={latestPosts[0].author.userpic}
+                        alt=""
+                      />
+                    }
                   </Link>
                 </div>
                 <div className="text-center sm:text-left">
@@ -77,11 +83,14 @@ export default function LatestPostsPart({ latestPosts }) {
             <div className="relative md:w-1/3 group shadow-2xl">
               <div>
                 <Link passHref href={`/post/${latestPosts[1].id}`}>
-                  <img
-                    className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
-                    src={latestPosts[1].image}
-                    alt=""
-                  />
+                  {
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
+                      src={latestPosts[1].image}
+                      alt=""
+                    />
+                  }
                 </Link>
               </div>
               <div className="absolute top-0 left-0 p-4 space-y-8">
@@ -105,11 +114,14 @@ export default function LatestPostsPart({ latestPosts }) {
                     passHref
                     href={`/user/${latestPosts[1].author.username}`}
                   >
-                    <img
-                      className="rounded-full w-14 h-14 cursor-pointer"
-                      src={latestPosts[1].author.userpic}
-                      alt=""
-                    />
+                    {
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        className="rounded-full w-14 h-14 cursor-pointer"
+                        src={latestPosts[1].author.userpic}
+                        alt=""
+                      />
+                    }
                   </Link>
                 </div>
                 <div className="text-center sm:text-left">

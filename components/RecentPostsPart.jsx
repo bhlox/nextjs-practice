@@ -16,11 +16,14 @@ export default function RecentPostsPart({ recentPosts, headline }) {
                 <div className="relative">
                   <div className="overflow-hidden">
                     <Link passHref href={`/post/${post.id}`}>
-                      <img
-                        src={post.image}
-                        alt=""
-                        className="w-full h-48 object-cover rounded-t-xl group-hover:scale-125 transition-all duration-300 cursor-pointer"
-                      />
+                      {
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={post.image}
+                          alt=""
+                          className="w-full h-48 object-cover rounded-t-xl group-hover:scale-125 transition-all duration-300 cursor-pointer"
+                        />
+                      }
                     </Link>
                   </div>
                   <Link passHref href={`/blogs/${post.category}`}>
@@ -44,11 +47,14 @@ export default function RecentPostsPart({ recentPosts, headline }) {
                     {post.timestamp}
                   </p>
                   <Link passHref href={`/user/${post.author.username}`}>
-                    <img
-                      className="absolute -top-12 right-5 rounded-full h-[4.5rem] w-[4.5rem] object-cover border-2 cursor-pointer"
-                      src={post.author.userpic}
-                      alt=""
-                    />
+                    {
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        className="absolute -top-12 right-5 rounded-full h-[4.5rem] w-[4.5rem] object-cover border-2 cursor-pointer"
+                        src={post.author.userpic}
+                        alt=""
+                      />
+                    }
                   </Link>
                 </div>
               </div>

@@ -15,11 +15,14 @@ export default function PostInfo({ username, timestamp, userpic, title }) {
         <div className="flex items-center space-x-2">
           <h4>Post by:</h4>
           <Link passHref href={`/user/${username}`}>
-            <img
-              className="rounded-full w-10 h-10 cursor-pointer object-cover"
-              src={userpic}
-              alt=""
-            />
+            {
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="rounded-full w-10 h-10 cursor-pointer object-cover"
+                src={userpic}
+                alt=""
+              />
+            }
           </Link>
           <Link passHref href={`/user/${username}`}>
             <span className="post-user font-handLee">{username}</span>

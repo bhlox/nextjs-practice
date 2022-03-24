@@ -76,11 +76,14 @@ function Reply({
     <div className="flex space-x-2">
       <div>
         <Link passHref href={`/user/${author.username}`}>
-          <img
-            className="w-12 h-12 rounded-full object-cover cursor-pointer"
-            src={author.userpic}
-            alt=""
-          />
+          {
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="w-12 h-12 rounded-full object-cover cursor-pointer"
+              src={author.userpic}
+              alt=""
+            />
+          }
         </Link>
       </div>
       <div className="space-y-2">

@@ -135,11 +135,14 @@ function ReplyTextarea({
   return (
     <div className="flex flex-col md:flex-row md:space-x-4">
       <div className="flex ">
-        <img
-          className="w-10 h-10 rounded-full object cover"
-          src={currentUserData.userpic}
-          alt=""
-        />
+        {
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="w-10 h-10 rounded-full object cover"
+            src={currentUserData.userpic}
+            alt=""
+          />
+        }
       </div>
       <div>
         <div className="flex space-x-4">

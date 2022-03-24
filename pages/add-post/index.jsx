@@ -162,7 +162,7 @@ function AddPlace() {
       dispatch(formActions.reset());
       dispatch(uiActions.resetSent());
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

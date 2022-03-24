@@ -31,17 +31,20 @@ function HomeHeadline({ username, didPost }) {
       </div>
       <div>
         <div className="w-full">
-          <img
-            className=" h-80 md:h-[40rem] w-full object-contain"
-            src={
-              !username
-                ? "/images/Vector_Landing.png"
-                : didPost
-                ? "/images/Vector_landing-3.png"
-                : "/images/Vector_landing-2.png"
-            }
-            alt=""
-          />
+          {
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className=" h-80 md:h-[40rem] w-full object-contain"
+              src={
+                !username
+                  ? "/images/Vector_Landing.png"
+                  : didPost
+                  ? "/images/Vector_landing-3.png"
+                  : "/images/Vector_landing-2.png"
+              }
+              alt=""
+            />
+          }
         </div>
       </div>
     </div>

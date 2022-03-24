@@ -18,11 +18,14 @@ function SearchCard({
       {/* POST IMAGE */}
       <Link passHref href={`/post/${id}`}>
         <div className="cursor-pointer overflow-hidden group">
-          <img
-            className="w-96 h-72 md:h-96 object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl group-hover:scale-110 transition-all"
-            src={image}
-            alt=""
-          />
+          {
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              className="w-96 h-72 md:h-96 object-cover rounded-t-xl md:rounded-tr-none md:rounded-l-xl group-hover:scale-110 transition-all"
+              src={image}
+              alt=""
+            />
+          }
         </div>
         {/* END POST IMAGE */}
       </Link>
@@ -52,11 +55,14 @@ function SearchCard({
 
           <Link passHref href={`/user/${author.username}`}>
             <div className="flex max-w-max items-center space-x-2 cursor-pointer group">
-              <img
-                className="h-10 w-10 rounded-full object-cover"
-                src={author.userpic}
-                alt=""
-              />
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="h-10 w-10 rounded-full object-cover"
+                  src={author.userpic}
+                  alt=""
+                />
+              }
               <h4 className="text-xl group-hover:underline">
                 {author.username}
               </h4>

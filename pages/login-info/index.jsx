@@ -36,7 +36,7 @@ function ChangeLoginInfo() {
 
   useEffect(() => {
     return () => dispatch(textActions.reset());
-  }, []);
+  }, [dispatch]);
 
   const handleShow = () => {
     dispatch(userActions.show());

@@ -141,6 +141,7 @@ function CommentTextArea({ edit, fetchComments }) {
     <div className="flex flex-col md:flex-row md:space-x-4 pb-8">
       <div>
         {!edit && (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             className="w-20 h-20 rounded-full object-cover"
             src={currentUserData.userpic}

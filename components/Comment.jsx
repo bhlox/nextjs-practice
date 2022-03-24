@@ -129,11 +129,14 @@ function Comment({
         <div className="flex flex-row md:space-x-4">
           <div>
             <Link passHref href={`/user/${author.username}`}>
-              <img
-                className="h-20 w-20 rounded-full object-cover cursor-pointer"
-                src={author.userpic}
-                alt=""
-              />
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="h-20 w-20 rounded-full object-cover cursor-pointer"
+                  src={author.userpic}
+                  alt=""
+                />
+              }
             </Link>
           </div>
           <div className="space-y-4">

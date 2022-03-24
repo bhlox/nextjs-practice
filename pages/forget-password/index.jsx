@@ -22,7 +22,7 @@ function ForgetPassword() {
 
   useEffect(() => {
     return () => dispatch(textActions.reset());
-  }, []);
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

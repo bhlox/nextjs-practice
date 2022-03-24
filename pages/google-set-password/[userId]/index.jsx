@@ -67,7 +67,7 @@ export default function GoogleSetPassword({ setPassword }) {
         <div className="flex flex-col items-center gap-8">
           <div className="text-center space-y-2">
             <h2 className="text-4xl font-bold">Set Password</h2>
-            <h4 className="font-medium max-w-md font-light">
+            <h4 className="max-w-md font-light">
               You may also set your password next time you signin through
               Goggle. You will be redirected to this page again.
             </h4>
