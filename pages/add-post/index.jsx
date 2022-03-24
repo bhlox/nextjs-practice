@@ -1,57 +1,58 @@
-import { getAuth } from "firebase/auth";
+import React, { useEffect, useRef } from "react";
+import Head from "next/head";
+import nookies from "nookies";
+import { FaPencilAlt } from "react-icons/fa";
+
 import {
-  collection,
+  // addDoc,
+  arrayUnion,
+  // collection,
   doc,
-  getDoc,
-  getDocs,
+  // getDoc,
+  // serverTimestamp,
+  // setDoc,
   updateDoc,
 } from "firebase/firestore";
+
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadString,
 } from "firebase/storage";
-import nookies from "nookies";
-import { firebaseAdmin } from "../../../firebaseAdmin";
 
-import Head from "next/head";
+import { db, storage } from "../../firebase.config";
+import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../components/store/user-slice";
+import { textActions } from "../../components/store/text-slice";
+import Tiptap from "../../components/Tiptap";
+import { imageActions } from "../../components/store/image-slice";
+import { formActions } from "../../components/store/form-slice";
+import { uiActions } from "../../components/store/ui-slice";
 
-import { formActions } from "../../../components/store/form-slice";
-import { imageActions } from "../../../components/store/image-slice";
-import { textActions } from "../../../components/store/text-slice";
-import { userActions } from "../../../components/store/user-slice";
-import Tiptap from "../../../components/Tiptap";
-import { db, storage } from "../../../firebase.config";
-import { uiActions } from "../../../components/store/ui-slice";
-// import { firebaseAdmin } from "../../../firebaseAdmin";
-
-function EditPost({ data, postId }) {
-  // console.log(data);
-
+function AddPlace() {
   const titleInput = useRef();
   const imageInput = useRef();
   const categoryInput = useRef();
   // const descInput = useRef();
   const summaryInput = useRef();
 
-  // const auth = getAuth();
+  const auth = getAuth();
   const router = useRouter();
   const dispatch = useDispatch();
+
+  // const colRef = collection(db, "posts");
 
   const checkingStatus = useSelector((state) => state.user.checkingStatus);
   const previewImg = useSelector((state) => state.image.previewImg);
   const postDesc = useSelector((state) => state.text.postDesc);
-  const formInputs = useSelector((state) => state.form.formInputs);
   const validity = useSelector((state) => state.form.validity);
+  const formInputs = useSelector((state) => state.form.formInputs);
   const isFormValid = useSelector((state) => state.form.isFormValid);
   const postSent = useSelector((state) => state.ui.postSent);
-
-  // console.log(validity);
-  // console.log(isFormValid);
 
   const handleCount = (e) => {
     if (e.target.id === "title") {
@@ -75,19 +76,22 @@ function EditPost({ data, postId }) {
     }
   };
 
+  // console.log(validity);
+  // console.log(isFormValid);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let downloadUrl;
-    let uploadImgRef;
+    const userRef = doc(db, "users", auth.currentUser.uid);
 
     const formIsValid =
       categoryInput.current.value.length &&
       titleInput.current.value.trim().length &&
       summaryInput.current.value.trim().length &&
+      previewImg.data_url?.length &&
       formInputs.descCount;
 
-    // console.log(formIsValid);
+    // console.log(formInputs);
 
     if (!formIsValid) {
       console.log("form not valid");
@@ -96,6 +100,7 @@ function EditPost({ data, postId }) {
         title: titleInput.current.value,
         summary: summaryInput.current.value,
         descCount: formInputs.descCount,
+        image: previewImg?.data_url,
       };
 
       // console.log(dataForm);
@@ -106,52 +111,55 @@ function EditPost({ data, postId }) {
 
     console.log("form is valid");
 
-    if (previewImg.name) {
-      uploadImgRef = ref(storage, `images/${previewImg.name}`);
-    }
+    const uploadImgRef = ref(storage, `images/${previewImg.name}`);
     dispatch(userActions.verify());
 
     try {
-      if (uploadImgRef) {
-        const uploadTask = await uploadString(
-          uploadImgRef,
-          previewImg.data_url,
-          "data_url"
-        );
-        const url = getDownloadURL(uploadTask.ref);
-        downloadUrl = await url;
-      }
+      const uploadTask = await uploadString(
+        uploadImgRef,
+        previewImg.data_url,
+        "data_url"
+      );
+      const url = getDownloadURL(uploadTask.ref);
+      const downloadUrl = await url;
       const dataForm = {
-        title: titleInput.current.value,
+        title: titleInput.current.value.trim(),
+        image: downloadUrl,
         category: categoryInput.current.value,
         desc: postDesc,
-        summary: summaryInput.current.value,
-        postId,
+        summary: summaryInput.current.value.trim(),
+        type: "post",
+        author: {
+          username: auth.currentUser.displayName,
+          useruid: auth.currentUser.uid,
+          userpic: auth.currentUser.photoURL,
+        },
+        comments: [],
       };
-      // console.log(dataForm);
-      if (downloadUrl) dataForm.image = downloadUrl;
-      const response = await fetch("/api/add-place", {
-        method: "PATCH",
+      const response = await fetch("/api/add-post", {
+        method: "POST",
         body: JSON.stringify(dataForm),
       });
       const data = await response.json();
       // console.log(data);
+      await updateDoc(userRef, { posts: arrayUnion(data.id) });
+      dispatch(textActions.reset());
+      dispatch(imageActions.reset());
+      console.log("document added");
       dispatch(userActions.verifyComplete());
       dispatch(uiActions.postSent());
-      router.push(`/post/${postId}`);
+      router.push(`/post/${data.id}`);
     } catch (error) {
+      dispatch(userActions.verifyComplete());
+
       console.log(error);
     }
   };
 
   useEffect(() => {
-    titleInput.current.value = data.title;
-    categoryInput.current.value = data.category;
-    summaryInput.current.value = data.summary;
-
     return () => {
-      dispatch(formActions.reset());
       dispatch(imageActions.reset());
+      dispatch(formActions.reset());
       dispatch(uiActions.resetSent());
     };
   }, []);
@@ -159,13 +167,13 @@ function EditPost({ data, postId }) {
   return (
     <>
       <Head>
-        <title>Edit your thoughts</title>
+        <title>Share your thoughts</title>
         <meta name="description" content="share your thoughts" />
         <link rel="icon" href="/newreadit.png" />
       </Head>
 
       <div className="flex flex-col items-center justify-center">
-        <h2 className="text-4xl">Edit your thoughts </h2>
+        <h2 className="text-4xl">Share your thoughts </h2>
         <div className="space-y-8 mt-12 p-4 border-4 border-purple-600 rounded-xl">
           <div>
             <Tiptap
@@ -174,9 +182,6 @@ function EditPost({ data, postId }) {
               handleCount={handleCount}
               categoryInput={categoryInput}
               imageInput={imageInput}
-              desc={data.desc}
-              currentImage={data.image}
-              currentCategory={data.category}
             />
           </div>
           <div>
@@ -194,7 +199,7 @@ function EditPost({ data, postId }) {
                 disabled={checkingStatus}
                 onClick={handleSubmit}
               >
-                {checkingStatus ? "Sending..." : "Save edit"}
+                {checkingStatus ? "sending" : "submit"}
               </button>
             )}
           </div>
@@ -204,56 +209,23 @@ function EditPost({ data, postId }) {
   );
 }
 
-export default EditPost;
-
-// export async function getStaticPaths() {
-//   const colRef = collection(db, "posts");
-//   try {
-//     const posts = await getDocs(colRef);
-//     const ids = [];
-//     posts.docs.forEach((doc) => {
-//       ids.push(doc.id);
-//     });
-
-//     return {
-//       fallback: false,
-//       paths: ids.map((id) => ({ params: { postId: id } })),
-//     };
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
+export default AddPlace;
 
 export async function getServerSideProps(context) {
-  const postId = context.params.postId;
-  const docRef = doc(db, "posts", postId);
   const cookies = nookies.get(context);
+  if (!cookies.token) {
+    context.res.writeHead(302, { Location: "/sign-in  " });
+    context.res.end();
 
-  try {
-    if (!cookies) {
-      context.res.writeHead(302, { Location: "/" });
-      context.res.end();
-    }
-    const token = await firebaseAdmin.auth().verifyIdToken(cookies.token);
-
-    const { uid } = token;
-
-    const userRef = doc(db, "users", uid);
-    const userData = await getDoc(userRef);
-    const userPosts = userData.data().posts;
-
-    const isAuthor = userPosts.some((post) => post == postId);
-
-    if (!isAuthor) {
-      context.res.writeHead(302, { Location: "/" });
-      context.res.end();
-    }
-
-    const docData = await getDoc(docRef);
-    const data = { ...docData.data(), timestamp: "" };
-    return { props: { data, postId, isAuthor } };
-  } catch (error) {
-    console.log(error);
-    return { props: { data: {} } };
+    return { props: {} };
+  } else {
+    return { props: {} };
   }
 }
+
+// TO UPDATE AN ARRAY IN DATABASE USE ARRAYUNION. TO REMOVE USE arrayRemove
+// REFERENCE : https://firebase.google.com/docs/firestore/manage-data/add-data#web-version-9_11
+
+// AUTOGROW HEIGHT TEXTAREA REF: https://stackoverflow.com/questions/46777446/textarea-auto-height-increase
+
+// get downloadUrl after uploadString in firebase v9: https://stackoverflow.com/questions/69622592/how-to-get-downloadurl-after-uploadstring-in-firebase-v9

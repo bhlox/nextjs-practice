@@ -143,7 +143,7 @@ function PlaceCard({
                 <div className="flex flex-col space-y-2 absolute bottom-9 right-9 p-2 bg-slate-500 divide-y-2 rounded-xl z-10">
                   <button
                     className="hover:underline text-xl"
-                    onClick={() => router.push(`/add-place/${id}`)}
+                    onClick={() => router.push(`/add-post/${id}`)}
                   >
                     Edit post
                   </button>

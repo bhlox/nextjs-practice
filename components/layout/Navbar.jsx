@@ -134,6 +134,7 @@ function Navbar() {
       alert(error);
     }
   };
+
   useEffect(() => {
     if (
       localStorage.getItem("color-theme") === "dark" ||
@@ -144,7 +145,7 @@ function Navbar() {
     } else {
       dispatch(uiActions.darkModeOff());
     }
-  }, []);
+  }, [dispatch]);
 
   useDebounce(() => fetchSearch(), 1000, [searchTerm]);
 
@@ -161,11 +162,14 @@ function Navbar() {
               }}
               className="cursor-pointer flex items-center space-x-1"
             >
-              <img
-                className="h-10 w-10 object-cover"
-                src="/newreadit.png"
-                alt=""
-              />
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className="h-10 w-10 object-cover"
+                  src="/newreadit.png"
+                  alt=""
+                />
+              }
               <h2
                 className={
                   router.pathname == "/"
@@ -273,7 +277,7 @@ function Navbar() {
               }  h-screen max-w-xs flex flex-col pt-24 px-4 space-y-6 z-10 lg:max-w-screen-xl lg:h-auto lg:pt-0 lg:px-0 lg:space-y-0 lg:static lg:flex-row lg:gap-x-5 transition-all duration-300 items-center`}
             >
               {auth.currentUser && (
-                <Link passHref href="/add-place">
+                <Link passHref href="/add-post">
                   <h4
                     onClick={() => {
                       dispatch(navActions.closeProfile());
@@ -282,7 +286,7 @@ function Navbar() {
                       dispatch(navActions.close());
                     }}
                     className={
-                      router.pathname == "/add-place"
+                      router.pathname == "/add-post"
                         ? "nav-active flex items-center gap-x-1"
                         : "nav-link flex items-center gap-x-1 hover:scale-125"
                     }
@@ -406,11 +410,14 @@ function Navbar() {
                     className="cursor-pointer flex flex-col items-center space-x-1 relative space-y-2 "
                   >
                     <div className="flex space-x-1 items-center hover:opacity-80">
-                      <img
-                        className="rounded-full w-10 h-10"
-                        src={auth.currentUser.photoURL}
-                        alt=""
-                      />
+                      {
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          className="rounded-full w-10 h-10"
+                          src={auth.currentUser.photoURL}
+                          alt=""
+                        />
+                      }
                       <h3
                         // onClick={() => dispatch(navActions.close())}
                         className={

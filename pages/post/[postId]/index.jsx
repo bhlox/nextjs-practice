@@ -225,7 +225,7 @@ export async function getStaticPaths() {
     });
 
     return {
-      fallback: false,
+      fallback: "blocking",
       paths: ids.map((id) => ({ params: { postId: id } })),
     };
   } catch (error) {

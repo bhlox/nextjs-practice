@@ -28,9 +28,14 @@ function DevCard() {
                 <h4 className="cursor-pointer hover:scale-110 hover:-translate-y-2 transition-all">
                   <FaLinkedin className="text-blue-700" />
                 </h4>
-                <h4 className="cursor-pointer hover:scale-110 hover:-translate-y-2 transition-all">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://github.com/bhlox"
+                  className="cursor-pointer hover:scale-110 hover:-translate-y-2 transition-all"
+                >
                   <FaGithub />
-                </h4>
+                </a>
                 <h4 className="cursor-pointer hover:scale-110 hover:-translate-y-2 transition-all">
                   <FaTwitter className="text-blue-400" />
                 </h4>

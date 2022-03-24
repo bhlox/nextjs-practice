@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import {
   getAuth,
-  onAuthStateChanged,
   reauthenticateWithCredential,
   EmailAuthProvider,
   updateProfile,
@@ -114,13 +113,6 @@ function Profile({ userData }) {
           const downloadUrl = await url;
 
           setPreviewProf(reader.result);
-          // dispatch(
-          //   imageActions.setPreview({
-          //     name: file.name,
-          //     data_url: reader.result,
-          //   })
-          // );
-          // console.log(reader.result);
 
           const userSnapshot = await getDoc(userRef);
 

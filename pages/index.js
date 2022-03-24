@@ -23,17 +23,12 @@ import LatestPostsPart from "../components/LatestPostsPart.jsx";
 import RecentPostsPart from "../components/RecentPostsPart.jsx";
 import LoadMorePosts from "../components/LoadMorePosts";
 import { useDispatch, useSelector } from "react-redux";
-import { homePostsActions } from "../components/store/home-posts-slice";
-// import Link from "next/link";
 import HomeHeadline from "../components/HomeHeadline";
-import { getAuth } from "firebase/auth";
 
 let initial = true;
 
 export default function Home({ posts, username, didPost }) {
   // console.log(posts);
-
-  const auth = getAuth();
 
   const colRef = collection(db, "posts");
 

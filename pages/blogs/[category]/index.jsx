@@ -40,7 +40,7 @@ export default BlogsCategory;
 
 export async function getStaticPaths() {
   return {
-    fallback: false,
+    fallback: "blocking",
     paths: categories.map((category) => ({ params: { category } })),
   };
 }
@@ -61,6 +61,7 @@ export async function getStaticProps(context) {
       postsData.push({
         ...doc.data(),
         timestamp: doc.data().timestamp.toDate().toDateString(),
+        id: doc.id,
       })
     );
     return { props: { postsData, category } };

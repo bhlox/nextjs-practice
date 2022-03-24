@@ -74,11 +74,6 @@ function OtherUserProfile({ user }) {
         currentUsername={user.data.username}
         userPosts={userPosts}
       />
-      {/* <div className="flex flex-wrap">
-        {userPosts.map((post) => (
-          <PlaceCard key={post.id} self={false} {...post} />
-        ))}
-      </div> */}
     </>
   );
 }

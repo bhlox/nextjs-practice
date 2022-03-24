@@ -23,7 +23,7 @@ export default function ProfilePosts({
           <h2 className="text-xl font-light">
             You have not posted yet. Why not give it a shot
           </h2>
-          <Link passHref href="/add-place">
+          <Link passHref href="/add-post">
             <h3 className="cursor-pointer hover:underline hover:text-blue-400 flex items-center gap-x-1 text-xl">
               take me there now
               <span>
