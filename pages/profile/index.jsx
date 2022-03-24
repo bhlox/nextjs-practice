@@ -122,6 +122,28 @@ function Profile({ userData }) {
           // );
           // console.log(reader.result);
 
+          const userSnapshot = await getDoc(userRef);
+
+          const commentsIdList = userSnapshot.data().comments;
+          for (const commentId of commentsIdList) {
+            const commentRef = doc(db, "comments", commentId);
+            const commentSnapshot = await getDoc(commentRef);
+            // console.log({ ...commentSnapshot.data() });
+            await updateDoc(commentRef, {
+              "author.userpic": downloadUrl,
+            });
+
+            const repliesIdList = commentSnapshot.data().replies;
+            for (const replyId of repliesIdList) {
+              const replyRef = doc(db, "replies", replyId);
+              await updateDoc(replyRef, {
+                "author.userpic": downloadUrl,
+              });
+              // const replySnapshot = await getDoc(replyRef);
+              // console.log({ ...replySnapshot.data() });
+            }
+          }
+
           await updateDoc(userRef, { profilePic: downloadUrl });
           updateProfile(auth.currentUser, { photoURL: downloadUrl });
           console.log("profile pic updated");
@@ -247,6 +269,28 @@ function Profile({ userData }) {
 
       if (!isUsernameValid)
         throw new Error("Firebase: Error (auth/username-is-too-short)");
+
+      const userSnapshot = await getDoc(userRef);
+
+      const commentsIdList = userSnapshot.data().comments;
+      for (const commentId of commentsIdList) {
+        const commentRef = doc(db, "comments", commentId);
+        const commentSnapshot = await getDoc(commentRef);
+        // console.log({ ...commentSnapshot.data() });
+        await updateDoc(commentRef, {
+          "author.username": usernameInputRef.current.value,
+        });
+
+        const repliesIdList = commentSnapshot.data().replies;
+        for (const replyId of repliesIdList) {
+          const replyRef = doc(db, "replies", replyId);
+          await updateDoc(replyRef, {
+            "author.username": usernameInputRef.current.value,
+          });
+          // const replySnapshot = await getDoc(replyRef);
+          // console.log({ ...replySnapshot.data() });
+        }
+      }
 
       await updateDoc(userRef, { username: usernameInputRef.current.value });
       updateProfile(auth.currentUser, {

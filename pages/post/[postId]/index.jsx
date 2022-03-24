@@ -126,9 +126,16 @@ function PostId({ data, recentPosts }) {
         <div className="space-y-10">
           {/* POST TITLE */}
           <div className="space-y-7">
-            <h2 className="font-extrabold text-5xl md:text-6xl max-w-3xl">
-              {title}
-            </h2>
+            <div className="flex">
+              <h2 className="font-extrabold text-5xl md:text-6xl max-w-3xl">
+                {title}
+              </h2>
+              <Link passHref href={`/blogs/${category}`}>
+                <h3 className="text-xl mx-4 bg-blue-400 px-2 py-1 rounded-xl self-end capitalize cursor-pointer outline outline-2 outline-blue-400 hover:bg-transparent transition-all duration-300">
+                  {category}
+                </h3>
+              </Link>
+            </div>
             <div className="max-w-[53rem]">
               {
                 // eslint-disable-next-line @next/next/no-img-element

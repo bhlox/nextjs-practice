@@ -272,26 +272,28 @@ function Navbar() {
                 showSide ? "right-0" : "-right-[80%]"
               }  h-screen max-w-xs flex flex-col pt-24 px-4 space-y-6 z-10 lg:max-w-screen-xl lg:h-auto lg:pt-0 lg:px-0 lg:space-y-0 lg:static lg:flex-row lg:gap-x-5 transition-all duration-300 items-center`}
             >
-              <Link passHref href="/add-place">
-                <h4
-                  onClick={() => {
-                    dispatch(navActions.closeProfile());
-                    dispatch(navActions.closeBlogs());
-                    dispatch(navActions.blurSearch());
-                    dispatch(navActions.close());
-                  }}
-                  className={
-                    router.pathname == "/add-place"
-                      ? "nav-active flex items-center gap-x-1"
-                      : "nav-link flex items-center gap-x-1 hover:scale-125"
-                  }
-                >
-                  <span>
-                    <FaPencilAlt />
-                  </span>
-                  Post
-                </h4>
-              </Link>
+              {auth.currentUser && (
+                <Link passHref href="/add-place">
+                  <h4
+                    onClick={() => {
+                      dispatch(navActions.closeProfile());
+                      dispatch(navActions.closeBlogs());
+                      dispatch(navActions.blurSearch());
+                      dispatch(navActions.close());
+                    }}
+                    className={
+                      router.pathname == "/add-place"
+                        ? "nav-active flex items-center gap-x-1"
+                        : "nav-link flex items-center gap-x-1 hover:scale-125"
+                    }
+                  >
+                    <span>
+                      <FaPencilAlt />
+                    </span>
+                    Post
+                  </h4>
+                </Link>
+              )}
               <div
                 onClick={() => {
                   dispatch(navActions.closeProfile());
