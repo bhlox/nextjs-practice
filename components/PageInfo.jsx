@@ -14,6 +14,10 @@ const datas = [
     title: "How did this start?",
     info: 'It started with just practicing the kit, then as the initial plan was built, the developer then impulsively thought "FINE, I COULD JUST TRY AND MANAGE".',
   },
+  {
+    title: "Are all assets and blogs legit?",
+    info: "All images, articles for blogs used are just copied from lorem ipsum makers. Images used are downloaded from stock image websites and deviantart. I am sorry that I don't have the username source for each of those assets.",
+  },
 ];
 
 function PageInfo() {

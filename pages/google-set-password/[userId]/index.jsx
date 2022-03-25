@@ -8,6 +8,7 @@ import { getAuth, updatePassword } from "firebase/auth";
 import { userActions } from "../../../components/store/user-slice";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import { accountFormActions } from "../../../components/store/account-form-slice";
 
 export default function GoogleSetPassword({ setPassword }) {
   const auth = getAuth();
@@ -21,11 +22,6 @@ export default function GoogleSetPassword({ setPassword }) {
 
   const showPassword = useSelector((state) => state.user.showPassword);
 
-  //   const handleDelete = async () => {
-  //     await updateDoc(userRef, { setPassword: deleteField() });
-  //     console.log("field deleted");
-  //   };
-
   const handleShow = () => {
     dispatch(userActions.show());
     passwordInputRef.current.focus();
@@ -35,16 +31,23 @@ export default function GoogleSetPassword({ setPassword }) {
     e.preventDefault();
     const userRef = doc(db, "users", auth.currentUser.uid);
 
+    const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~0-9]/;
+    const passwordValidity =
+      format.test(passwordConfirmInputRef.current.value) &&
+      passwordConfirmInputRef.current.value.length > 5;
+
     const isSame =
       passwordConfirmInputRef.current.value === passwordInputRef.current.value;
 
     try {
+      if (!passwordValidity) throw new Error("Password is too weak");
+
       if (!isSame) throw new Error("Password credentials do not match");
 
       await updatePassword(user, passwordConfirmInputRef.current.value);
       await updateDoc(userRef, { setPassword: deleteField() });
 
-      console.log("password is set");
+      // console.log("password is set");
       router.push("/profile");
     } catch (error) {
       console.log(error);
@@ -52,9 +55,9 @@ export default function GoogleSetPassword({ setPassword }) {
     }
   };
 
-  //   useEffect(() => {
-  //     return () => handleDelete();
-  //   }, []);
+  useEffect(() => {
+    return () => dispatch(accountFormActions.reset());
+  }, [dispatch]);
 
   return (
     <>
@@ -68,8 +71,8 @@ export default function GoogleSetPassword({ setPassword }) {
           <div className="text-center space-y-2">
             <h2 className="text-4xl font-bold">Set Password</h2>
             <h4 className="max-w-md font-light">
-              You may also set your password next time you signin through
-              Goggle. You will be redirected to this page again.
+              You may whenever set your password next time you signin through
+              Google. You will be redirected to this page again.
             </h4>
           </div>
           <form

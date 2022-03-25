@@ -192,7 +192,7 @@ function SignUp() {
             <input
               className={`styled-input ${
                 accountInfo.fullName && !validity.fullName
-                  ? "border-red-400 border-b-4"
+                  ? "border-red-400 border-b-4 dark:border-red-400 dark:border-b-4"
                   : ""
               }`}
               type="text"
@@ -210,14 +210,14 @@ function SignUp() {
             {accountInfo.fullName && specialCharacters.fullName && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>name contains special characters</p>
+                <p className="text-red-400">name contains special characters</p>
               </div>
             )}
 
             {accountInfo.fullName && !lengthValidity.fullName && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>minimum of 2 letters</p>
+                <p className="text-red-400">minimum of 2 letters</p>
               </div>
             )}
           </div>
@@ -225,7 +225,9 @@ function SignUp() {
           <div className="relative max-w-max">
             <input
               className={`styled-input ${
-                exists.username ? "border-red-400 border-b-4" : ""
+                exists.username
+                  ? "border-red-400 border-b-4 dark:border-red-400 dark:border-b-4"
+                  : ""
               }`}
               type="text"
               id="username"
@@ -243,7 +245,7 @@ function SignUp() {
             {accountInfo.username && !lengthValidity.username && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>minimum of 6 characters</p>
+                <p className="text-red-400">minimum of 6 characters</p>
               </div>
             )}
             {accountInfo.username &&
@@ -251,7 +253,7 @@ function SignUp() {
               lengthValidity.username && (
                 <div className="flex gap-x-1 items-center text-2xl font-bold">
                   <TiWarning className="text-yellow-400" />
-                  <p>username is taken</p>
+                  <p className="text-red-400">username is taken</p>
                 </div>
               )}
           </div>
@@ -260,7 +262,7 @@ function SignUp() {
             <input
               className={`styled-input ${
                 exists.email || (accountInfo.email && !validity.email)
-                  ? "border-red-400 border-b-4"
+                  ? "border-red-400 border-b-4 dark:border-red-400 dark:border-b-4"
                   : ""
               }`}
               type="email"
@@ -276,19 +278,23 @@ function SignUp() {
             {accountInfo.email && exists.email && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>email address already exists</p>
+                <p className="text-red-400">email address already exists</p>
               </div>
             )}
             {accountInfo.email && !validity.email && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>email invalid</p>
+                <p className="text-red-400">email invalid</p>
               </div>
             )}
           </div>
           <div className="relative max-w-max">
             <input
-              className={`styled-input`}
+              className={`styled-input ${
+                accountInfo.password && !validity.password
+                  ? "border-red-400 border-b-4 dark:border-red-400 dark:border-b-4"
+                  : ""
+              }`}
               type={showPassword ? "text" : "password"}
               ref={passwordInputRef}
               id="password"
@@ -308,7 +314,7 @@ function SignUp() {
             {accountInfo.password && !validity.password && (
               <div className="flex gap-x-1 items-center text-2xl font-bold">
                 <TiWarning className="text-yellow-400" />
-                <p>password is weak</p>
+                <p className="text-red-400">password is weak</p>
               </div>
             )}
           </div>

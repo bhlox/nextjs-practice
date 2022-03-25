@@ -202,23 +202,31 @@ function Profile({ userData }) {
     }
   };
 
-  const handleCancel = (action) => {
+  const handleCancel = async (action) => {
+    const previousUserDataRef = doc(db, "users", auth.currentUser.uid);
+
+    try {
+      const snapshot = await getDoc(previousUserDataRef);
+      if (action === "about") setCurrentAbout(snapshot.data().aboutMe);
+      if (action === "username") {
+        dispatch(uiActions.editedUserName());
+        dispatch(userActions.hide());
+        setCurrentUsername(snapshot.data().username);
+      }
+      if (action === "name") {
+        setEditingName(false);
+        setCurrentName(snapshot.data().name);
+      }
+      if (action === "socials") {
+        setAddSocials(false);
+        setPreviewSocials(snapshot.data().socials);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+
     dispatch(uiActions.edited());
     dispatch(textActions.reset());
-    if (action === "about") setCurrentAbout(aboutMe);
-    if (action === "username") {
-      dispatch(uiActions.editedUserName());
-      dispatch(userActions.hide());
-      setCurrentUsername(username);
-    }
-    if (action === "socials") {
-      setAddSocials(false);
-      setPreviewSocials({ ...socials });
-    }
-    if (action === "name") {
-      setEditingName(false);
-      setCurrentName(name);
-    }
   };
 
   const handleEdit = () => {

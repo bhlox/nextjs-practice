@@ -13,6 +13,7 @@ import { commentsActions } from "./store/comments-slice";
 import ReplyTextarea from "./ReplyTextarea";
 import { FaFeatherAlt } from "react-icons/fa";
 import Link from "next/link";
+import DeleteModal from "./DeleteModal";
 
 function Reply({
   setActiveReplyId,
@@ -35,6 +36,7 @@ function Reply({
 
   // const { activeCommentId } = useSelector((state) => state.comments);
 
+  const [showDeleteMsg, setShowDeleteMsg] = useState(false);
   const [isReplyOwner, setIsReplyOwner] = useState(false);
   const [toBeEditedContent, setToBeEditedContent] = useState("");
 
@@ -73,70 +75,79 @@ function Reply({
   };
 
   return (
-    <div className="flex space-x-2">
-      <div>
-        <Link passHref href={`/user/${author.username}`}>
-          {
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              className="w-12 h-12 rounded-full object-cover cursor-pointer"
-              src={author.userpic}
-              alt=""
-            />
-          }
-        </Link>
-      </div>
-      <div className="space-y-2">
+    <>
+      <div className="flex space-x-2">
         <div>
-          <div className="flex space-x-2">
-            <div className="flex gap-x-[0.15rem]">
-              <Link passHref href={`/user/${author.username}`}>
-                <h3 className="text-lg hover:underline cursor-pointer hover:text-blue-400">
-                  {author.username}
-                </h3>
-              </Link>
-              {postAuthorUsername === author.username && (
-                <p>
-                  <FaFeatherAlt />
-                </p>
-              )}
+          <Link passHref href={`/user/${author.username}`}>
+            {
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className="w-12 h-12 rounded-full object-cover cursor-pointer"
+                src={author.userpic}
+                alt=""
+              />
+            }
+          </Link>
+        </div>
+        <div className="space-y-2">
+          <div>
+            <div className="flex space-x-2">
+              <div className="flex gap-x-[0.15rem]">
+                <Link passHref href={`/user/${author.username}`}>
+                  <h3 className="text-lg hover:underline cursor-pointer hover:text-blue-400">
+                    {author.username}
+                  </h3>
+                </Link>
+                {postAuthorUsername === author.username && (
+                  <p>
+                    <FaFeatherAlt />
+                  </p>
+                )}
+              </div>
+              <p className="font-light text-sm dark:text-gray-400 text-gray-500">
+                {timestamp}
+              </p>
             </div>
-            <p className="font-light text-sm dark:text-gray-400 text-gray-500">
-              {timestamp}
-            </p>
+            {isReplying && activeReplyId === id ? (
+              <ReplyTextarea
+                setReplyIdList={setReplyIdList}
+                setActiveReplyId={setActiveReplyId}
+                toBeEditedContent={toBeEditedContent}
+                setToBeEditedContent={setToBeEditedContent}
+                activeReplyId={activeReplyId}
+                replyIdList={replyIdList}
+                setReplyList={setReplyList}
+              />
+            ) : (
+              <p>{content}</p>
+            )}
           </div>
-          {isReplying && activeReplyId === id ? (
-            <ReplyTextarea
-              setReplyIdList={setReplyIdList}
-              setActiveReplyId={setActiveReplyId}
-              toBeEditedContent={toBeEditedContent}
-              setToBeEditedContent={setToBeEditedContent}
-              activeReplyId={activeReplyId}
-              replyIdList={replyIdList}
-              setReplyList={setReplyList}
-            />
-          ) : (
-            <p>{content}</p>
+          {isReplyOwner && !isReplying && (
+            <div className="space-x-2">
+              <span
+                onClick={handleEdit}
+                className="cursor-pointer hover:underline hover:text-blue-400"
+              >
+                Edit
+              </span>
+              <span
+                onClick={() => setShowDeleteMsg(true)}
+                className="cursor-pointer hover:underline hover:text-blue-400"
+              >
+                Delete
+              </span>
+            </div>
           )}
         </div>
-        {isReplyOwner && !isReplying && (
-          <div className="space-x-2">
-            <span
-              onClick={handleEdit}
-              className="cursor-pointer hover:underline hover:text-blue-400"
-            >
-              Edit
-            </span>
-            <span
-              onClick={handleDelete}
-              className="cursor-pointer hover:underline hover:text-blue-400"
-            >
-              Delete
-            </span>
-          </div>
-        )}
       </div>
-    </div>
+      {showDeleteMsg && (
+        <DeleteModal
+          handleDelete={handleDelete}
+          setShowDeleteMsg={setShowDeleteMsg}
+          comment={content}
+        />
+      )}
+    </>
   );
 }
 

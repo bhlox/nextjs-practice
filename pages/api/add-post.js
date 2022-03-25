@@ -30,7 +30,7 @@ async function handler(req, res) {
 
     const data = JSON.parse(json);
 
-    const docRef = doc(db, "posts", data.id);
+    const docRef = doc(db, "posts", data.postId);
 
     try {
       delete data.id;

@@ -46,7 +46,7 @@ function BackDrop() {
       onClick={() => dispatch(navActions.close())}
       className={`${
         showSide ? "block" : "hidden"
-      } fixed top-0 left-0 bg-black opacity-50 w-screen h-screen z-[5]`}
+      } fixed top-0 left-0 bg-black opacity-50 w-screen h-screen z-20`}
     ></div>
   );
 }

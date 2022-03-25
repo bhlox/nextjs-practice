@@ -16,12 +16,12 @@ function Footer() {
         <h2 className="flex gap-x-1 font-light text-lg">
           Copyright &copy; Travel Blogs | Website by
           {/* <Link passHref href="www.kurkboard.com"> */}
-          <h3
-            target="_blank"
+          <span
+            // target="_blank"
             className="hover:underline hover:text-blue-400 text-xl"
           >
             Kurk
-          </h3>
+          </span>
           {/* </Link> */}
         </h2>
         <div className="flex space-x-3">

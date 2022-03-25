@@ -15,15 +15,7 @@ import { navActions } from "../store/nav-slice";
 import { categories } from "../Tiptap";
 import { BiNotepad, BiExit } from "react-icons/bi";
 import useDebounce from "../hooks/useDebounce";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../../firebase.config";
 import SearchBarPosts from "../SearchBarPosts";
 import conjunctionsAndPreps from "../../utils/conjunctionList";
@@ -160,15 +152,10 @@ function Navbar() {
                 dispatch(navActions.closeBlogs());
                 dispatch(navActions.blurSearch());
               }}
-              className="cursor-pointer flex items-center space-x-1"
+              className="cursor-pointer flex items-center space-x-1 relative"
             >
               {
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  className="h-10 w-10 object-cover"
-                  src="/newreadit.png"
-                  alt=""
-                />
               }
               <h2
                 className={
@@ -179,13 +166,25 @@ function Navbar() {
               >
                 Readis
               </h2>
+              {
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  className={
+                    router.pathname == "/"
+                      ? "h-[4.25rem] w-[4.25rem] object-cover absolute -bottom-2 -right-12 hidden sm:inline"
+                      : "h-[3.75rem] w-[3.75rem] object-cover absolute -bottom-2 -right-12"
+                  }
+                  src="/images/logo_website_2.png"
+                  alt=""
+                />
+              }
             </div>
           </Link>
           <div className="flex space-x-6 items-center">
             <div
               className={`relative ${
                 showSearch ? "w-56 md:w-80" : "w-[60px] overflow-hidden"
-              } transition-all rounded-full bg-transparent`}
+              } transition-all duration-500 rounded-full bg-transparent`}
             >
               <form onSubmit={handleSubmit}>
                 <input
@@ -213,7 +212,7 @@ function Navbar() {
                   }}
                   className={`absolute text-2xl group ${
                     showSearch
-                      ? "bg-red-400 top-1/2 left-0 -translate-y-1/2 cursor-pointer  h-14 flex items-center w-14 justify-center rounded-full"
+                      ? "bg-red-400 top-1/2 left-0 -translate-y-1/2 cursor-pointer h-14 flex items-center w-14 justify-center rounded-full"
                       : "bg-purple-500 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 h-14 flex items-center w-full justify-center cursor-pointer"
                   } `}
                 >
@@ -267,14 +266,14 @@ function Navbar() {
               }}
               className={`${
                 showSide ? "text-slate-900" : ""
-              } lg:hidden text-4xl z-20 transition-all duration-200`}
+              } lg:hidden text-4xl z-50 transition-all duration-200`}
             >
               <GiHamburgerMenu />
             </button>
             <div
               className={`absolute bg-purple-500 top-0 ${
                 showSide ? "right-0" : "-right-[80%]"
-              }  h-screen max-w-xs flex flex-col pt-24 px-4 space-y-6 z-10 lg:max-w-screen-xl lg:h-auto lg:pt-0 lg:px-0 lg:space-y-0 lg:static lg:flex-row lg:gap-x-5 transition-all duration-300 items-center`}
+              }  h-screen max-w-xs flex flex-col pt-24 px-4 space-y-6 z-30 lg:max-w-screen-xl lg:h-auto lg:pt-0 lg:px-0 lg:space-y-0 lg:static lg:flex-row lg:gap-x-5 transition-all duration-300 items-center`}
             >
               {auth.currentUser && (
                 <Link passHref href="/add-post">
@@ -498,13 +497,6 @@ function Navbar() {
                   </a>
                 </Link>
               )}
-              {/* {isLoggedIn && (
-            <Link passHref href="/">
-              <a className="nav-link" onClick={handleSignOut}>
-                Sign-out
-              </a>
-            </Link>
-          )} */}
             </div>
           </div>
         </div>

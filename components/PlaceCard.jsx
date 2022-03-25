@@ -12,6 +12,7 @@ import {
 import { db } from "../firebase.config";
 import { getAuth } from "firebase/auth";
 import { useRouter } from "next/router";
+import DeleteModal from "./DeleteModal";
 
 function PlaceCard({
   id,
@@ -34,9 +35,8 @@ function PlaceCard({
     const auth = getAuth();
     const userRef = doc(db, "users", auth.currentUser.uid);
     const docRef = doc(db, "posts", id);
+
     try {
-      // const userData = await getDoc(userRef);
-      // const posts = userData.data().posts;
       const newPosts = postsId.filter((post) => post !== id);
       // console.log(postsId);
 
@@ -50,10 +50,7 @@ function PlaceCard({
 
         const commenterUseruid = commentSnapshot.data().author.useruid;
         const commenterRef = doc(db, "users", commenterUseruid);
-        // const commenterSnapshot = await getDoc(commenterRef);
         // console.log({ ...commenterSnapshot.data() });
-        // const commenterCommentsIdList = commenterSnapshot.data().comments;
-        // const commenterRepliesIdList = commenterSnapshot.data().replies;
         // console.log(
         //   "this is commenterCommentsIdList",
         //   commenterCommentsIdList,
@@ -81,7 +78,6 @@ function PlaceCard({
       await updateDoc(userRef, { posts: newPosts });
       setPostsId(newPosts);
       setDidDelete(true);
-      // setShowDeleteMsg(false);
       console.log("post deleted");
     } catch (error) {
       console.log(error);
@@ -149,7 +145,7 @@ function PlaceCard({
                   </button>
                   <button
                     className="hover:underline text-xl"
-                    onClick={() => setShowDeleteMsg((prev) => !prev)}
+                    onClick={() => setShowDeleteMsg(true)}
                   >
                     Delete post
                   </button>
@@ -161,34 +157,11 @@ function PlaceCard({
         {/* END OF INFO */}
       </div>
       {showDeleteMsg && (
-        <>
-          <div
-            onClick={() => setShowDeleteMsg(false)}
-            className="fixed top-0 left-0 h-screen w-screen z-10 flex justify-center items-center bg-slate-800 bg-opacity-40 backdrop-blur-[1px]"
-          ></div>
-          <div className="">
-            <div className="dark:bg-slate-700 bg-gray-300 dark:text-stone-200 text-slate-800 p-6 flex flex-col justify-center items-center space-y-8 max-w-sm rounded-xl z-20 fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-              <h2 className="text-xl">
-                You are about this delete this post &ldquo;
-                <span className="font-bold text-2xl">{title}</span>&ldquo;
-              </h2>
-              <div className="flex space-x-12 items-center">
-                <button
-                  className="rounded-xl p-2 dark:border-stone-200 border-slate-800 border-2 transition-all hover:scale-125 hover:opacity-80"
-                  onClick={() => setShowDeleteMsg(false)}
-                >
-                  Hold on for now
-                </button>
-                <button
-                  onClick={handleDeletePost}
-                  className="rounded-xl p-2 dark:border-stone-200 border-slate-800 border-2 transition-all hover:scale-125 hover:opacity-80"
-                >
-                  Confirm
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
+        <DeleteModal
+          setShowDeleteMsg={setShowDeleteMsg}
+          handleDelete={handleDeletePost}
+          title={title}
+        />
       )}
     </div>
   );

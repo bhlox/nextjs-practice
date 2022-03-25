@@ -60,7 +60,7 @@ function AddPlace() {
       titleInput.current.style.height =
         Math.min(titleInput.current.scrollHeight, 300) + "px";
       if (!validity.title) {
-        console.log("submitting for validity");
+        // console.log("submitting for validity");
         dispatch(formActions.submit({ [e.target.id]: e.target.value }));
       }
     }
@@ -70,7 +70,7 @@ function AddPlace() {
       summaryInput.current.style.height =
         Math.min(summaryInput.current.scrollHeight, 300) + "px";
       if (!validity.summary) {
-        console.log("submitting for validity");
+        // console.log("submitting for validity");
         dispatch(formActions.submit({ [e.target.id]: e.target.value }));
       }
     }
@@ -94,7 +94,7 @@ function AddPlace() {
     // console.log(formInputs);
 
     if (!formIsValid) {
-      console.log("form not valid");
+      // console.log("form not valid");
       const dataForm = {
         category: categoryInput.current.value,
         title: titleInput.current.value,
@@ -109,7 +109,7 @@ function AddPlace() {
       return;
     }
 
-    console.log("form is valid");
+    // console.log("form is valid");
 
     const uploadImgRef = ref(storage, `images/${previewImg.name}`);
     dispatch(userActions.verify());
@@ -145,7 +145,7 @@ function AddPlace() {
       await updateDoc(userRef, { posts: arrayUnion(data.id) });
       dispatch(textActions.reset());
       dispatch(imageActions.reset());
-      console.log("document added");
+      // console.log("document added");
       dispatch(userActions.verifyComplete());
       dispatch(uiActions.postSent());
       router.push(`/post/${data.id}`);

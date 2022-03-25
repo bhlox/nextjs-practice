@@ -370,6 +370,7 @@ const Tiptap = ({
             onChange={handleImagePreview}
             ref={imageInput}
             required
+            className="file:bg-blue-500 file:border-0 file:px-2 file:py-1 file:rounded-2xl file:cursor-pointer file:font-semibold file:text-lg file:outline-2 file:outline file:hover:bg-transparent file:dark:text-gray-200 file:text-slate-800 file:outline-blue-500 file:transition-all"
           />
           {!validity.image && (
             <div className="flex space-x-2 items-center text-2xl">

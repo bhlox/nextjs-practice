@@ -22,7 +22,7 @@ function LoadMorePosts({ setRecentPosts }) {
         colRef,
         orderBy("timestamp", "desc"),
         startAfter(lastPost),
-        limit(14)
+        limit(4)
       );
       const snapshot = await getDocs(nextSet);
 
@@ -36,12 +36,13 @@ function LoadMorePosts({ setRecentPosts }) {
           timestamp: doc.data().timestamp.toDate().toDateString(),
         })
       );
-      // console.log(posts);
 
       setRecentPosts((prev) => [...prev, ...posts]);
-      if (snapshot.docs.length <= 14) {
+
+      if (snapshot.docs.length < 4) {
         throw new Error("no more posts");
       }
+
       setLastPost(snapshot.docs[snapshot.docs.length - 1]);
     } catch (error) {
       setIsNextAvailable(false);
@@ -66,7 +67,7 @@ function LoadMorePosts({ setRecentPosts }) {
         <div className="flex justify-center border-t-2 relative font-handLee">
           <button
             onClick={handleFetchMore}
-            className="rounded-2xl px-2 py-1 bg-slate-500 text-2xl font-light absolute -top-6 left-1/2 -translate-x-1/2 hover:scale-110 transition-all"
+            className="rounded-2xl px-2 py-1 dark:bg-slate-500 bg-gray-400 text-2xl dark:text-gray-200 text-slate-800 font-light absolute -top-6 left-1/2 -translate-x-1/2 hover:scale-110 transition-all"
           >
             Load more
           </button>

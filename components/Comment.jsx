@@ -15,6 +15,7 @@ import ReplyTextarea from "./ReplyTextarea";
 import { commentsActions } from "./store/comments-slice";
 import { FaFeatherAlt } from "react-icons/fa";
 import Link from "next/link";
+import DeleteModal from "./DeleteModal";
 
 function Comment({
   content,
@@ -30,6 +31,7 @@ function Comment({
   const [replyIdList, setReplyIdList] = useState([]);
   const [replyList, setReplyList] = useState([]);
   const [activeReplyId, setActiveReplyId] = useState("");
+  const [showDeleteMsg, setShowDeleteMsg] = useState(false);
 
   // console.log(replyIdList);
 
@@ -112,7 +114,7 @@ function Comment({
         await updateDoc(userRef, { replies: arrayRemove(id) });
       }
       dispatch(commentsActions.deleteIdFromComments(commentId));
-      // console.log("comment deleted");
+      console.log("comment deleted");
     } catch (error) {
       console.log(error);
     }
@@ -164,8 +166,6 @@ function Comment({
                 <p className="">{content}</p>
               )}
 
-              {/* {!isEditing && <p className="">{content}</p>} */}
-
               <div className="flex space-x-2 pt-3 dark:text-stone-300">
                 {userCommentOwner && !isEditing && user && (
                   <span
@@ -177,7 +177,7 @@ function Comment({
                 )}
                 {userCommentOwner && !isEditing && user && (
                   <span
-                    onClick={handleDelete}
+                    onClick={() => setShowDeleteMsg(true)}
                     className="hover:underline hover:text-blue-400 cursor-pointer"
                   >
                     Delete
@@ -215,6 +215,13 @@ function Comment({
           </div>
         </div>
       </div>
+      {showDeleteMsg && (
+        <DeleteModal
+          comment={content}
+          setShowDeleteMsg={setShowDeleteMsg}
+          handleDelete={handleDelete}
+        />
+      )}
     </>
   );
 }

@@ -50,7 +50,7 @@ export default function RecentPostsPart({ recentPosts, headline }) {
                     {
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
-                        className="absolute -top-12 right-5 rounded-full h-[4.5rem] w-[4.5rem] object-cover border-2 cursor-pointer"
+                        className="absolute -top-12 right-5 rounded-full h-[4.5rem] w-[4.5rem] object-cover border-2 dark:border-stone-200 border-slate-800 cursor-pointer"
                         src={post.author.userpic}
                         alt=""
                       />

@@ -17,7 +17,7 @@ import Head from "next/head";
 
 function OtherUserProfile({ user }) {
   // DATA IS THE OTHERS USERS DATA
-  console.log(user);
+  // console.log(user);
 
   // const fixedPosts = user.data.posts.map((post) => ({
   //   ...post,
@@ -33,6 +33,7 @@ function OtherUserProfile({ user }) {
     postsId.forEach(async (id, i) => {
       const docRef = doc(db, "posts", id);
       const docData = await getDoc(docRef);
+      // console.log({ ...docData.data() });
       allPosts.push({ ...docData.data(), id: docData.id });
       if (i >= postsId.length - 1) {
         setUserPosts(() => {
@@ -48,7 +49,7 @@ function OtherUserProfile({ user }) {
     });
   }, []);
 
-  console.log(userPosts);
+  // console.log(userPosts);
 
   return (
     <>

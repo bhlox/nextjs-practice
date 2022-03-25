@@ -57,7 +57,7 @@ export default function ProfileCard({
   const { load } = useSelector((state) => state.ui);
 
   const handleEmail = () => {
-    window.open(`mailto:${email}?subject=Title&body=Enter%message%20here`);
+    window.open(`mailto:${email}?subject=Title&body=Enter message here`);
   };
 
   const handleShow = () => {

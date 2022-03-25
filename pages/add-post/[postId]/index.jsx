@@ -136,6 +136,7 @@ function EditPost({ data, postId }) {
       });
       const data = await response.json();
       // console.log(data);
+      // console.log("post edited");
       dispatch(userActions.verifyComplete());
       dispatch(uiActions.postSent());
       router.push(`/post/${postId}`);

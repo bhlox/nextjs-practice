@@ -19,7 +19,7 @@ function HomeHeadline({ username, didPost }) {
 
         <Link passHref href={`${username ? "/add-post" : "/sign-up"} `}>
           <a className="nav-link flex items-center gap-x-1 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl relative group max-w-max mx-auto md:mx-0 z-10 text-3xl">
-            <span className="absolute top-0 left-0 w-0 group-hover:w-full -z-10 h-full bg-red-400 transition-all duration-700"></span>
+            <span className="absolute top-0 left-0 w-0 group-hover:w-full -z-10 h-full bg-red-400 transition-all duration-700 rounded"></span>
             <FiChevronsRight />
             {!username
               ? "Sign me up now"

@@ -29,7 +29,7 @@ function ScrollToTop() {
     <>
       {showBtn && (
         <button
-          className="cursor-pointer hover:opacity-80 fixed bottom-7 right-7 md:bottom-14 md:right-14 rounded-full p-2 bg-gray-400 text-3xl"
+          className="cursor-pointer hover:opacity-80 fixed bottom-7 right-7 md:bottom-14 md:right-14 rounded-full p-2 bg-gray-400 text-5xl"
           onClick={handleScroll}
         >
           <BiArrowToTop />
