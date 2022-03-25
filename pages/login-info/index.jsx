@@ -100,8 +100,9 @@ function ChangeLoginInfo() {
     <>
       <Head>
         <title>Change current password</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
+
       <div className="flex flex-col items-center gap-8">
         <div className="text-center space-y-2">
           <h2 className="text-4xl font-bold">Change current password</h2>

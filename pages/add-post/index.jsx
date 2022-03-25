@@ -169,7 +169,7 @@ function AddPlace() {
       <Head>
         <title>Share your thoughts</title>
         <meta name="description" content="share your thoughts" />
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col items-center justify-center">

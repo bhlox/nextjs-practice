@@ -58,7 +58,7 @@ function Comments({ postId, comments }) {
   useEffect(() => {
     const fetchComments = async () => {
       if (!comments) {
-        console.log("no comments id found");
+        // console.log("no comments id found");
         return;
       }
 

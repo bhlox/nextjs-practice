@@ -22,11 +22,11 @@ function LoadMorePosts({ setRecentPosts }) {
         colRef,
         orderBy("timestamp", "desc"),
         startAfter(lastPost),
-        limit(4)
+        limit(8)
       );
       const snapshot = await getDocs(nextSet);
 
-      console.log(snapshot.docs.length);
+      // console.log(snapshot.docs.length);
 
       const posts = [];
       snapshot.forEach((doc) =>
@@ -39,7 +39,7 @@ function LoadMorePosts({ setRecentPosts }) {
 
       setRecentPosts((prev) => [...prev, ...posts]);
 
-      if (snapshot.docs.length < 4) {
+      if (snapshot.docs.length < 8) {
         throw new Error("no more posts");
       }
 

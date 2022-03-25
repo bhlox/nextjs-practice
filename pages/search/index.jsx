@@ -10,13 +10,13 @@ import SearchCard from "../../components/SearchCard";
 function SearchPosts({ searchQuery, matchedPosts, message, postsData }) {
   const router = useRouter();
 
-  console.log(matchedPosts);
+  // console.log(matchedPosts);
 
   return (
     <>
       <Head>
         <title>Search: {searchQuery} - Readis</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex justify-center">
@@ -59,7 +59,7 @@ export async function getServerSideProps(context) {
       count = count + 1;
     }
     if (i === searchQuery.split(" ").length - 1 && i + 1 === count) {
-      console.log("all are invalid");
+      // console.log("all are invalid");
       return false;
     }
     return true;

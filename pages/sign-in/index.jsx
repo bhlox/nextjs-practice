@@ -40,8 +40,6 @@ function SignIn() {
     });
   };
 
-  useEffect(() => console.log(window.history.length), []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     dispatch(uiActions.loading());
@@ -79,7 +77,7 @@ function SignIn() {
     <>
       <Head>
         <title>Sign in</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col items-center font-sans">

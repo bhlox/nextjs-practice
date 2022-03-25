@@ -18,7 +18,7 @@ function BlogsCategory({ postsData, category }) {
     <>
       <Head>
         <title>{category} blogs</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex justify-center">

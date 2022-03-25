@@ -138,13 +138,13 @@ function Profile({ userData }) {
 
           await updateDoc(userRef, { profilePic: downloadUrl });
           updateProfile(auth.currentUser, { photoURL: downloadUrl });
-          console.log("profile pic updated");
+          // console.log("profile pic updated");
 
           postsId.forEach(async (id, i) => {
             const colRef = doc(db, "posts", id);
             await updateDoc(colRef, { "author.userpic": downloadUrl });
           });
-          console.log("posts userpic updated");
+          // console.log("posts userpic updated");
         };
         reader.readAsDataURL(file);
       }
@@ -171,7 +171,7 @@ function Profile({ userData }) {
           setPreviewCover(reader.result);
 
           await updateDoc(userRef, { coverPic: downloadUrl });
-          console.log("cover pic updated");
+          // console.log("cover pic updated");
         };
         reader.readAsDataURL(file);
       }
@@ -296,14 +296,14 @@ function Profile({ userData }) {
       updateProfile(auth.currentUser, {
         displayName: usernameInputRef.current.value,
       });
-      console.log("username updated");
+      // console.log("username updated");
 
       postsId.forEach(async (id, i) => {
         const colRef = doc(db, "posts", id);
         await updateDoc(colRef, {
           "author.username": usernameInputRef.current.value,
         });
-        console.log("posts username updated");
+        // console.log("posts username updated");
       });
       dispatch(textActions.reset());
       dispatch(uiActions.loaded());
@@ -340,7 +340,7 @@ function Profile({ userData }) {
         instagram: instagramInputRef.current.value,
       }));
       setAddSocials(false);
-      console.log("socials updated");
+      // console.log("socials updated");
     } catch (error) {
       console.log(error);
     }
@@ -378,23 +378,23 @@ function Profile({ userData }) {
               ...post,
               timestamp: post.timestamp.toDate().toDateString(),
             }));
-          console.log(sorted);
+          // console.log(sorted);
           return sorted;
         });
       }
     });
     // setDidDelete(false);
-    console.log("fetching posts");
+    // console.log("fetching posts");
     // }
   }, [postsId]);
 
-  console.log(userPosts);
+  // console.log(userPosts);
 
   return (
     <>
       <Head>
         <title>Profile</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <ProfileCard

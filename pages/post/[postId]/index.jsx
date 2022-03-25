@@ -118,7 +118,7 @@ function PostId({ data, recentPosts }) {
       <Head>
         <title>{data.title}</title>
         <meta name="description" content={data.summary} />
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:justify-between md:space-x-12">

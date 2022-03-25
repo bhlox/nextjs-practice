@@ -2,7 +2,7 @@ import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import Head from "next/head";
 
 import Link from "next/link";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 import React, { useEffect, useRef } from "react";
 import { MdEmail } from "react-icons/md";
 import { TiWarning } from "react-icons/ti";
@@ -13,7 +13,7 @@ import { textActions } from "../../components/store/text-slice";
 
 function ForgetPassword() {
   const auth = getAuth();
-  const router = useRouter();
+  // const router = useRouter();
   const dispatch = useDispatch();
 
   const emailInputRef = useRef();
@@ -50,7 +50,7 @@ function ForgetPassword() {
       <Head>
         <title>Forgot password</title>
         <meta name="description" content="forgot password" />
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col items-center">

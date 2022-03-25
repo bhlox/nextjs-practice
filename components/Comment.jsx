@@ -114,7 +114,7 @@ function Comment({
         await updateDoc(userRef, { replies: arrayRemove(id) });
       }
       dispatch(commentsActions.deleteIdFromComments(commentId));
-      console.log("comment deleted");
+      // console.log("comment deleted");
     } catch (error) {
       console.log(error);
     }

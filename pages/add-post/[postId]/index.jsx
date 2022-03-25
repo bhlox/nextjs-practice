@@ -59,7 +59,7 @@ function EditPost({ data, postId }) {
       titleInput.current.style.height =
         Math.min(titleInput.current.scrollHeight, 300) + "px";
       if (!validity.title) {
-        console.log("submitting for validity");
+        // console.log("submitting for validity");
         dispatch(formActions.submit({ [e.target.id]: e.target.value }));
       }
     }
@@ -69,7 +69,7 @@ function EditPost({ data, postId }) {
       summaryInput.current.style.height =
         Math.min(summaryInput.current.scrollHeight, 300) + "px";
       if (!validity.summary) {
-        console.log("submitting for validity");
+        // console.log("submitting for validity");
         dispatch(formActions.submit({ [e.target.id]: e.target.value }));
       }
     }
@@ -90,7 +90,7 @@ function EditPost({ data, postId }) {
     // console.log(formIsValid);
 
     if (!formIsValid) {
-      console.log("form not valid");
+      // console.log("form not valid");
       const dataForm = {
         category: categoryInput.current.value,
         title: titleInput.current.value,
@@ -104,7 +104,7 @@ function EditPost({ data, postId }) {
       return;
     }
 
-    console.log("form is valid");
+    // console.log("form is valid");
 
     if (previewImg.name) {
       uploadImgRef = ref(storage, `images/${previewImg.name}`);
@@ -162,7 +162,7 @@ function EditPost({ data, postId }) {
       <Head>
         <title>Edit your thoughts</title>
         <meta name="description" content="share your thoughts" />
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col items-center justify-center">

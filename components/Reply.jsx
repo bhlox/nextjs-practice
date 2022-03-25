@@ -54,7 +54,7 @@ function Reply({
       await deleteDoc(replyRef);
       await updateDoc(commentRef, { replies: arrayRemove(id) });
       await updateDoc(userRef, { replies: arrayRemove(id) });
-      console.log("reply deleted");
+      // console.log("reply deleted");
       setReplyIdList((prev) => prev.filter((entry) => entry !== id));
     } catch (error) {
       console.log(error);

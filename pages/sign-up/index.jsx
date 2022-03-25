@@ -121,9 +121,9 @@ function SignUp() {
     dispatch(uiActions.loading());
 
     // console.log(formIsValid);
-    console.log(
-      `handle submit function is called, sign up validity is ${signUpValidity}`
-    );
+    // console.log(
+    //   `handle submit function is called, sign up validity is ${signUpValidity}`
+    // );
 
     try {
       const userCredential = await createUserWithEmailAndPassword(
@@ -160,7 +160,7 @@ function SignUp() {
       // console.log(formDataCopy);
       await setDoc(doc(db, "users", user.uid), formDataCopy);
       dispatch(uiActions.loaded());
-      console.log("registration success");
+      // console.log("registration success");
       dispatch(userActions.success());
       router.push("/profile");
     } catch (error) {
@@ -179,7 +179,7 @@ function SignUp() {
     <>
       <Head>
         <title>Sign up</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       <div className="flex flex-col items-center">

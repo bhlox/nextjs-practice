@@ -68,13 +68,13 @@ function CommentTextArea({ edit, fetchComments }) {
     e.preventDefault();
 
     if (!content.trim().length) {
-      console.log("no characters");
+      // console.log("no characters");
       dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
       return;
     }
 
     if (content.trim().length < 2) {
-      console.log("only 1 character");
+      // console.log("only 1 character");
       dispatch(textActions.submitErrorMsg("Pls Enter at least 2 characters"));
       return;
     }
@@ -102,7 +102,7 @@ function CommentTextArea({ edit, fetchComments }) {
       await updateDoc(docRef, { comments: arrayUnion(comment.id) });
       await updateDoc(userRef, { comments: arrayUnion(comment.id) });
 
-      console.log("comment submited");
+      // console.log("comment submited");
       dispatch(commentsActions.addIdToComments(comment.id));
       dispatch(commentsActions.resetContent());
       dispatch(textActions.reset());
@@ -128,7 +128,7 @@ function CommentTextArea({ edit, fetchComments }) {
     // console.log(contentToEdit);
     try {
       await updateDoc(commentRef, { content: contentToEdit });
-      console.log("comment updated");
+      // console.log("comment updated");
       dispatch(textActions.reset());
       dispatch(commentsActions.cancelEditing());
       fetchEditedComments();

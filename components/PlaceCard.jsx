@@ -78,7 +78,7 @@ function PlaceCard({
       await updateDoc(userRef, { posts: newPosts });
       setPostsId(newPosts);
       setDidDelete(true);
-      console.log("post deleted");
+      // console.log("post deleted");
     } catch (error) {
       console.log(error);
     }

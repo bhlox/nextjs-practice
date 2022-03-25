@@ -55,7 +55,7 @@ function OtherUserProfile({ user }) {
     <>
       <Head>
         <title>{user.data.username}&apos;s profile</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       {/* This is the profile of {name} with a id of : {id} */}

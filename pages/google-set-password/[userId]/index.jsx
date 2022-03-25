@@ -63,7 +63,7 @@ export default function GoogleSetPassword({ setPassword }) {
     <>
       <Head>
         <title>Set Password</title>
-        <link rel="icon" href="/newreadit.png" />
+        <link rel="icon" href="/readdis_favicon.ico" />
       </Head>
 
       {setPassword && (
