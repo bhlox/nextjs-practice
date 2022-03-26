@@ -18,7 +18,13 @@ function Layout({ children }) {
 
   return (
     <>
-      <div className={`${darkMode ? "dark" : ""}`}>
+      <div
+        className={`${
+          darkMode
+            ? "dark overflow-hidden relative"
+            : "overflow-hidden relative"
+        }`}
+      >
         <Navbar />
         <BackDrop />
         <div
@@ -26,7 +32,7 @@ function Layout({ children }) {
         >
           <section
             onClick={handleClose}
-            className="max-w-7xl mx-auto space-y-16 py-8 px-4 min-h-[80vh]  relative"
+            className="max-w-7xl mx-auto space-y-16 py-8 px-4 min-h-[80vh] relative overflow-hidden"
           >
             {children}
             <ScrollToTop />

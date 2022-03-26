@@ -143,8 +143,8 @@ function Navbar() {
 
   return (
     <>
-      <nav className={`bg-purple-500 px-4 py-1 relative font-handLee`}>
-        <div className="flex justify-between max-w-7xl mx-auto py-2 text-slate-800 dark:text-zinc-200">
+      <nav className={`bg-purple-500 py-1 font-handLee`}>
+        <div className="flex justify-between max-w-7xl mx-auto py-2 text-slate-800 dark:text-zinc-200  px-4">
           <Link passHref href="/">
             <div
               onClick={() => {
@@ -271,7 +271,7 @@ function Navbar() {
               <GiHamburgerMenu />
             </button>
             <div
-              className={`absolute bg-purple-500 top-0 ${
+              className={`absolute bg-purple-500 inset-y-0 ${
                 showSide ? "right-0" : "-right-[80%]"
               }  h-screen max-w-xs flex flex-col pt-24 px-4 space-y-6 z-30 lg:max-w-screen-xl lg:h-auto lg:pt-0 lg:px-0 lg:space-y-0 lg:static lg:flex-row lg:gap-x-5 transition-all duration-300 items-center`}
             >

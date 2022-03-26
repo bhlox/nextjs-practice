@@ -13,8 +13,7 @@
 
 @layer components {
   body {
-    @apply /* bg-slate-900 text-gray-300  */
-    overflow-x-hidden scroll-smooth;
+    @apply scroll-smooth;
   }
   h1,
   h2,

@@ -12,14 +12,14 @@ export default function LatestPostsPart({ latestPosts }) {
             <FaFireAlt className=" text-orange-500" />
             <h2 className="font-bold">Latest posts</h2>
           </div>
-          <div className="flex space-x-8 font-handLee text-gray-200">
+          <div className="flex flex-col space-y-6 md:flex-row md:space-x-8 md:space-y-0 font-handLee text-gray-200">
             <div className="md:w-2/3 relative group shadow-2xl">
               <div>
                 <Link passHref href={`/post/${latestPosts[0].id}`}>
                   {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
+                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 brightness-75 md:brightness-100 md:group-hover:brightness-75"
                       src={latestPosts[0].image}
                       alt=""
                     />
@@ -32,7 +32,7 @@ export default function LatestPostsPart({ latestPosts }) {
                     {latestPosts[0].title}
                   </h2>
                 </Link>
-                <p className="max-w-sm opacity-0 group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light -translate-y-24 group-hover:translate-y-0 font-sans">
+                <p className="max-w-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light md:-translate-y-24 md:group-hover:translate-y-0 font-sans">
                   {latestPosts[0].summary}...
                   <Link passHref href={`/post/${latestPosts[0].id}`}>
                     <span className="mx-1 cursor-pointer hover:underline">
@@ -86,7 +86,7 @@ export default function LatestPostsPart({ latestPosts }) {
                   {
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
-                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 group-hover:brightness-75"
+                      className="w-full h-[33rem] md:h-[28rem] object-cover rounded-2xl object-center cursor-pointer transition-all duration-300 brightness-75 md:brightness-100 group-hover:brightness-75"
                       src={latestPosts[1].image}
                       alt=""
                     />
@@ -99,7 +99,7 @@ export default function LatestPostsPart({ latestPosts }) {
                     {latestPosts[1].title}
                   </h2>
                 </Link>
-                <p className="max-w-sm opacity-0 group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light -translate-y-24 group-hover:translate-y-0 font-sans">
+                <p className="max-w-sm md:opacity-0 md:group-hover:opacity-100 transition-all duration-1000 capitalize text-xl font-light md:-translate-y-24 md:group-hover:translate-y-0 font-sans">
                   {latestPosts[1].summary}...
                   <Link passHref href={`/post/${latestPosts[1].id}`}>
                     <span className="mx-1 cursor-pointer hover:underline">
