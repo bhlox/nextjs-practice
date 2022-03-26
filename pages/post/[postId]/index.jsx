@@ -279,6 +279,7 @@ export async function getStaticProps(context) {
         },
         recentPosts,
       },
+      revalidate: 10,
     };
   } catch (error) {
     console.log(error);
