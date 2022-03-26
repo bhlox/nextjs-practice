@@ -17,13 +17,22 @@ email: ordinaryUser@yahoo.com
 password: user123
 
 [ReadisBlogs](https://readdis-blogs.vercel.app/)
+
 ## Screenshot
 
 ![screenshot 1](https://github.com/bhlox/nextjs-practice/blob/main/readis_screenshot_1.png)
 
 ![screenshot 2](https://github.com/bhlox/nextjs-practice/blob/main/readis_screenshot_2.png)
 
+## Features
 
+- Light/dark mode toggle
+- Updating in realtime
+- Rich text editor for posting
+- Profile information and updating
+- Authentication
+- Comment system
+- Friendly/responsive UI for all screens
 
 ## Tech Stack
 
