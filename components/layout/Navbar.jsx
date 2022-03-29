@@ -488,7 +488,7 @@ function Navbar() {
                     onClick={() => dispatch(navActions.close())}
                     className={
                       router.pathname == "/sign-up"
-                        ? "nav-active flex items-center gap-x-1 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl"
+                        ? "nav-active flex items-center gap-x-1 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl relative"
                         : "nav-link flex items-center gap-x-1 border-4 dark:border-gray-200 border-slate-800 py-1 px-2 rounded-xl relative group"
                     }
                   >
